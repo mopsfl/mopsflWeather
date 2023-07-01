@@ -5,7 +5,8 @@
   },
   "scripts": {
     "bundle": "esbuild ./dist/chunks/js/index.js style.css --bundle --minify --platform=browser --outdir=./dist/chunks --format=esm --allow-overwrite --splitting --entry-names=[ext]/[name]",
-    "bundledev": "esbuild index.ts style.css --bundle --minify --platform=browser --outdir=./dist/chunks --format=esm --allow-overwrite --splitting --entry-names=[ext]/[name] --watch",
+    "bundledev": "esbuild index.ts style.css --bundle --platform=browser --outdir=./dist/chunks --format=esm --allow-overwrite --splitting --entry-names=[ext]/[name] --watch",
+    "bundlestatic": "esbuild ./static/js/ripple.js --bundle --minify --platform=browser --outdir=./static --format=esm --allow-overwrite --splitting --entry-names=[ext]/[name]",
     "build": "rimraf dist && npx tsc && npm run bundle",
     "dev": "rimraf dist && npm run bundledev"
   },

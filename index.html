@@ -12,21 +12,34 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <title>mopsfl Weather App</title>
         <script type="module" src="./dist/chunks/js/index.js" defer></script>
+        <script src="./static/js/ripple.js" defer></script>
     </head>
 
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <header>
             <div class="header_title">
-                <img src="./svg/static/day.svg">
+                <img src="./svg/static/day.svg" alt="daysunicon">
                 <h1>mopsflWeather</h1>
             </div>
         </header>
         <main>
             <div class="location_search center">
-                <input class="location_search_input input-icon-search" type="search" placeholder="Suchen" required>
+                <input class="location_search_input input-icon-search" type="search" placeholder="Suchen" required minlength="2">
+                <div class="location_search_results hide_location_search_results">
+                    <template class="location_search_result_template">
+                        <div class="location_search_result ripple" ripple-opacity=".3" ripple-release-expand-time=".8">
+                            <p class="location_search_result_cityname">City Name</p>
+                        </div>
+                    </template>
+                </div>
             </div>
-            <div class="weather_data"></div>
+            <div class="weather_data">
+                <div class="spinner weather_data_loading hide">
+                    <div class="cube1"></div>
+                    <div class="cube2"></div>
+                </div>
+            </div>
         </main>
         <footer>
             <span class="footer_copyright">&copy;
