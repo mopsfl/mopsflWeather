@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "esbuild": "^0.18.10",
+    "lodash": "^4.17.21",
     "rimraf": "^5.0.1"
   },
   "scripts": {

@@ -75,7 +75,20 @@ footer {
   padding: 10px;
 }
 
+.weather_data_loading {
+  width: 0;
+  position: absolute;
+  right: 15px;
+  bottom: 15px;
+  transform: translate(-50%, -50%);
+  margin: 0 !important;
+  transform: scale(50%);
+}
+
 .location_search {
+  transform: translateX(-50%);
+  left: 50%;
+  position: absolute;
   margin-top: 15px;
   text-align: center;
   display: grid;
@@ -153,22 +166,26 @@ footer {
   background-color: rgb(63, 63, 63);
 }
 
+.weather_data {
+  text-align: center;
+  margin-top: 150px;
+}
+
+/** LOADING SPINNER **/
+
 .spinner {
-  margin: 100px auto;
   width: 40px;
   height: 40px;
-  position: relative;
 }
 
 .cube1,
 .cube2 {
-  background-color: #7e7e7e5b;
+  background-color: #7e7e7e88;
   width: 15px;
   height: 15px;
   position: absolute;
   top: 0;
   left: 0;
-
   -webkit-animation: sk-cubemove 1.8s infinite ease-in-out;
   animation: sk-cubemove 1.8s infinite ease-in-out;
 }
@@ -176,6 +193,14 @@ footer {
 .cube2 {
   -webkit-animation-delay: -0.9s;
   animation-delay: -0.9s;
+}
+
+/** MISC **/
+
+@media screen and (max-width : 1230px) {
+  .header_title {
+    justify-content: center;
+  }
 }
 
 @-webkit-keyframes sk-cubemove {
@@ -220,15 +245,5 @@ footer {
   100% {
     transform: rotate(-360deg);
     -webkit-transform: rotate(-360deg);
-  }
-}
-
-@keyframes opacityshow {
-  0% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
   }
 }

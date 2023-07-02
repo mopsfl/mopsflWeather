@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8"/>
         <link rel="icon" href="/favicon.ico"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Weather App made by mopsfl"/>
         <link rel="stylesheet" href="./dist/chunks/css/style.css"/>
         <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -23,25 +23,29 @@
                 <h1>mopsflWeather</h1>
             </div>
         </header>
-        <main>
-            <div class="location_search center">
-                <input class="location_search_input input-icon-search" type="search" placeholder="Suchen" required minlength="2">
-                <div class="location_search_results hide_location_search_results">
-                    <template class="location_search_result_template">
-                        <div class="location_search_result ripple" ripple-opacity=".3" ripple-release-expand-time=".8">
-                            <p class="location_search_result_cityname">City Name</p>
-                        </div>
-                    </template>
-                </div>
+        <div class="location_search center">
+            <input class="location_search_input input-icon-search" type="search" placeholder="Suchen" required minlength="2">
+            <div class="location_search_results hide_location_search_results">
+                <template class="location_search_result_template">
+                    <div class="location_search_result ripple" ripple-opacity=".3" ripple-release-expand-time=".8">
+                        <p class="location_search_result_cityname">City Name</p>
+                    </div>
+                </template>
             </div>
-            <div class="weather_data">
-                <div class="spinner weather_data_loading hide">
-                    <div class="cube1"></div>
-                    <div class="cube2"></div>
-                </div>
+        </div>
+        <div class="spinner weather_data_loading hide">
+            <div class="cube1"></div>
+            <div class="cube2"></div>
+        </div>
+        <div class="weather_data">
+            <div class="weather_data_locationinfo">
+                <p class="weather_data_cityname">City Name</p>
             </div>
-        </main>
+        </div>
         <footer>
+            <span class="footer_copyright">&copy;
+                <a target="_blank" href="https://openweathermap.org/api">OpenWeather</a>
+                - Weather Data</span><br>
             <span class="footer_copyright">&copy;
                 <a target="_blank" href="https://de.freepik.com/vektoren-kostenlos/wetter-ikonen-sammlung_1044316.htm#query=wetter%20symbole%20kostenlos&position=1&from_view=keyword&track=ais">bamdewanto, Freepik</a>
                 - Weather Icons</span>

@@ -4,7 +4,8 @@ export default class SearchCity {
             location_search_results: HTMLElement,
             location_search_input: HTMLElement,
             location_search_result_template: any
-        }
+        },
+        public selectedCity?: Object,
     ) {}
 
     ToggleResults(State?: boolean){
@@ -20,22 +21,27 @@ export default class SearchCity {
             } else if(State == false) {
                 this.Config.location_search_input.classList.remove("results_visible")
                 this.Config.location_search_results.classList.add("hide_location_search_results")
+                this.Config.location_search_results.innerHTML = ""
             }
         }
     }
 
-    UpdateResults(Results: [ { city: String, city_ascii: string, lat: string, lng: string, country: String, id: String, iso2: String } ]){
+    UpdateResults(Results: [ { city: String, city_ascii: string, lat: string, lng: string, country: String, id: string, iso2: String } ]){
         if(!this.Config.location_search_result_template) return console.warn("Missing 'location_search_result_template' element.")
         this.Config.location_search_results.innerHTML = ""
-
         Results.forEach(city => {
-            const city_result = this.Config.location_search_result_template.content.cloneNode(true).childNodes[1]
+            const city_result: HTMLElement = this.Config.location_search_result_template.content.cloneNode(true).childNodes[1]
             city_result.setAttribute("city-id", city.id)
             city_result.setAttribute("city-name", city.city_ascii)
             city_result.classList.add("location_search_result_animate")
-            city_result.querySelector(".location_search_result_cityname").innerText = `${city.city} - ${city.iso2}`
+            city_result.querySelector(".location_search_result_cityname")["innerText"] = `${city.city} - ${city.iso2}`
             this.Config.location_search_results.appendChild(city_result)
             window["ripple"].registerRipples();
+
+            city_result.addEventListener("click", (e) => {
+                this.selectedCity = city
+                console.log(this.selectedCity)
+            })
         })
     }
 }
