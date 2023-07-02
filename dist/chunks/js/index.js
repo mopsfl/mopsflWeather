@@ -63,8 +63,8 @@ var WeatherApi = class {
       loadingCircle.ToggleLoading(true);
       const weather_data = await fetch((secureProtocol ? this.API_URL_HTTPS : dev ? this.API_URL_DEV + "data/" : this.API_URL_HTTP) + `currentweather?lat=${args.lat}&lon=${args.lon}`).then((res) => res.json());
       loadingCircle.ToggleLoading(false);
-      console.log(weather_data);
-      document.querySelector(".weather_data_cityname").innerHTML = `${weather_data.data.data?.name || weather_data.data.name}<br>Temperature: ${weather_data.data.data?.main.temp || weather_data.data.main.temp} \xB0C`;
+      const data = weather_data.data.data || weather_data.data;
+      document.querySelector(".weather_data_cityname").innerHTML = `${data.name || data.name}<br>Temperature: ${data.main.temp || data.main.temp} \xB0C<br><br>${data.weather[0].description}`;
     }
   }
   async SearchCity(Name, secureProtocol = HTTPS_SERVER, dev = DEV_MODE) {
