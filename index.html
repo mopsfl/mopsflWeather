@@ -11,6 +11,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <title>mopsfl Weather App</title>
+        <script type="module" src="https://unpkg.com/string-encode"></script>
         <script type="module" src="./dist/chunks/js/index.js" defer></script>
         <script src="./static/js/ripple.js" defer></script>
     </head>
@@ -20,7 +21,8 @@
         <header>
             <div class="header_title">
                 <img src="./svg/static/day.svg" alt="daysunicon">
-                <h1>mopsflWeather</h1>
+                <p class="header_title_text">mopsfl<strong>Weather</strong>
+                </p>
             </div>
         </header>
         <div class="location_search center">
@@ -28,7 +30,7 @@
             <div class="location_search_results hide_location_search_results">
                 <template class="location_search_result_template">
                     <div class="location_search_result ripple" ripple-opacity=".3" ripple-release-expand-time=".8">
-                        <p class="location_search_result_cityname">City Name</p>
+                        <p class="location_search_result_cityname">Loading</p>
                     </div>
                 </template>
             </div>

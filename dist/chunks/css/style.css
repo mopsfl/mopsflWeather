@@ -125,6 +125,9 @@ footer {
   border-top-right-radius: 0px;
   transition: opacity .1s;
 }
+.header_title_text {
+  font-size: 21px;
+}
 .hide_location_search_results {
   opacity: 0;
 }

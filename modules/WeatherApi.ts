@@ -12,7 +12,7 @@ export default class WeatherApi {
         readonly API_URL_HTTP: RequestInfo = "http://prem.daki.cc:6082/api/v1/data/",
     ) {}
 
-    async GetCurrentWeather(secureProtocol: boolean = _.default.HTTPS_SERVER, dev: boolean = _.default.DEV_MODE){
+    async GetCurrentWeather(secureProtocol: boolean = _.HTTPS_SERVER, dev: boolean = _.DEV_MODE){
         loadingCircle.ToggleLoading(true)
         const weather_data = await fetch((secureProtocol ? this.API_URL_HTTPS : dev ? this.API_URL_DEV + "data/" : this.API_URL_HTTP) + "currentweather").then(res => res.json())
         loadingCircle.ToggleLoading(false)
@@ -20,7 +20,7 @@ export default class WeatherApi {
         return weather_data
     }
 
-    async GetWeatherData(args: weatherRequestArguments, secureProtocol: boolean = _.default.HTTPS_SERVER, dev: boolean = _.default.DEV_MODE) {
+    async GetWeatherData(args: weatherRequestArguments, secureProtocol: boolean = _.HTTPS_SERVER, dev: boolean = _.DEV_MODE) {
         if(args.name && !(args.lat || args.lon)){
             console.log("get weatherdata by name")
         } else {
@@ -28,10 +28,11 @@ export default class WeatherApi {
             const weather_data = await fetch((secureProtocol ? this.API_URL_HTTPS : dev ? this.API_URL_DEV + "data/" : this.API_URL_HTTP) + `currentweather?lat=${args.lat}&lon=${args.lon}`).then(res => res.json())
             loadingCircle.ToggleLoading(false)
             console.log(weather_data)
+            document.querySelector(".weather_data_cityname").innerHTML = `${weather_data.data.data?.name || weather_data.data.name}<br>Temperature: ${weather_data.data.data?.main.temp || weather_data.data.main.temp} °C`
         }
     }
 
-    async SearchCity(Name: String, secureProtocol: boolean = _.default.HTTPS_SERVER, dev: boolean = _.default.DEV_MODE){
+    async SearchCity(Name: String, secureProtocol: boolean = _.HTTPS_SERVER, dev: boolean = _.DEV_MODE){
         loadingCircle.ToggleLoading(true)
         const results = await fetch((secureProtocol ? this.API_URL_HTTPS : dev ? this.API_URL_DEV + "data/" : this.API_URL_HTTP) + `searchcity?name=${Name}`).then(res => res.json())
         loadingCircle.ToggleLoading(false)
@@ -58,7 +59,7 @@ export interface CityData {
 }
 
 export interface weatherRequestArguments {
-    lon?: string,
-    lat?: string,
+    lon?: string | number,
+    lat?: string | number,
     name?: string
 }
