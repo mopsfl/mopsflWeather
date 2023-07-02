@@ -1,3 +1,7 @@
+import WeatherApi, { CityData } from "./WeatherApi"
+
+const weatherApi = new WeatherApi()
+
 export default class SearchCity {
     constructor(
         public Config: {
@@ -26,7 +30,7 @@ export default class SearchCity {
         }
     }
 
-    UpdateResults(Results: [ { city: String, city_ascii: string, lat: string, lng: string, country: String, id: string, iso2: String } ]){
+    UpdateResults(Results: [ CityData ]){
         if(!this.Config.location_search_result_template) return console.warn("Missing 'location_search_result_template' element.")
         this.Config.location_search_results.innerHTML = ""
         Results.forEach(city => {
@@ -38,9 +42,10 @@ export default class SearchCity {
             this.Config.location_search_results.appendChild(city_result)
             window["ripple"].registerRipples();
 
-            city_result.addEventListener("click", (e) => {
+            city_result.addEventListener("click", async (e) => {
                 this.selectedCity = city
-                console.log(this.selectedCity)
+                await weatherApi.UpdateCurrentWeather(city)
+                this.ToggleResults(false)
             })
         })
     }

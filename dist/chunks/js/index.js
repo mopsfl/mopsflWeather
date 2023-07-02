@@ -7,26 +7,63 @@ function GetGeoLocation(positionCallback, errorCallback) {
   });
 }
 
+// modules/LoadingCircle.ts
+var LoadingCircle = class {
+  constructor(Config) {
+    this.Config = Config;
+  }
+  ToggleLoading(State) {
+    if (!this.Config.loading_circle)
+      return console.warn("Missing 'loading_circle' element.");
+    if (State == void 0) {
+      this.Config.loading_circle.classList.toggle("hide");
+    } else {
+      if (State == true) {
+        this.Config.loading_circle.classList.remove("hide");
+      } else if (State == false) {
+        this.Config.loading_circle.classList.add("hide");
+      }
+    }
+  }
+};
+
 // modules/WeatherApi.ts
+var loadingCircle = new LoadingCircle({
+  loading_circle: document.querySelector(".weather_data_loading")
+});
 var WeatherApi = class {
   constructor(API_URL_DEV = "http://localhost:6969/api/v1/", API_URL_HTTPS = "https://mopsflgithubio.mopsfl.repl.co/api/mopsflweather/", API_URL_HTTP = "http://prem.daki.cc:6082/api/v1/data/") {
     this.API_URL_DEV = API_URL_DEV;
     this.API_URL_HTTPS = API_URL_HTTPS;
     this.API_URL_HTTP = API_URL_HTTP;
   }
-  async GetCurrentWeather(secureProtocol = true, dev = false) {
-    const loading_circle = document.querySelector(".weather_data_loading");
-    loading_circle.classList.remove("hide");
+  async GetCurrentWeather(secureProtocol = frontend_default.HTTPS_SERVER, dev = frontend_default.DEV_MODE) {
+    loadingCircle.ToggleLoading(true);
     const weather_data = await fetch((secureProtocol ? this.API_URL_HTTPS : dev ? this.API_URL_DEV + "data/" : this.API_URL_HTTP) + "currentweather").then((res) => res.json());
-    loading_circle.classList.add("hide");
+    loadingCircle.ToggleLoading(false);
     return weather_data;
   }
-  async SearchCity(Name, secureProtocol = true, dev = false) {
-    const loading_circle = document.querySelector(".weather_data_loading");
-    loading_circle.classList.remove("hide");
+  async GetWeatherData(args, secureProtocol = frontend_default.HTTPS_SERVER, dev = frontend_default.DEV_MODE) {
+    if (args.name && !(args.lat || args.lon)) {
+      console.log("get weatherdata by name");
+    } else {
+      loadingCircle.ToggleLoading(true);
+      const weather_data = await fetch((secureProtocol ? this.API_URL_HTTPS : dev ? this.API_URL_DEV + "data/" : this.API_URL_HTTP) + `currentweather?lat=${args.lat}&lon=${args.lon}`).then((res) => res.json());
+      loadingCircle.ToggleLoading(false);
+      console.log(weather_data);
+    }
+  }
+  async SearchCity(Name, secureProtocol = frontend_default.HTTPS_SERVER, dev = frontend_default.DEV_MODE) {
+    loadingCircle.ToggleLoading(true);
     const results = await fetch((secureProtocol ? this.API_URL_HTTPS : dev ? this.API_URL_DEV + "data/" : this.API_URL_HTTP) + `searchcity?name=${Name}`).then((res) => res.json());
-    loading_circle.classList.add("hide");
+    loadingCircle.ToggleLoading(false);
     return results;
+  }
+  async UpdateCurrentWeather(cityData) {
+    const weatherData = await this.GetWeatherData({
+      lat: cityData.lat,
+      lon: cityData.lng
+    });
   }
 };
 
@@ -50,6 +87,7 @@ var WeatherIcon = class {
 };
 
 // modules/SearchCity.ts
+var weatherApi = new WeatherApi();
 var SearchCity = class {
   constructor(Config, selectedCity) {
     this.Config = Config;
@@ -86,16 +124,17 @@ var SearchCity = class {
       city_result.querySelector(".location_search_result_cityname")["innerText"] = `${city.city} - ${city.iso2}`;
       this.Config.location_search_results.appendChild(city_result);
       window["ripple"].registerRipples();
-      city_result.addEventListener("click", (e) => {
+      city_result.addEventListener("click", async (e) => {
         this.selectedCity = city;
-        console.log(this.selectedCity);
+        await weatherApi.UpdateCurrentWeather(city);
+        this.ToggleResults(false);
       });
     });
   }
 };
 
 // index.ts
-var DEV_MODE = false;
+var DEV_MODE = true;
 var HTTPS_SERVER = false;
 window["modules"] = {
   GetGeoLocation,
@@ -103,7 +142,7 @@ window["modules"] = {
   WeatherIcon,
   SearchCity
 };
-var weatherApi = new WeatherApi();
+var weatherApi2 = new WeatherApi();
 var weatherIcon = new WeatherIcon();
 var searchCity = new SearchCity({
   location_search_results: document.querySelector(".location_search_results"),
@@ -121,7 +160,7 @@ if (DEV_MODE)
   console.warn("App running on DEV_MODE");
 var location_search_input = document.querySelector(".location_search_input");
 (async () => {
-  const currentWeather = await weatherApi.GetCurrentWeather(HTTPS_SERVER, DEV_MODE);
+  const currentWeather = await weatherApi2.GetCurrentWeather(HTTPS_SERVER, DEV_MODE);
   window["currentWeather"] = currentWeather;
 })();
 location_search_input.addEventListener("input", async (e) => {
@@ -130,7 +169,7 @@ location_search_input.addEventListener("input", async (e) => {
   const input = e.target.value.replace(/\s/g, "");
   if (input.length <= 1)
     return searchCity.ToggleResults(false);
-  const search_results = await weatherApi.SearchCity(e.target.value.trim(), HTTPS_SERVER, DEV_MODE);
+  const search_results = await weatherApi2.SearchCity(e.target.value.trim(), HTTPS_SERVER, DEV_MODE);
   if (search_results.length > 0) {
     searchCity.ToggleResults(true);
     searchCity.UpdateResults(search_results);
@@ -146,3 +185,10 @@ location_search_input.addEventListener("focusout", () => {
   if (!location_search_input.validity.valid)
     searchCity.ToggleResults(false);
 });
+var frontend_default = {
+  DEV_MODE,
+  HTTPS_SERVER
+};
+export {
+  frontend_default as default
+};

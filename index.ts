@@ -1,8 +1,8 @@
-const DEV_MODE = false
+const DEV_MODE = true
 const HTTPS_SERVER = false
 
 import GetGeoLocation from "./modules/GeoLocation.js"
-import WeatherApi from "./modules/WeatherApi.js"
+import WeatherApi, { CityData } from "./modules/WeatherApi.js"
 import WeatherIcon from "./modules/WeatherIcon.js"
 import SearchCity from "./modules/SearchCity.js"
 
@@ -56,3 +56,8 @@ location_search_input.addEventListener("input", async (e: any) => {
 
 location_search_input.addEventListener("focus", () => { if(location_search_input.validity.valid && window["currentCitySearchResults"]?.length > 0) searchCity.ToggleResults(true) })
 location_search_input.addEventListener("focusout", () => { if(!location_search_input.validity.valid) searchCity.ToggleResults(false) })
+
+export default {
+    DEV_MODE,
+    HTTPS_SERVER
+}
