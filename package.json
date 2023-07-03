@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@types/lodash": "^4.14.195",
     "esbuild": "^0.18.10",
     "lodash": "^4.17.21",
     "rimraf": "^5.0.1"

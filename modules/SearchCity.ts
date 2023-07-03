@@ -31,6 +31,7 @@ export default class SearchCity {
     }
 
     UpdateResults(Results: [ CityData ]){
+        if(!(Results)) throw new Error("Missing required arguments")
         if(!this.Config.location_search_result_template) return console.warn("Missing 'location_search_result_template' element.")
         this.Config.location_search_results.innerHTML = ""
         Results.forEach(city => {

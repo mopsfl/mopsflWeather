@@ -5,15 +5,17 @@ export default class LoadingCircle {
         }
     ) {}
 
-    ToggleLoading(State?: boolean){
-        if(!this.Config.loading_circle) return console.warn("Missing 'loading_circle' element.")
+    ToggleLoading(State?: boolean, LoadingCircle?: Element){
+        const element = LoadingCircle ? LoadingCircle : this.Config.loading_circle
+        if(!element) return console.warn("Missing 'loading_circle' element.")
+        
         if(State == undefined){
-            this.Config.loading_circle.classList.toggle("hide")
+            element.classList.toggle("hide")
         } else {
             if(State == true) {
-                this.Config.loading_circle.classList.remove("hide")
+                element.classList.remove("hide")
             } else if(State == false) {
-                this.Config.loading_circle.classList.add("hide")
+                element.classList.add("hide")
             }
         }
     }
