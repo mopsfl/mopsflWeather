@@ -26,7 +26,7 @@ const searchCity = new SearchCity({
 })
 
 window.modules = {
-    classes: { GeoLocation, WeatherApi, WeatherIcon, SearchCity, LoadingCircle, LocalStorage, _ },
+    classes: { GeoLocation, WeatherApi, WeatherIcon, SearchCity, LoadingCircle, LocalStorage },
     initialized: { weatherApi, weatherIcon, localStorage, loadingCircle, searchCity, geoLocation }
  }
 

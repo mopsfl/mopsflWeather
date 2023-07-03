@@ -198,7 +198,7 @@ var searchCity = new SearchCity({
   location_search_result_template: document.querySelector(".location_search_result_template")
 });
 window.modules = {
-  classes: { GeoLocation, WeatherApi, WeatherIcon, SearchCity, LoadingCircle, LocalStorage, _ },
+  classes: { GeoLocation, WeatherApi, WeatherIcon, SearchCity, LoadingCircle, LocalStorage },
   initialized: { weatherApi: weatherApi2, weatherIcon, localStorage: localStorage2, loadingCircle: loadingCircle2, searchCity, geoLocation }
 };
 loadingCircle2.ToggleLoading(true);
