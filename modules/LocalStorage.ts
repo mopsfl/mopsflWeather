@@ -9,6 +9,11 @@ export default class LocalStorage{
         }
     }
 
+    /**
+     * @description Adds or sets a value to the localStorage
+     * @param name
+     * @param value 
+     */
     Set(name: string, value: string){
         if(!(name || value)) throw new Error("Missing required arguments")
         const data_object: Object = JSON.parse(window.stringEncode.buffer2str(new Uint8Array(Object.values(JSON.parse(atob(localStorage.getItem(this.Config.key)))))))
@@ -18,6 +23,9 @@ export default class LocalStorage{
         localStorage.setItem(this.Config.key, btoa(JSON.stringify(new_buffer)))
     }
 
+    /**
+     * @description Parses the encoded localStorage data
+     */
     Parse(){
         return JSON.parse(window.stringEncode.buffer2str(new Uint8Array(Object.values(JSON.parse(atob(localStorage.getItem(this.Config.key)))))))
     }

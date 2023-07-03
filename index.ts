@@ -7,6 +7,7 @@ import SearchCity from "./modules/SearchCity"
 import LoadingCircle from "./modules/LoadingCircle"
 import LocalStorage from "./modules/LocalStorage"
 import GeoLocation from "./modules/GeoLocation"
+import * as _ from "lodash"
 
 const geoLocation = new GeoLocation()
 const weatherApi = new WeatherApi()
@@ -26,7 +27,7 @@ const searchCity = new SearchCity({
 
 window.modules = {
     classes: { GeoLocation, WeatherApi, WeatherIcon, SearchCity, LoadingCircle, LocalStorage },
-    initialized: { weatherApi, weatherIcon, localStorage, loadingCircle, searchCity, geoLocation }
+    initialized: { weatherApi, weatherIcon, localStorage, loadingCircle, searchCity, geoLocation, lodash: _ }
  }
 
 loadingCircle.ToggleLoading(true)
@@ -35,6 +36,7 @@ await navigator.permissions.query({ name: "geolocation" }).then(async (res) => {
     window.geolocation_state = res.state
     const ls_data = localStorage.Parse()
     let saved_coords: GeolocationPosition
+
     if(ls_data.coords) {
         saved_coords = JSON.parse(ls_data.coords)
         window.current_geolocation_data = "saved"
@@ -44,6 +46,8 @@ await navigator.permissions.query({ name: "geolocation" }).then(async (res) => {
     }
 
     window.current_geolocation_data = "none"
+
+    if(window.geolocation_state == "denied") console.warn(new Error(`geolocation_state: ${window.geolocation_state}`))
     geoLocation.GetGeoLocation(SetGeoLocation, ErrorCallback)
 })
 
@@ -114,7 +118,7 @@ declare global {
         },
         currentCitySearchResults: Array<Object>,
         currentWeather: any,
-        geolocation_state: String,
+        geolocation_state: PermissionState,
         current_geolocation_data: "saved" | "none"
 
         stringEncode: {

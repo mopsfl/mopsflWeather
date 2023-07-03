@@ -12,6 +12,10 @@ export default class SearchCity {
         public selectedCity?: Object,
     ) {}
 
+    /**
+     * @description Toggles the search results bar of the search bar
+     * @param State
+     */
     ToggleResults(State?: boolean){
         if(!this.Config.location_search_results) return console.warn("Missing 'location_search_results' element.")
         if(!this.Config.location_search_input) return console.warn("Missing 'location_search_input' element.")
@@ -30,6 +34,10 @@ export default class SearchCity {
         }
     }
 
+    /**
+     * Updates the search results bar with the given CityData array
+     * @param Results
+     */
     UpdateResults(Results: [ CityData ]){
         if(!(Results)) throw new Error("Missing required arguments")
         if(!this.Config.location_search_result_template) return console.warn("Missing 'location_search_result_template' element.")

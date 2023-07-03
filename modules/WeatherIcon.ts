@@ -6,6 +6,13 @@ export default class WeatherIcon {
         }
     ) {}
 
+    /**
+     * @description Creates a weatherIcon with the given arguments
+     * @param Name 
+     * @param animated 
+     * @param Size 
+     * @param child 
+     */
     CreateWeatherIcon(Name: string, animated: boolean = false, Size: "large" | "medium" | "small" = "medium", child?: HTMLElement){
         if(!(Name || Size)) throw new Error("Missing required arguments")
         const Path = animated ? this._PATHS.animated : this._PATHS.static
