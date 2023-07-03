@@ -7,7 +7,6 @@ import SearchCity from "./modules/SearchCity"
 import LoadingCircle from "./modules/LoadingCircle"
 import LocalStorage from "./modules/LocalStorage"
 import GeoLocation from "./modules/GeoLocation"
-//import * as _ from "lodash"
 
 const geoLocation = new GeoLocation()
 const weatherApi = new WeatherApi()
