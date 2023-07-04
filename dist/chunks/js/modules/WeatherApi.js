@@ -1,8 +1,12 @@
 import LoadingCircle from "./LoadingCircle";
 import * as self from "../index";
 import * as _ from "lodash";
+import LocalStorage from "./LocalStorage";
 const loadingCircle = new LoadingCircle({
     loading_circle: document.querySelector(".weather_data_loading")
+});
+const localStorage = new LocalStorage({
+    key: "_weatherdata_"
 });
 const weather_data_cityname = document.querySelector(".weather_data_cityname"), weather_data_cityname_loading = document.querySelector(".weather_data_cityname_loading"), weather_data_citytemperature = document.querySelector(".weather_data_citytemperature"), weather_data_cityskydesc = document.querySelector(".weather_data_cityskydesc"), weather_data_citywinddata = document.querySelector(".weather_data_citywinddata");
 export default class WeatherApi {
@@ -50,10 +54,10 @@ export default class WeatherApi {
             loadingCircle.ToggleLoading(false);
             const data = weather_data.data;
             const wind = this.CalculateWind(data.wind);
-            weather_data_cityname.innerHTML = `${data.name || data.name}`;
+            weather_data_cityname.innerHTML = `${(args.cityname || localStorage.GetKey("selected_city").city) || data.name}`;
             weather_data_citytemperature.innerHTML = `${data.main.temp} &#8451;`;
             weather_data_cityskydesc.innerHTML = `<br>${data.weather[0].description}`;
-            weather_data_citywinddata.innerHTML = `<br>Wind: ${wind.speed} km/h<br>Böhen: ${wind.gust} km/h`;
+            weather_data_citywinddata.innerHTML = `<br>Wind: ${wind.speed} km/h${wind.gust ? `<br>Böhen: ${wind.gust} km/h` : ""}`;
             console.log(data);
         }
         loadingCircle.ToggleLoading(false, weather_data_cityname_loading);
@@ -83,6 +87,7 @@ export default class WeatherApi {
         if (cityData) {
             request_arguments["lat"] = cityData.lat;
             request_arguments["lon"] = cityData.lng;
+            request_arguments["cityname"] = cityData.city;
         }
         return await this.GetWeatherData(request_arguments);
     }
@@ -90,7 +95,6 @@ export default class WeatherApi {
         const calc_wd = _.clone(windData);
         calc_wd.speed = _.round(calc_wd.speed * 3.16, 0);
         calc_wd.gust = _.round(calc_wd.gust * 3.16, 0);
-        console.log(calc_wd);
         return calc_wd;
     }
 }

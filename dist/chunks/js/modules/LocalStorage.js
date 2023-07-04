@@ -19,6 +19,18 @@ export default class LocalStorage {
         localStorage.setItem(this.Config.key, btoa(JSON.stringify(new_buffer)));
     }
     /**
+     * @description Gets a specific key from the localstorage
+     * @param key
+     */
+    GetKey(key) {
+        if (!key)
+            throw new Error("Missing required arguments.");
+        const data_object = JSON.parse(window.stringEncode.buffer2str(new Uint8Array(Object.values(JSON.parse(atob(localStorage.getItem(this.Config.key)))))));
+        if (!data_object[key])
+            return;
+        return JSON.parse(data_object[key]);
+    }
+    /**
      * @description Parses the encoded localStorage data
      */
     Parse() {

@@ -1,23 +1,27 @@
 import LoadingCircle from "./LoadingCircle"
 import * as self from "../index"
 import * as _ from "lodash"
+import LocalStorage from "./LocalStorage"
 
 const loadingCircle = new LoadingCircle({
     loading_circle: document.querySelector(".weather_data_loading")
 })
+const localStorage = new LocalStorage({
+    key: "_weatherdata_"
+})
 
 const weather_data_cityname = document.querySelector(".weather_data_cityname"),
-        weather_data_cityname_loading = document.querySelector(".weather_data_cityname_loading"),
-        weather_data_citytemperature = document.querySelector(".weather_data_citytemperature"),
-        weather_data_cityskydesc = document.querySelector(".weather_data_cityskydesc"),
-        weather_data_citywinddata = document.querySelector(".weather_data_citywinddata")
+    weather_data_cityname_loading = document.querySelector(".weather_data_cityname_loading"),
+    weather_data_citytemperature = document.querySelector(".weather_data_citytemperature"),
+    weather_data_cityskydesc = document.querySelector(".weather_data_cityskydesc"),
+    weather_data_citywinddata = document.querySelector(".weather_data_citywinddata")
 
 export default class WeatherApi {
     constructor(
         readonly API_URL_DEV: RequestInfo = "http://localhost:6969/api/v1/",
         readonly API_URL_HTTPS: RequestInfo = "https://mopsflgithubio.mopsfl.repl.co/api/mopsflweather/",
         readonly API_URL_HTTP: RequestInfo = "http://prem.daki.cc:6082/api/v1/data/",
-    ) {}
+    ) { }
 
     /**
      * @description Gets the weather data for the default city set in the backend server
@@ -25,7 +29,7 @@ export default class WeatherApi {
      * @param dev 
      * @returns 
      */
-    async GetDefaultWeatherData(secureProtocol: boolean = self.HTTPS_SERVER, dev: boolean = self.DEV_MODE){
+    async GetDefaultWeatherData(secureProtocol: boolean = self.HTTPS_SERVER, dev: boolean = self.DEV_MODE) {
         loadingCircle.ToggleLoading(true)
         loadingCircle.ToggleLoading(true, weather_data_cityname_loading)
         weather_data_cityname.classList.add("hide")
@@ -44,7 +48,7 @@ export default class WeatherApi {
      * @param dev 
      */
     async GetWeatherData(args: weatherRequestArguments, secureProtocol: boolean = self.HTTPS_SERVER, dev: boolean = self.DEV_MODE) {
-        if(!(args)) throw new Error("Missing required arguments")
+        if (!(args)) throw new Error("Missing required arguments")
         let weather_data: WeatherData
         loadingCircle.ToggleLoading(true)
         loadingCircle.ToggleLoading(true, weather_data_cityname_loading)
@@ -53,7 +57,7 @@ export default class WeatherApi {
         weather_data_cityskydesc.classList.add("hide")
         weather_data_citywinddata.classList.add("hide")
 
-        if(args.name && !(args.lat || args.lon)){
+        if (args.name && !(args.lat || args.lon)) {
             console.log("get weatherdata by name")
         } else {
             weather_data = await fetch((secureProtocol ? this.API_URL_HTTPS : dev ? this.API_URL_DEV + "data/" : this.API_URL_HTTP) + `currentweather?${(args.lat && args.lon ? `lat=${args.lat}&lon=${args.lon}` : ``)}`).then(res => res.json())
@@ -61,10 +65,10 @@ export default class WeatherApi {
             const data = weather_data.data
             const wind = this.CalculateWind(data.wind)
 
-            weather_data_cityname.innerHTML = `${data.name || data.name}`
+            weather_data_cityname.innerHTML = `${(args.cityname || localStorage.GetKey("selected_city").city) || data.name}`
             weather_data_citytemperature.innerHTML = `${data.main.temp} &#8451;`
             weather_data_cityskydesc.innerHTML = `<br>${data.weather[0].description}`
-            weather_data_citywinddata.innerHTML = `<br>Wind: ${wind.speed} km/h<br>Böhen: ${wind.gust} km/h`
+            weather_data_citywinddata.innerHTML = `<br>Wind: ${wind.speed} km/h${wind.gust ? `<br>Böhen: ${wind.gust} km/h` : ""}`
             console.log(data)
         }
         loadingCircle.ToggleLoading(false, weather_data_cityname_loading)
@@ -95,36 +99,38 @@ export default class WeatherApi {
 
     async UpdateCurrentWeather(cityData?: CityData) {
         const request_arguments = {}
-        if(cityData){
+        if (cityData) {
             request_arguments["lat"] = cityData.lat
             request_arguments["lon"] = cityData.lng
+            request_arguments["cityname"] = cityData.city
         }
+
         return await this.GetWeatherData(request_arguments)
     }
 
-    CalculateWind(windData: WindData){
+    CalculateWind(windData: WindData) {
         const calc_wd = _.clone(windData)
         calc_wd.speed = _.round(calc_wd.speed * 3.16, 0)
         calc_wd.gust = _.round(calc_wd.gust * 3.16, 0)
-        console.log(calc_wd)
         return calc_wd
     }
 }
 
 export interface CityData {
-     city: String,
-     city_ascii: string, 
-     lat: string, 
-     lng: string, 
-     country: String, 
-     id: string, 
-     iso2: String
+    city: String,
+    city_ascii: string,
+    lat: string,
+    lng: string,
+    country: String,
+    id: string,
+    iso2: String
 }
 
 export interface weatherRequestArguments {
     lon?: string | number,
     lat?: string | number,
-    name?: string
+    name?: string,
+    cityname?: string,
 }
 
 export interface WeatherData {
@@ -138,9 +144,9 @@ export interface WeatherData {
         dt: number,
         base: string,
         sys: { type: number, id: number, country: string, sunrise: number, sunset: number },
-        weather: [ {
+        weather: [{
             id: number, main: string, description: string, icon: string
-        } ],
+        }],
         timezone: number,
         id: number,
         name: string,

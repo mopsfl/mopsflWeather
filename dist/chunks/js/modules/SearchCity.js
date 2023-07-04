@@ -1,5 +1,9 @@
+import LocalStorage from "./LocalStorage";
 import WeatherApi from "./WeatherApi";
 const weatherApi = new WeatherApi();
+const localStorage = new LocalStorage({
+    key: "_weatherdata_"
+});
 export default class SearchCity {
     constructor(Config, selectedCity) {
         this.Config = Config;
@@ -50,6 +54,7 @@ export default class SearchCity {
             window["ripple"].registerRipples();
             city_result.addEventListener("click", async (e) => {
                 this.selectedCity = city;
+                localStorage.Set("selected_city", JSON.stringify(city));
                 await weatherApi.UpdateCurrentWeather(city);
                 this.ToggleResults(false);
             });

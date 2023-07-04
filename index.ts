@@ -28,26 +28,28 @@ const searchCity = new SearchCity({
 window.modules = {
     classes: { GeoLocation, WeatherApi, WeatherIcon, SearchCity, LoadingCircle, LocalStorage },
     initialized: { weatherApi, weatherIcon, localStorage, loadingCircle, searchCity, geoLocation, lodash: _ }
- }
+}
 
 loadingCircle.ToggleLoading(true)
 
+const weatherdata = localStorage.Parse()
+window.ls_weatherdata = weatherdata
+
 await navigator.permissions.query({ name: "geolocation" }).then(async (res) => {
     window.geolocation_state = res.state
-    const ls_data = localStorage.Parse()
     let saved_coords: GeolocationPosition
 
-    if(ls_data.coords) {
-        saved_coords = JSON.parse(ls_data.coords)
+    if (localStorage.GetKey("coords")) {
+        saved_coords = localStorage.GetKey("coords")
         window.current_geolocation_data = "saved"
     }
-    if(saved_coords && typeof(saved_coords) == "object"){
-        return SetGeoLocation(saved_coords)
+    if ((saved_coords && typeof (saved_coords) == "object")) {
+        return SetGeoLocation(saved_coords, localStorage.GetKey("selected_city"))
     }
 
     window.current_geolocation_data = "none"
 
-    if(window.geolocation_state == "denied") console.warn(new Error(`geolocation_state: ${window.geolocation_state}`))
+    if (window.geolocation_state == "denied") console.warn(new Error(`geolocation_state: ${window.geolocation_state}`))
     geoLocation.GetGeoLocation(SetGeoLocation, ErrorCallback)
 })
 
@@ -55,20 +57,20 @@ await navigator.permissions.query({ name: "geolocation" }).then(async (res) => {
  * Functions
 */
 
-async function SetGeoLocation(pos: GeolocationPosition) {
+async function SetGeoLocation(pos: GeolocationPosition, selected_city?: CityData) {
     window.coords = pos.coords
     localStorage.Set("coords", JSON.stringify(cloneAsObject(pos)))
-    
+
     // Get Weather From Current GeoLocation
     const results = await weatherApi.GetWeatherData({
-        lat: window.coords.latitude,
-        lon: window.coords.longitude,
+        lat: !selected_city ? window.coords.latitude : selected_city.lat,
+        lon: !selected_city ? window.coords.longitude : selected_city.lng,
     })
     window.currentWeather = results
 }
 
 async function ErrorCallback(err: any) {
-    if(window.current_geolocation_data == "none") await weatherApi.UpdateCurrentWeather()
+    if (window.current_geolocation_data == "none") await weatherApi.UpdateCurrentWeather()
     throw err
 }
 
@@ -83,17 +85,17 @@ function cloneAsObject(obj: any) {
  * Main
 */
 
-if(DEV_MODE) console.warn("App running on DEV_MODE")
+if (DEV_MODE) console.warn("App running on DEV_MODE")
 
 const location_search_input: HTMLInputElement = document.querySelector(".location_search_input");
 
 location_search_input.addEventListener("input", async (e: any) => {
-    if(!e.target.validity.valid && e.target.validity.valueMissing) return searchCity.ToggleResults(false)
+    if (!e.target.validity.valid && e.target.validity.valueMissing) return searchCity.ToggleResults(false)
     const input = e.target.value.replace(/\s/g, '')
-    if(input.length <= 1) return searchCity.ToggleResults(false)
+    if (input.length <= 1) return searchCity.ToggleResults(false)
     const search_results = await weatherApi.SearchCity(e.target.value.trim(), HTTPS_SERVER, DEV_MODE)
-    
-    if(search_results.length > 0){
+
+    if (search_results.length > 0) {
         searchCity.ToggleResults(true)
         searchCity.UpdateResults(search_results)
     } else searchCity.ToggleResults(false)
@@ -101,10 +103,10 @@ location_search_input.addEventListener("input", async (e: any) => {
     window.currentCitySearchResults = search_results
 })
 
-location_search_input.addEventListener("focus", () => { if(location_search_input.validity.valid && window.currentCitySearchResults?.length > 0) searchCity.ToggleResults(true) });
-location_search_input.addEventListener("focusout", () => { if(!location_search_input.validity.valid) searchCity.ToggleResults(false) });
+location_search_input.addEventListener("focus", () => { if (location_search_input.validity.valid && window.currentCitySearchResults?.length > 0) searchCity.ToggleResults(true) });
+location_search_input.addEventListener("focusout", () => { if (!location_search_input.validity.valid) searchCity.ToggleResults(false) });
 
-export  {
+export {
     DEV_MODE,
     HTTPS_SERVER
 }
@@ -113,13 +115,14 @@ declare global {
     interface Window {
         coords: GeolocationCoordinates,
         modules: {
-            classes: Object,
-            initialized: Object
+            classes: any,
+            initialized: any
         },
         currentCitySearchResults: Array<Object>,
         currentWeather: any,
         geolocation_state: PermissionState,
-        current_geolocation_data: "saved" | "none"
+        current_geolocation_data: "saved" | "none",
+        ls_weatherdata: Object,
 
         stringEncode: {
             str2buffer: Function,

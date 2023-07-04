@@ -4,7 +4,7 @@ export default class WeatherIcon {
             static: "./svg/static/",
             animated: "./svg/animated/"
         }
-    ) {}
+    ) { }
 
     /**
      * @description Creates a weatherIcon with the given arguments
@@ -13,13 +13,13 @@ export default class WeatherIcon {
      * @param Size 
      * @param child 
      */
-    CreateWeatherIcon(Name: string, animated: boolean = false, Size: "large" | "medium" | "small" = "medium", child?: HTMLElement){
-        if(!(Name || Size)) throw new Error("Missing required arguments")
+    CreateWeatherIcon(Name: string, animated: boolean = false, Size: "large" | "medium" | "small" = "medium", child?: HTMLElement) {
+        if (!(Name || Size)) throw new Error("Missing required arguments")
         const Path = animated ? this._PATHS.animated : this._PATHS.static
         const ImageElement: HTMLImageElement = document.createElement("img")
         ImageElement.src = `${Path}${Name}.svg`
         ImageElement.classList.add(`icon-${Size}`)
-        if(child) child.appendChild(ImageElement)
+        if (child) child.appendChild(ImageElement)
 
         return ImageElement
     }
