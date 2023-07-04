@@ -65,7 +65,7 @@ export default class WeatherApi {
             const data = weather_data.data
             const wind = this.CalculateWind(data.wind)
 
-            weather_data_cityname.innerHTML = `${(args.cityname || localStorage.GetKey("selected_city").city) || data.name}`
+            weather_data_cityname.innerHTML = `${(args.cityname || localStorage.GetKey("selected_city")?.city) || data.name}`
             weather_data_citytemperature.innerHTML = `${data.main.temp} &#8451;`
             weather_data_cityskydesc.innerHTML = `<br>${data.weather[0].description}`
             weather_data_citywinddata.innerHTML = `<br>Wind: ${wind.speed} km/h${wind.gust ? `<br>Böhen: ${wind.gust} km/h` : ""}`
