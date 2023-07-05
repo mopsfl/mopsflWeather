@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="de">
     <head>
+        <title>mopsflWeather</title>
         <meta charset="utf-8"/>
         <link rel="icon" href="/favicon.ico"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <meta name="description" content="Weather App made by mopsfl"/>
         <link rel="stylesheet" href="./dist/chunks/css/style.css"/>
         <link rel="preconnect" href="https://fonts.googleapis.com"/>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
         <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <title>mopsfl Weather App</title>
         <script type="module" src="https://unpkg.com/string-encode"></script>
         <script type="module" src="./dist/chunks/js/index.js" defer></script>
+        <link rel="stylesheet" href="bower_components/toastr/toastr.min.css"/>
+        <script src="bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="bower_components/toastr/toastr.min.js"></script>
         <script src="./static/js/ripple.js" defer></script>
     </head>
 
@@ -25,6 +28,11 @@
                 </p>
             </div>
         </header>
+        <div class="header_settings">
+            <div class="settings_button_container ripple" ripple-opacity=".3" ripple-release-expand-time=".8" ripple-press-expand-time=".8">
+                <img class="settings_button white" src="./svg/static/settings.svg">
+            </div>
+        </div>
         <div class="location_search center">
             <input class="location_search_input input-icon-search" type="search" placeholder="Suchen" required minlength="2">
             <div class="location_search_results hide_location_search_results">

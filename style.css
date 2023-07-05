@@ -2,7 +2,7 @@
   padding: 0;
   margin: 0;
   color: white;
-  font-family: 'Varela Round', sans-serif !important;
+  font-family: 'Varela Round', sans-serif;
   scrollbar-width: thin;
 }
 
@@ -209,6 +209,31 @@ footer {
 .cube2 {
   -webkit-animation-delay: -0.9s;
   animation-delay: -0.9s;
+}
+
+.settings_button.white {
+  filter: invert(100%) sepia(3%) saturate(3089%) hue-rotate(254deg) brightness(108%) contrast(102%);
+}
+
+.settings_button {
+  width: 30px;
+}
+
+.settings_button_container {
+  user-select: none;
+  height: 30px;
+  border-radius: 10em;
+  padding: 5px;
+}
+
+.header_settings {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  transition: transform .3s;
+  transform-origin: right top;
+  cursor: pointer;
+  height: 30px;
 }
 
 /** MISC **/

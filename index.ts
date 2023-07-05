@@ -139,6 +139,14 @@ declare global {
         stringEncode: {
             str2buffer: Function,
             buffer2str: Function
+        },
+
+        toastr: {
+            info: Function,
+            success: Function,
+            warning: Function,
+            error: Function,
+            clear: Function,
         }
     }
 }
