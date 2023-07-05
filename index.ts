@@ -57,8 +57,8 @@ await navigator.permissions.query({ name: "geolocation" }).then(async (res) => {
  * Functions
 */
 
-async function SetGeoLocation(pos: GeolocationPosition, selected_city?: CityData) {
-    window.coords = pos.coords
+async function SetGeoLocation(pos?: GeolocationPosition, selected_city?: CityData) {
+    window.coords = pos?.coords
     localStorage.Set("coords", JSON.stringify(cloneAsObject(pos)))
 
     // Get Weather From Current GeoLocation
@@ -70,8 +70,20 @@ async function SetGeoLocation(pos: GeolocationPosition, selected_city?: CityData
 }
 
 async function ErrorCallback(err: any) {
-    if (window.current_geolocation_data == "none") await weatherApi.UpdateCurrentWeather()
-    throw err
+    console.error(err)
+    if (window.current_geolocation_data == "none") {
+        let saved_coords: CityData
+        console.log(localStorage.GetKey("coords"))
+        if (localStorage.GetKey("coords") || localStorage.GetKey("selected_city")) {
+            saved_coords = localStorage.GetKey("coords") || localStorage.GetKey("selected_city")
+            window.current_geolocation_data = "saved"
+        }
+        if ((saved_coords && typeof (saved_coords) == "object")) {
+            return SetGeoLocation(null, saved_coords)
+        } else {
+            await weatherApi.UpdateCurrentWeather()
+        }
+    }
 }
 
 function cloneAsObject(obj: any) {
