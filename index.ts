@@ -142,11 +142,11 @@ declare global {
         },
 
         toastr: {
-            info: Function,
-            success: Function,
-            warning: Function,
-            error: Function,
-            clear: Function,
+            info: any,
+            success: any,
+            warning: any,
+            error: any,
+            clear: any,
         }
     }
 }

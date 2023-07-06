@@ -1,1 +1,1 @@
-start cmd /c "python -m http.server 5050" && start firefox "localhost:5050"
+start cmd /c "python -m http.server 5500" && start firefox "localhost:5500"

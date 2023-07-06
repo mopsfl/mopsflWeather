@@ -2,9 +2,14 @@
   padding: 0;
   margin: 0;
   color: white;
-  font-family: 'Varela Round', sans-serif;
   scrollbar-width: thin;
+  font-family: 'Varela Round', sans-serif;
 }
+
+.toast>* {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 
 html {
   overflow-x: hidden;

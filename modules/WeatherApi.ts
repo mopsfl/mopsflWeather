@@ -61,6 +61,7 @@ export default class WeatherApi {
             console.log("get weatherdata by name")
         } else {
             weather_data = await fetch((secureProtocol ? this.API_URL_HTTPS : dev ? this.API_URL_DEV + "data/" : this.API_URL_HTTP) + `currentweather?${(args.lat && args.lon ? `lat=${args.lat}&lon=${args.lon}` : ``)}`).then(res => res.json())
+            if (weather_data.code != 200) return window.toastr.error(`Server responded with code ${weather_data.code} (${weather_data.message})`, `WeatherApi Error`, { timeOut: 10000 })
             loadingCircle.ToggleLoading(false)
             const data = weather_data.data
             const wind = this.CalculateWind(data.wind)
@@ -137,6 +138,8 @@ export interface weatherRequestArguments {
 }
 
 export interface WeatherData {
+    code?: number,
+    message?: string,
     data: {
         main: {
             temp: number, feels_like: number, temp_min: number, temp_max: number, pressure: number, humidity: number,
