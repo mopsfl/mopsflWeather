@@ -18,9 +18,9 @@
         <script src="bower_components/toastr/toastr.min.js"></script>
         <script src="./static/js/ripple.js" defer></script>
     </head>
-
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
+        <div class="bg_blur hide"></div>
         <header>
             <div class="header_title">
                 <img src="./svg/static/day.svg" alt="daysunicon">
@@ -31,6 +31,14 @@
         <div class="header_settings">
             <div class="settings_button_container ripple" ripple-opacity=".3" ripple-release-expand-time=".8" ripple-press-expand-time=".8">
                 <img class="settings_button white" src="./svg/static/settings.svg">
+            </div>
+        </div>
+        <div class="settings_container hide">
+            <div class="settings_container_header">
+                <p class="settings_header_text">Settings</p>
+                <button class="btn settings_header_close ripple" ripple-opacity=".3" ripple-release-expand-time=".8" ripple-press-expand-time=".8">
+                    <span>X</span>
+                </button>
             </div>
         </div>
         <div class="location_search center">

@@ -7,11 +7,13 @@ import SearchCity from "./modules/SearchCity"
 import LoadingCircle from "./modules/LoadingCircle"
 import LocalStorage from "./modules/LocalStorage"
 import GeoLocation from "./modules/GeoLocation"
+import Settings from "./modules/Settings"
 import * as _ from "lodash"
 
 const geoLocation = new GeoLocation()
 const weatherApi = new WeatherApi()
 const weatherIcon = new WeatherIcon()
+const settings = new Settings()
 const localStorage = new LocalStorage({
     key: "_weatherdata_"
 })
@@ -93,11 +95,12 @@ function cloneAsObject(obj: any) {
     return temp;
 }
 
-/**
- * Main
-*/
 
 if (DEV_MODE) console.warn("App running on DEV_MODE")
+
+/**
+ * Location Search
+*/
 
 const location_search_input: HTMLInputElement = document.querySelector(".location_search_input");
 
@@ -114,9 +117,15 @@ location_search_input.addEventListener("input", async (e: any) => {
 
     window.currentCitySearchResults = search_results
 })
-
 location_search_input.addEventListener("focus", () => { if (location_search_input.validity.valid && window.currentCitySearchResults?.length > 0) searchCity.ToggleResults(true) });
 location_search_input.addEventListener("focusout", () => { if (!location_search_input.validity.valid) searchCity.ToggleResults(false) });
+
+/**
+ * Settings
+*/
+
+settings.Config.settings_button_container.addEventListener("click", () => settings.ToggleSettingsContainer())
+settings.Config.settings_header_close.addEventListener("click", () => settings.ToggleSettingsContainer(false))
 
 export {
     DEV_MODE,
@@ -147,6 +156,10 @@ declare global {
             warning: any,
             error: any,
             clear: any,
+        },
+
+        ripple: {
+            registerRipples: Function
         }
     }
 }

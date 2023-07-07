@@ -51,7 +51,7 @@ export default class SearchCity {
             city_result.classList.add("location_search_result_animate");
             city_result.querySelector(".location_search_result_cityname")["innerText"] = `${city.city} - ${city.iso2}`;
             this.Config.location_search_results.appendChild(city_result);
-            window["ripple"].registerRipples();
+            window.ripple.registerRipples();
             city_result.addEventListener("click", async (e) => {
                 this.selectedCity = city;
                 localStorage.Set("selected_city", JSON.stringify(city));
