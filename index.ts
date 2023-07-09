@@ -1,5 +1,4 @@
-const DEV_MODE = false
-const HTTPS_SERVER = true
+const start_time = Date.now()
 
 import WeatherApi, { CityData } from "./modules/WeatherApi"
 import WeatherIcon from "./modules/WeatherIcon"
@@ -10,8 +9,8 @@ import GeoLocation from "./modules/GeoLocation"
 import Settings from "./modules/Settings"
 import * as _ from "lodash"
 
-const geoLocation = new GeoLocation()
 const weatherApi = new WeatherApi()
+const geoLocation = new GeoLocation()
 const weatherIcon = new WeatherIcon()
 const settings = new Settings()
 const localStorage = new LocalStorage({
@@ -21,6 +20,20 @@ const loadingCircle = new LoadingCircle({
     loading_circle: document.querySelector(".weather_data_loading")
 })
 
+/**
+ * Config
+*/
+
+const requestProtocol = settings._settings.find(n => n.name == "Request Protocol")
+const Config = {
+    DEV_MODE: false,
+    HTTPS_SERVER: requestProtocol?.selected_index == 0 ? true : false
+}
+
+/**
+ * Main
+*/
+
 const searchCity = new SearchCity({
     location_search_results: document.querySelector(".location_search_results"),
     location_search_input: document.querySelector(".location_search_input"),
@@ -29,7 +42,7 @@ const searchCity = new SearchCity({
 
 window.modules = {
     classes: { GeoLocation, WeatherApi, WeatherIcon, SearchCity, LoadingCircle, LocalStorage },
-    initialized: { weatherApi, weatherIcon, localStorage, loadingCircle, searchCity, geoLocation, lodash: _ }
+    initialized: { weatherApi, weatherIcon, localStorage, loadingCircle, searchCity, geoLocation, settings, lodash: _ }
 }
 
 loadingCircle.ToggleLoading(true)
@@ -95,9 +108,6 @@ function cloneAsObject(obj: any) {
     return temp;
 }
 
-
-if (DEV_MODE) console.warn("App running on DEV_MODE")
-
 /**
  * Location Search
 */
@@ -108,7 +118,7 @@ location_search_input.addEventListener("input", async (e: any) => {
     if (!e.target.validity.valid && e.target.validity.valueMissing) return searchCity.ToggleResults(false)
     const input = e.target.value.replace(/\s/g, '')
     if (input.length <= 1) return searchCity.ToggleResults(false)
-    const search_results = await weatherApi.SearchCity(e.target.value.trim(), HTTPS_SERVER, DEV_MODE)
+    const search_results = await weatherApi.SearchCity(e.target.value.trim())
 
     if (search_results.length > 0) {
         searchCity.ToggleResults(true)
@@ -127,10 +137,11 @@ location_search_input.addEventListener("focusout", () => { if (!location_search_
 settings.Config.settings_button_container.addEventListener("click", () => settings.ToggleSettingsContainer())
 settings.Config.settings_header_close.addEventListener("click", () => settings.ToggleSettingsContainer(false))
 
-export {
-    DEV_MODE,
-    HTTPS_SERVER
-}
+/**
+ * Misc 
+*/
+
+console.warn(`app took ${Date.now() - start_time}ms to load\nlodash version: ${_.VERSION}`)
 
 declare global {
     interface Window {
@@ -163,3 +174,5 @@ declare global {
         }
     }
 }
+
+export { Config }

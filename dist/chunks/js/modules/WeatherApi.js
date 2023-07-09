@@ -1,7 +1,7 @@
 import LoadingCircle from "./LoadingCircle";
-import * as self from "../index";
 import * as _ from "lodash";
 import LocalStorage from "./LocalStorage";
+import { Config } from "../index";
 const loadingCircle = new LoadingCircle({
     loading_circle: document.querySelector(".weather_data_loading")
 });
@@ -27,7 +27,7 @@ export default class WeatherApi {
      * @param dev
      * @returns
      */
-    async GetDefaultWeatherData(secureProtocol = self.HTTPS_SERVER, dev = self.DEV_MODE) {
+    async GetDefaultWeatherData(secureProtocol = Config.HTTPS_SERVER, dev = Config.DEV_MODE) {
         loadingCircle.ToggleLoading(true);
         loadingCircle.ToggleLoading(true, weather_data_cityname_loading);
         this._ELEMENTS.weather_data_cityname.classList.add("hide");
@@ -42,7 +42,7 @@ export default class WeatherApi {
      * @param secureProtocol
      * @param dev
      */
-    async GetWeatherData(args, secureProtocol = self.HTTPS_SERVER, dev = self.DEV_MODE) {
+    async GetWeatherData(args, secureProtocol = Config.HTTPS_SERVER, dev = Config.DEV_MODE) {
         var _a;
         if (!(args))
             throw new Error("Missing required arguments");
@@ -79,7 +79,7 @@ export default class WeatherApi {
      * @param secureProtocol
      * @param dev
      */
-    async SearchCity(Name, secureProtocol = self.HTTPS_SERVER, dev = self.DEV_MODE) {
+    async SearchCity(Name, secureProtocol = Config.HTTPS_SERVER, dev = Config.DEV_MODE) {
         loadingCircle.ToggleLoading(true);
         const results = await fetch((secureProtocol ? this.API_URL_HTTPS : dev ? this.API_URL_DEV + "data/" : this.API_URL_HTTP) + `searchcity?name=${Name}`).then(res => res.json());
         loadingCircle.ToggleLoading(false);
