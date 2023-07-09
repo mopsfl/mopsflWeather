@@ -214,7 +214,7 @@ footer {
   height: 400px;
   text-align: left;
   padding: 10px;
-  background-color: rgb(34, 34, 34);
+  background-color: rgb(44, 44, 44);
   z-index: 2;
   border-radius: 4px;
   box-shadow: 0px 0px 20px 3px rgba(0, 0, 0, 0.5);
@@ -295,6 +295,63 @@ footer {
   height: 30px;
   border-radius: 10em;
   padding: 5px;
+
+}
+
+.settings_container_item {
+  display: flex;
+  background-color: transparent;
+  padding-top: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.settings_container_item:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.settings_input_selection {
+  margin-left: auto;
+  display: flex;
+  background-color: rgb(39, 39, 39);
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 3px;
+}
+
+.settings_container_item_desc {
+  margin-left: 5px;
+  color: rgb(177, 177, 177);
+}
+
+.sdesc {
+  background-color: rgb(39, 39, 39);
+  padding: 10px;
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  max-width: 250px;
+  border-radius: 3px;
+}
+
+.sinput_selection {
+  cursor: pointer;
+}
+
+.sinput_selection.sinput_selected {
+  border-bottom: solid 1px rgb(100, 100, 100);
+}
+
+.sinput_selection:last-child {
+  border-left: solid 1px rgb(77, 77, 77);
+  padding-left: 10px;
+  margin-left: 10px;
+}
+
+.settings_container_content {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .header_settings {
