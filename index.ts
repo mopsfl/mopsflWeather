@@ -8,6 +8,7 @@ import LocalStorage from "./modules/LocalStorage"
 import GeoLocation from "./modules/GeoLocation"
 import Settings from "./modules/Settings"
 import * as _ from "lodash"
+import $ from "jquery"
 
 const weatherApi = new WeatherApi()
 const geoLocation = new GeoLocation()
@@ -114,7 +115,7 @@ function cloneAsObject(obj: any) {
 
 const location_search_input: HTMLInputElement = document.querySelector(".location_search_input");
 
-location_search_input.addEventListener("input", async (e: any) => {
+$(location_search_input).on("input", async (e: any) => {
     if (!e.target.validity.valid && e.target.validity.valueMissing) return searchCity.ToggleResults(false)
     const input = e.target.value.replace(/\s/g, '')
     if (input.length <= 1) return searchCity.ToggleResults(false)
@@ -123,10 +124,15 @@ location_search_input.addEventListener("input", async (e: any) => {
     if (search_results.length > 0) {
         searchCity.ToggleResults(true)
         searchCity.UpdateResults(search_results)
-    } else searchCity.ToggleResults(false)
+    } else {
+        searchCity.ToggleResults(true)
+        searchCity.UpdateResults([{ city: e.target.value.trim() }])
+    }
 
     window.currentCitySearchResults = search_results
 })
+
+
 location_search_input.addEventListener("focus", () => { if (location_search_input.validity.valid && window.currentCitySearchResults?.length > 0) searchCity.ToggleResults(true) });
 location_search_input.addEventListener("focusout", () => { if (!location_search_input.validity.valid) searchCity.ToggleResults(false) });
 

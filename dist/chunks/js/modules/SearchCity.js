@@ -47,9 +47,9 @@ export default class SearchCity {
         Results.forEach(city => {
             const city_result = this.Config.location_search_result_template.content.cloneNode(true).childNodes[1];
             city_result.setAttribute("city-id", city.id);
-            city_result.setAttribute("city-name", city.city_ascii);
+            city_result.setAttribute("city-name", city.city_ascii || city.city);
             city_result.classList.add("location_search_result_animate");
-            city_result.querySelector(".location_search_result_cityname")["innerText"] = `${city.city} - ${city.iso2}`;
+            city_result.querySelector(".location_search_result_cityname")["innerText"] = `${city.city} ${city.iso2 ? " - " + city.iso2 : ""}`;
             this.Config.location_search_results.appendChild(city_result);
             window.ripple.registerRipples();
             city_result.addEventListener("click", async (e) => {

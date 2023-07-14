@@ -51,17 +51,41 @@ export default class WeatherApi {
         this.ToggleWeatherDataElements(false);
         weather_data_cityname_loading.classList.remove("hide");
         if (args.name && !(args.lat || args.lon)) {
-            console.log("get weatherdata by name");
-        }
-        else {
-            weather_data = await fetch((secureProtocol ? this.API_URL_HTTPS : dev ? this.API_URL_DEV + "data/" : this.API_URL_HTTP) + `currentweather?${(args.lat && args.lon ? `lat=${args.lat}&lon=${args.lon}` : ``)}`).then(res => res.json()).catch((err) => {
+            weather_data = await fetch((secureProtocol ? this.API_URL_HTTPS : dev ? this.API_URL_DEV + "data/" : this.API_URL_HTTP) + `currentweather?${(args.name ? `location=${args.name}` : "")}`).then(res => res.json()).catch((err) => {
                 window.toastr.error(err.message, "Network Error", { timeOut: 100000 });
                 weather_data_cityname_loading.classList.add("hide");
                 loadingCircle.ToggleLoading(false);
                 throw err;
             });
-            if (weather_data.code != 200)
-                return window.toastr.error(`Server responded with code ${weather_data.code} (${weather_data.message})`, `WeatherApi Error`, { timeOut: 10000 });
+            if (weather_data.code != 200) {
+                window.toastr.error(`${weather_data.internal_error ? weather_data.internal_error.message.de : `Server responded with code ${weather_data.code} (${weather_data.message})`}`, `WeatherApi Error`, { timeOut: 10000 });
+                loadingCircle.ToggleLoading(false);
+                this.ToggleWeatherDataElements(true);
+                weather_data_cityname_loading.classList.add("hide");
+                return;
+            }
+            loadingCircle.ToggleLoading(false);
+            const data = weather_data.data;
+            const wind = this.CalculateWind(data.wind);
+            this._ELEMENTS.weather_data_cityname.innerHTML = `${_.isNaN(args.cityname) ? args.cityname : data.name}`;
+            this._ELEMENTS.weather_data_citytemperature.innerHTML = `${data.main.temp} &#8451;`;
+            this._ELEMENTS.weather_data_cityskydesc.innerHTML = `<br>${data.weather[0].description}`;
+            this._ELEMENTS.weather_data_citywinddata.innerHTML = `<br>Wind: ${wind.speed} km/h${wind.gust ? `<br>Böhen: ${wind.gust} km/h` : ""}`;
+        }
+        else {
+            weather_data = await fetch((secureProtocol ? this.API_URL_HTTPS : dev ? this.API_URL_DEV + "data/" : this.API_URL_HTTP) + `currentweather?${(args.lat && args.lon ? `lat=${args.lat}&lon=${args.lon}` : "")}`).then(res => res.json()).catch((err) => {
+                window.toastr.error(err.message, "Network Error", { timeOut: 100000 });
+                weather_data_cityname_loading.classList.add("hide");
+                loadingCircle.ToggleLoading(false);
+                throw err;
+            });
+            if (weather_data.code != 200) {
+                loadingCircle.ToggleLoading(false);
+                this.ToggleWeatherDataElements(true);
+                weather_data_cityname_loading.classList.add("hide");
+                window.toastr.error(`Server responded with code ${weather_data.code} (${weather_data.message})`, `WeatherApi Error`, { timeOut: 10000 });
+                return;
+            }
             loadingCircle.ToggleLoading(false);
             const data = weather_data.data;
             const wind = this.CalculateWind(data.wind);
@@ -90,11 +114,13 @@ export default class WeatherApi {
      * @param cityData
      */
     async UpdateCurrentWeather(cityData) {
+        if (!cityData)
+            return;
         const request_arguments = {};
         if (cityData) {
             request_arguments["lat"] = cityData.lat;
             request_arguments["lon"] = cityData.lng;
-            request_arguments["cityname"] = cityData.city;
+            request_arguments["name"] = cityData.city;
         }
         return await this.GetWeatherData(request_arguments);
     }
