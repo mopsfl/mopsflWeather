@@ -51,6 +51,10 @@ header {
   align-items: center;
 }
 
+.header_title>a {
+  text-decoration: none;
+}
+
 footer {
   position: absolute;
   bottom: 5px;
