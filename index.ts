@@ -122,6 +122,7 @@ $(location_search_input).on("input", async (e: any) => {
     const search_results = await weatherApi.SearchCity(e.target.value.trim())
 
     if (search_results.length > 0) {
+        search_results.push({ city: e.target.value.trim() })
         searchCity.ToggleResults(true)
         searchCity.UpdateResults(search_results)
     } else {
