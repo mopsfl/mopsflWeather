@@ -63,8 +63,8 @@ export default class WeatherApi {
                 weather_data_cityname_loading.classList.add("hide")
                 loadingCircle.ToggleLoading(false)
                 throw err
-            })
-            if (weather_data.code != 200) {
+            }).catch(console.warn)
+            if (weather_data?.code != 200) {
                 window.toastr.error(`${weather_data.internal_error ? weather_data.internal_error.message.de : `Server responded with code ${weather_data.code} (${weather_data.message})`}`, `WeatherApi Error`, { timeOut: 10000 })
                 loadingCircle.ToggleLoading(false)
                 this.ToggleWeatherDataElements(true)
@@ -85,12 +85,12 @@ export default class WeatherApi {
                 weather_data_cityname_loading.classList.add("hide")
                 loadingCircle.ToggleLoading(false)
                 throw err
-            })
-            if (weather_data.code != 200) {
+            }).catch(console.warn)
+            if (weather_data?.code != 200) {
                 loadingCircle.ToggleLoading(false)
                 this.ToggleWeatherDataElements(true)
                 weather_data_cityname_loading.classList.add("hide")
-                window.toastr.error(`Server responded with code ${weather_data.code} (${weather_data.message})`, `WeatherApi Error`, { timeOut: 10000 })
+                window.toastr.error(`Server responded with code ${weather_data?.code || "unknown"} (${weather_data?.message || "Unknown Internal Error"})`, `WeatherApi Error`, { timeOut: 10000 })
                 return
             }
             loadingCircle.ToggleLoading(false)

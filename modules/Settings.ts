@@ -20,6 +20,8 @@ export default class Settings {
             { name: "Remember Location", description: "Saves your selected city and automatically loads it after entering the website again.", type: "selection", selections: ["YES", "NO"], default_selection: "YES", selected_index: 0 },
         ]
     ) {
+        console.info("Initializing settings...");
+        const init_start_tick = new Date().getTime()
         let ls_settingsdata = localStorage.GetKey("settings")
         if (_.isUndefined(ls_settingsdata)) { localStorage.Set("settings", JSON.stringify({})); ls_settingsdata = {} }
 
@@ -61,6 +63,7 @@ export default class Settings {
 
             this.Config.settings_container_content.appendChild(cloned_item)
         })
+        console.info(`Settings initalized! (took ${new Date().getTime() - init_start_tick}ms)`);
     }
 
     ToggleSettingsContainer(State?: boolean) {

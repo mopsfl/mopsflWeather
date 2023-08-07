@@ -10,10 +10,10 @@ import Settings from "./modules/Settings"
 import * as _ from "lodash"
 import $ from "jquery"
 
+const settings = new Settings()
 const weatherApi = new WeatherApi()
 const geoLocation = new GeoLocation()
 const weatherIcon = new WeatherIcon()
-const settings = new Settings()
 const localStorage = new LocalStorage({
     key: "_weatherdata_"
 })
@@ -148,7 +148,7 @@ settings.Config.settings_header_close.addEventListener("click", () => settings.T
  * Misc 
 */
 
-console.warn(`app took ${Date.now() - start_time}ms to load\nlodash version: ${_.VERSION}`)
+console.warn(`app took ${Date.now() - start_time}ms to load\n- lodash version: ${_.VERSION}\n- jquery version: ${$().jquery}\n- toastr version: ${window.toastr.version}`)
 
 declare global {
     interface Window {
@@ -174,6 +174,7 @@ declare global {
             warning: any,
             error: any,
             clear: any,
+            version: string
         },
 
         ripple: {

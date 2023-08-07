@@ -17,6 +17,8 @@ export default class Settings {
     ]) {
         this.Config = Config;
         this._settings = _settings;
+        console.info("Initializing settings...");
+        const init_start_tick = new Date().getTime();
         let ls_settingsdata = localStorage.GetKey("settings");
         if (_.isUndefined(ls_settingsdata)) {
             localStorage.Set("settings", JSON.stringify({}));
@@ -58,6 +60,7 @@ export default class Settings {
             });
             this.Config.settings_container_content.appendChild(cloned_item);
         });
+        console.info(`Settings initalized! (took ${new Date().getTime() - init_start_tick}ms)`);
     }
     ToggleSettingsContainer(State) {
         const element = this.Config.settings_container;
