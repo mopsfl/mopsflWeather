@@ -16,7 +16,7 @@ export default class WeatherApi {
     constructor(
         readonly API_URL_DEV: RequestInfo = "http://localhost:6969/api/v1/",
         readonly API_URL_HTTPS: RequestInfo = "https://mopsflgithubio.mopsfl.repl.co/api/mopsflweather/",
-        readonly API_URL_HTTP: RequestInfo = "http://prem.daki.cc:6082/api/v1/data/",
+        readonly API_URL_HTTP: RequestInfo = "http://paid1.daki.cc:4066/api/v1/data/",
 
         public _ELEMENTS = {
             weather_data_cityname: document.querySelector(".weather_data_cityname"),

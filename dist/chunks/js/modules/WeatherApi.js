@@ -10,7 +10,7 @@ const localStorage = new LocalStorage({
 });
 const weather_data_cityname_loading = document.querySelector(".weather_data_cityname_loading");
 export default class WeatherApi {
-    constructor(API_URL_DEV = "http://localhost:6969/api/v1/", API_URL_HTTPS = "https://mopsflgithubio.mopsfl.repl.co/api/mopsflweather/", API_URL_HTTP = "http://prem.daki.cc:6082/api/v1/data/", _ELEMENTS = {
+    constructor(API_URL_DEV = "http://localhost:6969/api/v1/", API_URL_HTTPS = "https://mopsflgithubio.mopsfl.repl.co/api/mopsflweather/", API_URL_HTTP = "http://paid1.daki.cc:4066/api/v1/data/", _ELEMENTS = {
         weather_data_cityname: document.querySelector(".weather_data_cityname"),
         weather_data_citytemperature: document.querySelector(".weather_data_citytemperature"),
         weather_data_cityskydesc: document.querySelector(".weather_data_cityskydesc"),
