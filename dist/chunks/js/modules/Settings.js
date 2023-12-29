@@ -12,7 +12,6 @@ export default class Settings {
         settings_container_item_template: document.querySelector(".settings_container_item_template"),
         settings_container_content: document.querySelector(".settings_container_content")
     }, _settings = [
-        { name: "Request Protocol", description: "Wich protocol is should use for the api requests. (http = faster)", type: "selection", selections: ["HTTPS", "HTTP"], default_selection: "HTTPS", selected_index: 0 },
         { name: "Remember Location", description: "Saves your selected city and automatically loads it after entering the website again.", type: "selection", selections: ["YES", "NO"], default_selection: "YES", selected_index: 0 },
     ]) {
         this.Config = Config;

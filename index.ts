@@ -179,6 +179,13 @@ declare global {
 
         ripple: {
             registerRipples: Function
+        },
+
+        pako: {
+            inflate: Function,
+            deflate: Function,
+            gzip: Function,
+            ungzip: Function,
         }
     }
 }

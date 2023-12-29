@@ -14,9 +14,9 @@ const weather_data_cityname_loading = document.querySelector(".weather_data_city
 
 export default class WeatherApi {
     constructor(
-        readonly API_URL_DEV: RequestInfo = "http://localhost:6969/api/v1/",
-        readonly API_URL_HTTPS: RequestInfo = "https://mopsflgithubio.mopsfl.repl.co/api/mopsflweather/",
-        readonly API_URL_HTTP: RequestInfo = "http://paid1.daki.cc:4066/api/v1/data/",
+        readonly API_URL_DEV: RequestInfo = "http://localhost:6969/api/mopsflWeather/?e=H4sIANV1hWUA%2FwVAsQ0AAAQ702yoGAih7w9Nz36UwZk4AeUbDUkNAAAA",
+        readonly API_URL_HTTPS: RequestInfo = "https://mopsflgithubio.mopsfl.repl.co/api/mopsflWeather/?e=H4sIANV1hWUA%2FwVAsQ0AAAQ702yoGAih7w9Nz36UwZk4AeUbDUkNAAAA",
+        readonly API_URL_HTTP: RequestInfo = "http://localhost:6969/api/v1/",
 
         public _ELEMENTS = {
             weather_data_cityname: document.querySelector(".weather_data_cityname"),
@@ -36,7 +36,6 @@ export default class WeatherApi {
         loadingCircle.ToggleLoading(true)
         loadingCircle.ToggleLoading(true, weather_data_cityname_loading)
         this._ELEMENTS.weather_data_cityname.classList.add("hide")
-
         const weather_data = await fetch((secureProtocol ? this.API_URL_HTTPS : dev ? this.API_URL_DEV + "data/" : this.API_URL_HTTP) + "currentweather").then(res => res.json())
         loadingCircle.ToggleLoading(false, weather_data_cityname_loading)
         this._ELEMENTS.weather_data_cityname.classList.remove("hide")
@@ -49,7 +48,7 @@ export default class WeatherApi {
      * @param args 
      * @param secureProtocol 
      * @param dev 
-     */
+    */
     async GetWeatherData(args: weatherRequestArguments, secureProtocol: boolean = Config.HTTPS_SERVER, dev: boolean = Config.DEV_MODE) {
         if (!(args)) throw new Error("Missing required arguments")
         let weather_data: WeatherData
@@ -57,8 +56,14 @@ export default class WeatherApi {
         this.ToggleWeatherDataElements(false)
         weather_data_cityname_loading.classList.remove("hide")
 
+        const _requestData = this.EncodeRequestDataQuery({
+            "func": "currentweather",
+            ...(args.name ? { "location": args.name } : {}),
+            ...(args.lat ? { "lat": args.lat } : {}),
+            ...(args.lon ? { "lon": args.lon } : {}),
+        })
         if (args.name && !(args.lat || args.lon)) {
-            weather_data = await fetch((secureProtocol ? this.API_URL_HTTPS : dev ? this.API_URL_DEV + "data/" : this.API_URL_HTTP) + `currentweather?${(args.name ? `location=${args.name}` : "")}`).then(res => res.json()).catch((err) => {
+            weather_data = await fetch((!dev ? this.API_URL_HTTPS : this.API_URL_DEV) + `&d=${_requestData}&t=${new Date().getTime()}`).then(res => res.json()).catch((err) => {
                 window.toastr.error(err.message, "Network Error", { timeOut: 100000 })
                 weather_data_cityname_loading.classList.add("hide")
                 loadingCircle.ToggleLoading(false)
@@ -80,7 +85,7 @@ export default class WeatherApi {
             this._ELEMENTS.weather_data_cityskydesc.innerHTML = `<br>${data.weather[0].description}`
             this._ELEMENTS.weather_data_citywinddata.innerHTML = `<br>Wind: ${wind.speed} km/h${wind.gust ? `<br>Böhen: ${wind.gust} km/h` : ""}`
         } else {
-            weather_data = await fetch((secureProtocol ? this.API_URL_HTTPS : dev ? this.API_URL_DEV + "data/" : this.API_URL_HTTP) + `currentweather?${(args.lat && args.lon ? `lat=${args.lat}&lon=${args.lon}` : "")}`).then(res => res.json()).catch((err) => {
+            weather_data = await fetch((!dev ? this.API_URL_HTTPS : this.API_URL_DEV) + `&d=${_requestData}&t=${new Date().getTime()}`).then(res => res.json()).catch((err) => {
                 window.toastr.error(err.message, "Network Error", { timeOut: 100000 })
                 weather_data_cityname_loading.classList.add("hide")
                 loadingCircle.ToggleLoading(false)
@@ -106,6 +111,10 @@ export default class WeatherApi {
         weather_data_cityname_loading.classList.add("hide")
     }
 
+    EncodeRequestDataQuery(data: Object) {
+        return encodeURIComponent(btoa(String.fromCharCode.apply(null, new Uint16Array(window.pako.gzip(JSON.stringify(data))))))
+    }
+
     /**
      * @description Searches the given city name from a small database
      * @param Name 
@@ -113,8 +122,12 @@ export default class WeatherApi {
      * @param dev
      */
     async SearchCity(Name: String, secureProtocol: boolean = Config.HTTPS_SERVER, dev: boolean = Config.DEV_MODE) {
+        const _requestData = this.EncodeRequestDataQuery({
+            "func": "searchcity",
+            ...(Name ? { "name": Name } : {})
+        })
         loadingCircle.ToggleLoading(true)
-        const results = await fetch((secureProtocol ? this.API_URL_HTTPS : dev ? this.API_URL_DEV + "data/" : this.API_URL_HTTP) + `searchcity?name=${Name}`).then(res => res.json())
+        const results = await fetch((!dev ? this.API_URL_HTTPS : this.API_URL_DEV) + `&d=${_requestData}&t=${new Date().getTime()}`).then(res => res.json())
         loadingCircle.ToggleLoading(false)
 
         return results
