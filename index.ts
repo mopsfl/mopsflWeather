@@ -27,7 +27,7 @@ const loadingCircle = new LoadingCircle({
 
 const requestProtocol = settings._settings.find(n => n.name == "Request Protocol")
 const Config = {
-    DEV_MODE: true,
+    DEV_MODE: location.hostname === "localhost",
     HTTPS_SERVER: requestProtocol?.selected_index == 0 ? true : false
 }
 
