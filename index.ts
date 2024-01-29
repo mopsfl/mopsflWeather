@@ -1,5 +1,7 @@
 const start_time = Date.now()
 
+window.forceProduction = true
+
 import WeatherApi, { CityData } from "./modules/WeatherApi"
 import WeatherIcon from "./modules/WeatherIcon"
 import SearchCity from "./modules/SearchCity"
@@ -27,7 +29,8 @@ const loadingCircle = new LoadingCircle({
 
 const requestProtocol = settings._settings.find(n => n.name == "Request Protocol")
 const Config = {
-    DEV_MODE: location.hostname === "localhost",
+
+    DEV_MODE: window.forceProduction != true && location.hostname === "localhost",
     HTTPS_SERVER: requestProtocol?.selected_index == 0 ? true : false
 }
 
@@ -152,6 +155,7 @@ console.warn(`app took ${Date.now() - start_time}ms to load\n- lodash version: $
 
 declare global {
     interface Window {
+        forceProduction: boolean,
         coords: GeolocationCoordinates,
         modules: {
             classes: any,

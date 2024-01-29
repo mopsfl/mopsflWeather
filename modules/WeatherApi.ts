@@ -14,9 +14,9 @@ const weather_data_cityname_loading = document.querySelector(".weather_data_city
 
 export default class WeatherApi {
     constructor(
-        readonly API_URL_DEV: RequestInfo = "http://localhost:6969/api/mopsflWeather/?e=H4sIANV1hWUA%2FwVAsQ0AAAQ702yoGAih7w9Nz36UwZk4AeUbDUkNAAAA",
-        readonly API_URL_HTTPS: RequestInfo = "https://mopsflgithubio.mopsfl.repl.co/api/mopsflWeather/?e=H4sIANV1hWUA%2FwVAsQ0AAAQ702yoGAih7w9Nz36UwZk4AeUbDUkNAAAA",
-        readonly API_URL_HTTP: RequestInfo = "http://localhost:6969/api/v1/",
+        readonly API_URL_DEV: RequestInfo = "http://localhost:6969/api/",
+        readonly API_URL_HTTPS: RequestInfo = "https://mopsflweather.mopsfl.de/v1/",
+        readonly API_URL_HTTP: RequestInfo = "https://mopsflweather.mopsfl.de/v1/",
 
         public _ELEMENTS = {
             weather_data_cityname: document.querySelector(".weather_data_cityname"),
@@ -63,7 +63,13 @@ export default class WeatherApi {
             ...(args.lon ? { "lon": args.lon } : {}),
         })
         if (args.name && !(args.lat || args.lon)) {
-            weather_data = await fetch((!dev ? this.API_URL_HTTPS : this.API_URL_DEV) + `&d=${_requestData}&t=${new Date().getTime()}`).then(res => res.json()).catch((err) => {
+            /*weather_data = await fetch((!dev ? this.API_URL_HTTPS : this.API_URL_DEV) + `&d=${_requestData}&t=${new Date().getTime()}`).then(res => res.json()).catch((err) => {
+                window.toastr.error(err.message, "Network Error", { timeOut: 100000 })
+                weather_data_cityname_loading.classList.add("hide")
+                loadingCircle.ToggleLoading(false)
+                throw err
+            }).catch(console.warn)*/
+            weather_data = await fetch((!dev ? this.API_URL_HTTPS : this.API_URL_DEV) + `data/currentweather?name=${args.name}`).then(res => res.json()).catch((err) => {
                 window.toastr.error(err.message, "Network Error", { timeOut: 100000 })
                 weather_data_cityname_loading.classList.add("hide")
                 loadingCircle.ToggleLoading(false)
@@ -85,7 +91,13 @@ export default class WeatherApi {
             this._ELEMENTS.weather_data_cityskydesc.innerHTML = `<br>${data.weather[0].description}`
             this._ELEMENTS.weather_data_citywinddata.innerHTML = `<br>Wind: ${wind.speed} km/h${wind.gust ? `<br>Böhen: ${wind.gust} km/h` : ""}`
         } else {
-            weather_data = await fetch((!dev ? this.API_URL_HTTPS : this.API_URL_DEV) + `&d=${_requestData}&t=${new Date().getTime()}`).then(res => res.json()).catch((err) => {
+            /*weather_data = await fetch((!dev ? this.API_URL_HTTPS : this.API_URL_DEV) + `&d=${_requestData}&t=${new Date().getTime()}`).then(res => res.json()).catch((err) => {
+                window.toastr.error(err.message, "Network Error", { timeOut: 100000 })
+                weather_data_cityname_loading.classList.add("hide")
+                loadingCircle.ToggleLoading(false)
+                throw err
+            }).catch(console.warn)*/
+            weather_data = await fetch((!dev ? this.API_URL_HTTPS : this.API_URL_DEV) + `data/currentweather?lat=${args.lat}&lon=${args.lon}`).then(res => res.json()).catch((err) => {
                 window.toastr.error(err.message, "Network Error", { timeOut: 100000 })
                 weather_data_cityname_loading.classList.add("hide")
                 loadingCircle.ToggleLoading(false)
@@ -127,7 +139,8 @@ export default class WeatherApi {
             ...(Name ? { "name": Name } : {})
         })
         loadingCircle.ToggleLoading(true)
-        const results = await fetch((!dev ? this.API_URL_HTTPS : this.API_URL_DEV) + `&d=${_requestData}&t=${new Date().getTime()}`).then(res => res.json())
+        /*const results = await fetch((!dev ? this.API_URL_HTTPS : this.API_URL_DEV) + `&d=${_requestData}&t=${new Date().getTime()}`).then(res => res.json())*/
+        const results = await fetch((!dev ? this.API_URL_HTTPS : this.API_URL_DEV) + `data/searchcity?name=${Name}`).then(res => res.json())
         loadingCircle.ToggleLoading(false)
 
         return results
