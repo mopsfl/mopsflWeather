@@ -1,13 +1,15 @@
 {
     "compilerOptions": {
-      "target": "es2017",
-      "module": "es2022",
-      "outDir": "./dist/chunks/js",
+      "target": "ES2022",
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext",
+      "outDir": "./dist/js",
       "esModuleInterop": true,
       "paths": {
         "lodash": ["/static/js/lodash.min.js"],
-        "jquery": ["/bower_components/jquery/dist/jquery.min.js"]
+        "jquery": ["/bower_components/jquery/dist/jquery.min.js"],
       }
     },
-    "exclude": ["node_modules"]
+    "compileOnSave": true,
+    "exclude": ["node_modules","materialize-css"]
 }

@@ -1,66 +1,69 @@
-import LocalStorage from "./LocalStorage"
-import WeatherApi, { CityData } from "./WeatherApi"
+import { _dev } from "..";
+import self from "./SearchCity"
+import WeatherApi, { CitySearchResult } from "./WeatherApi";
+const doneTypingInterval = 350;
 
-const weatherApi = new WeatherApi()
-const localStorage = new LocalStorage({
-    key: "_weatherdata_"
-})
+const _dropdownItemTemplate = $(".dropdown-item-template")
+const _autocompleteDropdown = $(".autocomplete-dropdown")
+const _searchBoxLoadingSpinner = $(".search-box-loading-spinner")
 
-export default class SearchCity {
-    constructor(
-        public Config: {
-            location_search_results: HTMLElement,
-            location_search_input: HTMLElement,
-            location_search_result_template: any
-        },
-        public selectedCity?: Object,
-    ) { }
+export default {
+    InitInput(inputElement: JQuery<HTMLElement>) {
+        var _typingTimer: any
 
-    /**
-     * @description Toggles the search results bar of the search bar
-     * @param State
-     */
-    ToggleResults(State?: boolean) {
-        if (!this.Config.location_search_results) return console.warn("Missing 'location_search_results' element.")
-        if (!this.Config.location_search_input) return console.warn("Missing 'location_search_input' element.")
-        if (State == undefined) {
-            this.Config.location_search_input.classList.toggle("results_visible")
-            this.Config.location_search_results.classList.toggle("hide_location_search_results")
-        } else {
-            if (State == true) {
-                this.Config.location_search_input.classList.add("results_visible")
-                this.Config.location_search_results.classList.remove("hide_location_search_results")
-            } else if (State == false) {
-                this.Config.location_search_input.classList.remove("results_visible")
-                this.Config.location_search_results.classList.add("hide_location_search_results")
-                this.Config.location_search_results.innerHTML = ""
-            }
-        }
-    }
-
-    /**
-     * Updates the search results bar with the given CityData array
-     * @param Results
-     */
-    UpdateResults(Results: [CityData]) {
-        if (!(Results)) throw new Error("Missing required arguments")
-        if (!this.Config.location_search_result_template) return console.warn("Missing 'location_search_result_template' element.")
-        this.Config.location_search_results.innerHTML = ""
-        Results.forEach(city => {
-            const city_result: HTMLElement = this.Config.location_search_result_template.content.cloneNode(true).childNodes[1]
-            city_result.setAttribute("city-id", city.id)
-            city_result.setAttribute("city-name", city.city_ascii || city.city)
-            city_result.classList.add("location_search_result_animate")
-            city_result.querySelector(".location_search_result_cityname")["innerText"] = `${city.city} ${city.iso2 ? " - " + city.iso2 : ""}`
-            this.Config.location_search_results.appendChild(city_result)
-            window.ripple.registerRipples()
-
-            city_result.addEventListener("click", async (e) => {
-                this.selectedCity = city
-                localStorage.Set("selected_city", JSON.stringify(city))
-                await weatherApi.UpdateCurrentWeather(city)
-                this.ToggleResults(false)
-            })
+        inputElement.on("propertychange input", () => {
+            if (inputElement.val().toString().length > 2) _searchBoxLoadingSpinner.removeClass("hide")
+            clearTimeout(_typingTimer)
+            _typingTimer = setTimeout(async () => await self.HandleSearchInput(inputElement.val(), inputElement), doneTypingInterval)
         })
+
+        inputElement.on("focusout", (e) => {
+            if ($(e.relatedTarget).parent().get(0) === _autocompleteDropdown.get(0)) return
+            self.ToggleAutocompleteDropdown(false)
+            _searchBoxLoadingSpinner.addClass("hide")
+        })
+    },
+
+    async HandleSearchInput(value: string | number | string[], inputElement: JQuery<HTMLElement>) {
+        if (value.toString().length <= 2) return self.ToggleAutocompleteDropdown(false)
+
+        WeatherApi.SearchCity(value).then((res: CitySearchResult[]) => {
+            res.forEach(city => {
+                const dropdownItem = _dropdownItemTemplate.contents().clone()
+                dropdownItem.find(".city-name").text(city.city)
+                dropdownItem.find(".city-iso").text(city.iso2)
+                dropdownItem.appendTo(_autocompleteDropdown)
+
+                dropdownItem.on("click", async () => {
+                    self.ToggleAutocompleteDropdown(false)
+                    _searchBoxLoadingSpinner.removeClass("hide")
+
+                    await WeatherApi.GetWeatherData({ lat: city.lat, lon: city.lng }).then(res => {
+                        _searchBoxLoadingSpinner.addClass("hide")
+                        WeatherApi.UpdateWeatherData(res, city.city)
+                    }).catch(err => {
+                        _searchBoxLoadingSpinner.addClass("hide")
+                    }).finally(() => {
+                        inputElement.val("")
+                    })
+                })
+            })
+        }).catch(err => {
+            self.ToggleAutocompleteDropdown(false)
+            _searchBoxLoadingSpinner.addClass("hide")
+        })
+
+        self.ToggleAutocompleteDropdown(true, true)
+        _searchBoxLoadingSpinner.addClass("hide")
+    },
+
+    ToggleAutocompleteDropdown(state: boolean, clear?: boolean) {
+        if (state === true) {
+            if (clear) _autocompleteDropdown.empty()
+            _autocompleteDropdown.removeClass("hide")
+        } else {
+            _autocompleteDropdown.empty()
+            _autocompleteDropdown.addClass("hide")
+        }
     }
 }

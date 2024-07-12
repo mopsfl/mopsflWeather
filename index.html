@@ -1,106 +1,84 @@
 <!DOCTYPE html>
-<html lang="de">
-    <head>
-        <title>mopsflWeather</title>
-        <meta charset="utf-8"/>
-        <link rel="icon" href="/favicon.ico"/>
-        <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <meta name="description" content="Weather App made by mopsfl"/>
-        <link rel="stylesheet" href="./dist/chunks/css/style.css"/>
-        <link rel="manifest" href="manifest.json">
-        <link rel="preconnect" href="https://fonts.googleapis.com"/>
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-        <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet"/>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <script type="module" src="https://unpkg.com/string-encode"></script>
-        <script type="module" src="./dist/chunks/js/index.js" defer></script>
-        <script type="text/javascript" src="./bower_components/pako/pako.js"></script>
-        <link rel="stylesheet" href="bower_components/toastr/toastr.min.css"/>
-        <script src="bower_components/jquery/dist/jquery.min.js"></script>
-        <script src="bower_components/toastr/toastr.min.js"></script>
-        <script src="./static/js/ripple.js" defer></script>
-    </head>
-    <body>
-        <noscript>You need to enable JavaScript to run this app.</noscript>
-        <div class="bg_blur hide"></div>
-        <!--<div class="disclaimer-center">Backend currently being reworked.<br>Please come back later...</div>-->
-        <header>
-            <div class="header_title">
-                <img src="./svg/static/day.svg" alt="daysunicon">
-                <a href="./">
-                    <p class="header_title_text">mopsfl<strong>Weather</strong>
-                    </p>
-                </a>
+<html lang="en">
+
+<head>
+    <title>mopsflWeather</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoofyLuaUglifier</title>
+    <link rel="stylesheet" href="./dist/css/style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="bower_components/toastr/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/toastr/toastr.min.js"></script>
+    <script type="module" src="/dist/js/index.js" defer></script>
+</head>
+
+<body>
+    <main class="container">
+        <header class="container-header">
+            <div class="container-header-title">
+                <img class="title-logo" src="./images/svg/static/day.svg" alt="daysun_icon">
+                <h5 class="title-name"><u>mopsfl</u><b>Weather</b></h5>
+                <span class="align_mright title-miscinfo">
+                    <span>by mopsfl <span style="user-select: none;">&bull;</span> 1.0.0</span><br>
+                    <span>using <a target="_blank" href="https://openweathermap.org/api">OpenWeather</a> & <a target="_blank" href="https://www.amcharts.com/free-animated-svg-weather-icons/">amcharts</a></span>
+                </span>
             </div>
+            <div class="divider"></div>
         </header>
-        <div class="header_settings">
-            <div class="settings_button_container ripple" ripple-opacity=".3" ripple-release-expand-time=".8" ripple-press-expand-time=".8">
-                <img class="settings_button white" src="./svg/static/settings.svg">
-            </div>
-        </div>
-        <div class="settings_container hide">
-            <div class="settings_container_header">
-                <p class="settings_header_text">Settings</p>
-                <button class="btn settings_header_close ripple" ripple-opacity=".3" ripple-release-expand-time=".8" ripple-press-expand-time=".8">
-                    <span>X</span>
-                </button>
-            </div>
-            <div class="settings_container_content">
-                <template class="settings_container_item_template">
-                    <div class="settings_container_item">
-                        <p class="settings_container_item_name">Setting Name</p>
-                        <i class="fa fa-question-circle-o settings_container_item_desc">
-                            <div class="sdesc hide">Content</div>
-                        </i>
-                        <div class="settings_input_selection">
-                            <p class="sinput_selection" sindex="0">s1</p>
-                            <p class="sinput_selection" sindex="1">s2</p>
-                        </div>
-                    </div>
-                </template>
-            </div>
-        </div>
-        <div class="location_search center">
-            <input class="location_search_input input-icon-search" type="search" placeholder="Suchen" required minlength="2">
-            <div class="location_search_results hide_location_search_results">
-                <template class="location_search_result_template">
-                    <div class="location_search_result ripple" ripple-opacity=".3" ripple-release-expand-time=".8">
-                        <p class="location_search_result_cityname">Loading</p>
-                    </div>
-                </template>
-            </div>
-        </div>
-        <div class="spinner weather_data_loading hide">
-            <div class="cube1"></div>
-            <div class="cube2"></div>
-        </div>
-        <div class="weather_data">
-            <div class="weather_data_locationinfo">
-                <p class="weather_data_cityname hide">
-                    <div class="spinner weather_data_cityname_loading">
+        <div class="search-box container center">
+            <div class="search-city-input-field input-field">
+                <div class="search-box-container">
+                    <input type="text" id="searchcity_input" class="searchcity_input" placeholder="Search city" value="">
+                    <div class="loading-spinner search-box-loading-spinner hide">
                         <div class="cube1"></div>
                         <div class="cube2"></div>
                     </div>
-                </p>
-                <p class="weather_data_citytemperature hide"></p>
-                <p class="weather_data_cityskydesc hide"></p>
-                <p class="weather_data_citywinddata hide"></p>
+                </div>
+                <div class="autocomplete-dropdown hide">
+                    <template class="dropdown-item-template">
+                        <button class="dropdown-item btn waves-effect waves-light transparent">
+                            <span class="city-name">N/A</span><span class="city-iso">N/A</span>
+                        </button>
+                    </template>
+                </div>
             </div>
         </div>
-        <footer>
-            <div class="footer-left">
-                <span class="footer_copyright">&copy;
-                    <a target="_blank" href="https://openweathermap.org/api">OpenWeather</a>
-                    - Weather Data</span><br>
-                <span class="footer_copyright">&copy;
-                    <a target="_blank" href="https://www.amcharts.com/free-animated-svg-weather-icons/">amcharts</a>
-                    - Weather Icons</span>
-            </div>
-            <div class="footer-right">
-                <span class="footer_copyright">
-                    <a target="_blank" href="https://stats.uptimerobot.com/gMz1KHqRl3">Service Status</a>
+        <div class="weather-data container left-align hide">
+            <span class="weather-data-city-name">N/A, N/A</span>
+            <div class="main-info">
+                <span class="main-info-temperature">
+                    <img class="main-info-weather-icon" src="./images/svg/static/day.svg" alt="daysun_icon">
+                    <span class="temperature-value">N/A</span>
                 </span>
             </div>
-        </footer>
-    </body>
+            <span class="weather-description">N/A</span>
+            <div class="wind-info">
+                <img class="wind-direction-icon gray-filter" src="./images/svg/direction-svgrepo-com.svg" alt="windicon">
+                <span class="wind-speed-value">0.0m/s</span>
+            </div>
+            <div class="sunsetrise-info">
+                <div class="sunsetrise-info-item">
+                    <div>
+                        <p class="sunsetrise-info-item-name">Sonnenaufgang</p>
+                        <p class="sunrise-value sunsetrise-info-item-value">00:00</p>
+                    </div>
+                    <img class="sunsetrise-icon" src="./images/svg/static/day.svg" alt="windicon">
+                </div>
+                <div class="sunsetrise-info-item">
+                    <div>
+                        <p class="sunsetrise-info-item-name">Sonnenuntergang</p>
+                        <p class="sunset-value sunsetrise-info-item-value">00:00</p>
+                    </div>
+                    <img class="sunsetrise-icon gray-filter" src="./images/svg/static/night.svg" alt="windicon">
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
 </html>
