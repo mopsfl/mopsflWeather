@@ -28,12 +28,14 @@ export default {
         if (value.toString().length <= 2) return self.ToggleAutocompleteDropdown(false)
 
         WeatherApi.SearchCity(value).then((res: CitySearchResult[]) => {
+            console.log(res);
             res.forEach(city => {
+                console.log(city);
                 const dropdownItem = _dropdownItemTemplate.contents().clone()
                 dropdownItem.find(".city-name").text(city.city)
                 dropdownItem.find(".city-iso").text(city.iso2)
                 dropdownItem.appendTo(_autocompleteDropdown)
-
+                console.log(dropdownItem);
                 dropdownItem.on("click", async () => {
                     self.ToggleAutocompleteDropdown(false)
                     _searchBoxLoadingSpinner.removeClass("hide")
