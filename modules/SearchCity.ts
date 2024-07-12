@@ -28,28 +28,18 @@ export default {
         if (value.toString().length <= 2) return self.ToggleAutocompleteDropdown(false)
 
         WeatherApi.SearchCity(value).then((res: CitySearchResult[]) => {
-            console.log(res);
             res.forEach(city => {
-                console.log(city);
                 const dropdownItem = _dropdownItemTemplate.contents().clone()
                 dropdownItem.find(".city-name").text(city.city)
                 dropdownItem.find(".city-iso").text(city.iso2)
                 dropdownItem.appendTo(_autocompleteDropdown)
-                console.log(dropdownItem);
-                dropdownItem.on("click", async () => {
-                    self.ToggleAutocompleteDropdown(false)
-                    _searchBoxLoadingSpinner.removeClass("hide")
-
-                    await WeatherApi.GetWeatherData({ lat: city.lat, lon: city.lng }).then(res => {
-                        _searchBoxLoadingSpinner.addClass("hide")
-                        WeatherApi.UpdateWeatherData(res, city.city)
-                    }).catch(err => {
-                        _searchBoxLoadingSpinner.addClass("hide")
-                    }).finally(() => {
-                        inputElement.val("")
-                    })
-                })
+                dropdownItem.on("click", async () => await self.HandleDropdownAutoCompleteClick(city, inputElement))
             })
+            const dropdownItemCityName = _dropdownItemTemplate.contents().clone()
+            dropdownItemCityName.find(".city-name").text(value.toString())
+            dropdownItemCityName.find(".city-iso").text("")
+            dropdownItemCityName.appendTo(_autocompleteDropdown)
+            dropdownItemCityName.on("click", async () => await self.HandleDropdownAutoCompleteClick({ city: value.toString() }, inputElement))
         }).catch(err => {
             self.ToggleAutocompleteDropdown(false)
             _searchBoxLoadingSpinner.addClass("hide")
@@ -57,6 +47,20 @@ export default {
 
         self.ToggleAutocompleteDropdown(true, true)
         _searchBoxLoadingSpinner.addClass("hide")
+    },
+
+    async HandleDropdownAutoCompleteClick(city: CitySearchResult, inputElement: JQuery<HTMLElement>) {
+        self.ToggleAutocompleteDropdown(false)
+        _searchBoxLoadingSpinner.removeClass("hide")
+
+        await WeatherApi.GetWeatherData({ lat: city.lat, lon: city.lng, name: city.city }).then(res => {
+            _searchBoxLoadingSpinner.addClass("hide")
+            WeatherApi.UpdateWeatherData(res, city.city)
+        }).catch(err => {
+            _searchBoxLoadingSpinner.addClass("hide")
+        }).finally(() => {
+            inputElement.val("")
+        })
     },
 
     ToggleAutocompleteDropdown(state: boolean, clear?: boolean) {

@@ -10,11 +10,21 @@
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="bower_components/toastr/toastr.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="./bower_components/jquery/dist/jquery.min.js"></script>
     <script src="./bower_components/toastr/toastr.min.js"></script>
     <script type="module" src="./dist/js/index.js" defer></script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings:
+                "FILL" 1,
+                "wght" 300,
+                "GRAD" 0,
+                "opsz" 20
+        }
+    </style>
 </head>
 
 <body>
@@ -57,19 +67,29 @@
                 </span>
             </div>
             <span class="weather-description">N/A</span>
-            <div class="wind-info">
-                <img class="wind-direction-icon gray-filter" src="./images/svg/direction-svgrepo-com.svg" alt="windicon">
-                <span class="wind-speed-value">0.0m/s</span>
+            <div class="weather-data-info-item w100">
+                <div>
+                    <p class="sunsetrise-info-item-name">Wind</p>
+                    <span class="wind-speed-value">0km/h</span>
+                </div>
+                <div>
+                    <p class="sunsetrise-info-item-name">Böhen</p>
+                    <span class="windgust-speed-value">0km/h</span>
+                </div>
+                <div class="wind-direction">
+                    <span class="wind-directiondeg">N/A</span>
+                    <span class="wind-direction-icon material-symbols-outlined">navigation</span>
+                </div>
             </div>
             <div class="sunsetrise-info">
-                <div class="sunsetrise-info-item">
+                <div class="weather-data-info-item">
                     <div>
                         <p class="sunsetrise-info-item-name">Sonnenaufgang</p>
                         <p class="sunrise-value sunsetrise-info-item-value">00:00</p>
                     </div>
                     <img class="sunsetrise-icon" src="./images/svg/static/day.svg" alt="windicon">
                 </div>
-                <div class="sunsetrise-info-item">
+                <div class="weather-data-info-item">
                     <div>
                         <p class="sunsetrise-info-item-name">Sonnenuntergang</p>
                         <p class="sunset-value sunsetrise-info-item-value">00:00</p>

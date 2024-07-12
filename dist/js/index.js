@@ -7872,16 +7872,18 @@ var import_jquery = __toESM(require_jquery_min());
 var lodash = __toESM(require_lodash());
 var API_URL_DEV = "http://localhost:6968/v1/";
 var API_URL_PROD = "https://mopsflweather.mopsfl.de/v1/";
-var WindDirections = {
-  en: ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"],
-  de: ["N", "NNO", "NO", "ONO", "O", "OSO", "SO", "SSO", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+var windDirections = {
+  en: ["from the North", "from the North-Northeast", "from the Northeast", "from the East-Northeast", "from the East", "from the East-Southeast", "from the Southeast", "from the South-Southeast", "from the South", "from the South-Southwest", "from the Southwest", "from the West-Southwest", "from the West", "from the West-Northwest", "from the Northwest", "from the North-Northwest"],
+  de: ["aus Norden", "aus Nord-Nordosten", "aus Nordosten", "aus Ost-Nordosten", "aus Osten", "aus Ost-S\xFCdosten", "aus S\xFCdosten", "aus S\xFCd-S\xFCdosten", "aus S\xFCden", "aus S\xFCd-S\xFCdwesten", "aus S\xFCdwesten", "aus West-S\xFCdwesten", "aus Westen", "aus West-Nordwesten", "aus Nordwesten", "aus Nord-Nordwesten"]
 };
 var _weatherData = $(".weather-data");
 var _cityName = $(".weather-data-city-name");
 var _temperatureValue = $(".temperature-value");
 var _weatherDescription = $(".weather-description");
 var _windSpeedValue = $(".wind-speed-value");
+var _windGustSpeedValue = $(".windgust-speed-value");
 var _windDirectionIcon = $(".wind-direction-icon");
+var _windDirectionDeg = $(".wind-directiondeg");
 var _sunriseValue = $(".sunrise-value");
 var _sunsetValue = $(".sunset-value");
 var WeatherApi_default = {
@@ -7894,25 +7896,25 @@ var WeatherApi_default = {
   async GetWeatherData(args) {
     if (!args)
       throw new Error("Missing <WeatherRequestArguments>");
-    if (args.lat && args.lon) {
-      return await fetch((!_dev ? API_URL_PROD : API_URL_DEV) + `data/currentweather?lat=${args.lat}&lon=${args.lon}`).then((res) => res.json()).catch((err) => {
-        window.toastr.error(err, "ApiError");
-        console.error(err);
-      });
-    }
+    return await fetch((!_dev ? API_URL_PROD : API_URL_DEV) + `data/currentweather?${args.lat && args.lon ? `lat=${args.lat}&lon=${args.lon}` : `name=${args.name}`}`).then((res) => res.json()).catch((err) => {
+      window.toastr.error(err, "ApiError");
+      console.error(err);
+    });
   },
   UpdateWeatherData(weatherData, cityName) {
     if (weatherData.code !== 200 && weatherData.internal_error)
       return window.toastr.error(weatherData.internal_error.message.en, weatherData.internal_error.error);
+    const wind = WeatherApi_default.CalculateWind(weatherData.data.wind);
     _cityName.text(`${cityName || weatherData.data.name}, ${weatherData.data.sys.country}`);
     _temperatureValue.text(`${lodash.round(weatherData.data.main.temp)}\xB0C`);
     _weatherDescription.text(weatherData.data.weather[0].description);
-    _windSpeedValue.text(`${weatherData.data.wind.speed}m/s ${WeatherApi_default.GetWindDirection(weatherData.data.wind.deg)}`);
-    _windDirectionIcon.css("transform", `rotate(${weatherData.data.wind.deg + 180}deg)`);
-    _weatherData.removeClass("hide");
+    _windSpeedValue.text(`${wind.speed}km/h`);
+    _windGustSpeedValue.text(wind.gust ? `${wind.gust}km/h` : "N/A");
+    _windDirectionDeg.html(WeatherApi_default.GetWindDirection(wind.deg).replace(/\s/, "<br>"));
+    _windDirectionIcon.css("transform", `rotate(${wind.deg + 180}deg)`);
     _sunriseValue.text(WeatherApi_default.UnixTimestampToDateString(weatherData.data.sys.sunrise));
     _sunsetValue.text(WeatherApi_default.UnixTimestampToDateString(weatherData.data.sys.sunset));
-    console.log(WeatherApi_default.UnixTimestampToDateString(weatherData.data.sys.sunset));
+    _weatherData.removeClass("hide");
   },
   CalculateWind(windData) {
     const calc_wd = lodash.clone(windData);
@@ -7921,7 +7923,7 @@ var WeatherApi_default = {
     return calc_wd;
   },
   GetWindDirection(degrees) {
-    return WindDirections.de[Math.round(degrees % 360 / 22.5) % 16];
+    return windDirections.de[Math.round(degrees % 360 / 22.5) % 16];
   },
   UnixTimestampToDateString(unixTimestamp, full) {
     const date = new Date(unixTimestamp * 1e3);
@@ -7960,33 +7962,36 @@ var SearchCity_default = {
     if (value.toString().length <= 2)
       return SearchCity_default.ToggleAutocompleteDropdown(false);
     WeatherApi_default.SearchCity(value).then((res) => {
-      console.log(res);
       res.forEach((city) => {
-        console.log(city);
         const dropdownItem = _dropdownItemTemplate.contents().clone();
         dropdownItem.find(".city-name").text(city.city);
         dropdownItem.find(".city-iso").text(city.iso2);
         dropdownItem.appendTo(_autocompleteDropdown);
-        console.log(dropdownItem);
-        dropdownItem.on("click", async () => {
-          SearchCity_default.ToggleAutocompleteDropdown(false);
-          _searchBoxLoadingSpinner.removeClass("hide");
-          await WeatherApi_default.GetWeatherData({ lat: city.lat, lon: city.lng }).then((res2) => {
-            _searchBoxLoadingSpinner.addClass("hide");
-            WeatherApi_default.UpdateWeatherData(res2, city.city);
-          }).catch((err) => {
-            _searchBoxLoadingSpinner.addClass("hide");
-          }).finally(() => {
-            inputElement.val("");
-          });
-        });
+        dropdownItem.on("click", async () => await SearchCity_default.HandleDropdownAutoCompleteClick(city, inputElement));
       });
+      const dropdownItemCityName = _dropdownItemTemplate.contents().clone();
+      dropdownItemCityName.find(".city-name").text(value.toString());
+      dropdownItemCityName.find(".city-iso").text("");
+      dropdownItemCityName.appendTo(_autocompleteDropdown);
+      dropdownItemCityName.on("click", async () => await SearchCity_default.HandleDropdownAutoCompleteClick({ city: value.toString() }, inputElement));
     }).catch((err) => {
       SearchCity_default.ToggleAutocompleteDropdown(false);
       _searchBoxLoadingSpinner.addClass("hide");
     });
     SearchCity_default.ToggleAutocompleteDropdown(true, true);
     _searchBoxLoadingSpinner.addClass("hide");
+  },
+  async HandleDropdownAutoCompleteClick(city, inputElement) {
+    SearchCity_default.ToggleAutocompleteDropdown(false);
+    _searchBoxLoadingSpinner.removeClass("hide");
+    await WeatherApi_default.GetWeatherData({ lat: city.lat, lon: city.lng, name: city.city }).then((res) => {
+      _searchBoxLoadingSpinner.addClass("hide");
+      WeatherApi_default.UpdateWeatherData(res, city.city);
+    }).catch((err) => {
+      _searchBoxLoadingSpinner.addClass("hide");
+    }).finally(() => {
+      inputElement.val("");
+    });
   },
   ToggleAutocompleteDropdown(state, clear) {
     if (state === true) {

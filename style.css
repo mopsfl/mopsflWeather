@@ -68,6 +68,10 @@ a:hover {
     background: rgb(104, 104, 104) !important;
 }
 
+.w100 {
+    width: 100% !important;
+}
+
 input[type="text"]:not(.browser-default) {
     border-bottom: 1px solid #3a3a3a !important;
 }
@@ -177,8 +181,13 @@ input[type="text"]:not(.browser-default):focus {
     font-size: 20px;
 }
 
-.wind-direction-icon {
+.wind-direction {
+    gap: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 20px;
+    margin-left: auto;
 }
 
 .gray-filter {
@@ -191,20 +200,26 @@ input[type="text"]:not(.browser-default):focus {
     align-items: center;
 }
 
-.wind-info>.wind-speed {
-    margin-left: 10px;
+.wind-directiondeg {
+    color: gray;
+    font-size: 12px;
+    text-align: right;
+}
+
+.wind-info>.wind-speed-value {
+    margin-left: 5px;
 }
 
 .sunsetrise-info {
     display: flex;
     justify-content: center;
     gap: 10px;
-    margin-top: 15px;
 }
 
-.sunsetrise-info-item {
+.weather-data-info-item {
+    margin-top: 10px;
+    gap: 25px;
     align-items: center;
-    justify-content: center;
     align-self: center;
     display: flex;
     background-color: rgb(22, 22, 22);
@@ -213,7 +228,7 @@ input[type="text"]:not(.browser-default):focus {
     width: 50%;
 }
 
-.sunsetrise-info-item>img {
+.weather-data-info-item>img {
     margin-left: auto;
 }
 
@@ -226,11 +241,13 @@ input[type="text"]:not(.browser-default):focus {
     margin: 0;
     color: gray;
     font-size: 12px;
+    user-select: none;
 }
 
 .sunsetrise-icon {
     width: 45px;
     height: 45px;
+    user-select: none;
 }
 
 @media only screen and (max-width: 600px) {

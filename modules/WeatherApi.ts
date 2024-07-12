@@ -5,16 +5,18 @@ import * as lodash from "lodash"
 const API_URL_DEV: RequestInfo = "http://localhost:6968/v1/",
     API_URL_PROD: RequestInfo = "https://mopsflweather.mopsfl.de/v1/"
 
-const WindDirections = {
-    en: ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"],
-    de: ["N", "NNO", "NO", "ONO", "O", "OSO", "SO", "SSO", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+const windDirections = {
+    en: ["from the North", "from the North-Northeast", "from the Northeast", "from the East-Northeast", "from the East", "from the East-Southeast", "from the Southeast", "from the South-Southeast", "from the South", "from the South-Southwest", "from the Southwest", "from the West-Southwest", "from the West", "from the West-Northwest", "from the Northwest", "from the North-Northwest"],
+    de: ["aus Norden", "aus Nord-Nordosten", "aus Nordosten", "aus Ost-Nordosten", "aus Osten", "aus Ost-Südosten", "aus Südosten", "aus Süd-Südosten", "aus Süden", "aus Süd-Südwesten", "aus Südwesten", "aus West-Südwesten", "aus Westen", "aus West-Nordwesten", "aus Nordwesten", "aus Nord-Nordwesten"]
 };
 const _weatherData = $(".weather-data"),
     _cityName = $(".weather-data-city-name"),
     _temperatureValue = $(".temperature-value"),
     _weatherDescription = $(".weather-description"),
     _windSpeedValue = $(".wind-speed-value"),
+    _windGustSpeedValue = $(".windgust-speed-value"),
     _windDirectionIcon = $(".wind-direction-icon"),
+    _windDirectionDeg = $(".wind-directiondeg"),
     _sunriseValue = $(".sunrise-value"),
     _sunsetValue = $(".sunset-value")
 
@@ -29,26 +31,27 @@ export default {
     async GetWeatherData(args: WeatherRequestArguments) {
         if (!(args)) throw new Error("Missing <WeatherRequestArguments>")
 
-        if (args.lat && args.lon) {
-            return await fetch((!_dev ? API_URL_PROD : API_URL_DEV) + `data/currentweather?lat=${args.lat}&lon=${args.lon}`).then(res => res.json()).catch(err => {
-                window.toastr.error(err, "ApiError")
-                console.error(err)
-            })
-        }
+        return await fetch((!_dev ? API_URL_PROD : API_URL_DEV) + `data/currentweather?${(args.lat && args.lon) ? `lat=${args.lat}&lon=${args.lon}` : `name=${args.name}`}`).then(res => res.json()).catch(err => {
+            window.toastr.error(err, "ApiError")
+            console.error(err)
+        })
     },
 
     UpdateWeatherData(weatherData: WeatherData, cityName?: string) {
         if (weatherData.code !== 200 && weatherData.internal_error) return window.toastr.error(weatherData.internal_error.message.en, weatherData.internal_error.error)
+        const wind = self.CalculateWind(weatherData.data.wind)
 
         _cityName.text(`${cityName || weatherData.data.name}, ${weatherData.data.sys.country}`)
         _temperatureValue.text(`${lodash.round(weatherData.data.main.temp)}°C`)
         _weatherDescription.text(weatherData.data.weather[0].description)
-        _windSpeedValue.text(`${weatherData.data.wind.speed}m/s ${self.GetWindDirection(weatherData.data.wind.deg)}`)
-        _windDirectionIcon.css("transform", `rotate(${weatherData.data.wind.deg + 180}deg)`)
-        _weatherData.removeClass("hide")
+        _windSpeedValue.text(`${wind.speed}km/h`)
+        _windGustSpeedValue.text(wind.gust ? `${wind.gust}km/h` : "N/A")
+        _windDirectionDeg.html(self.GetWindDirection(wind.deg).replace(/\s/, "<br>"))
+        _windDirectionIcon.css("transform", `rotate(${wind.deg + 180}deg)`)
         _sunriseValue.text(self.UnixTimestampToDateString(weatherData.data.sys.sunrise))
         _sunsetValue.text(self.UnixTimestampToDateString(weatherData.data.sys.sunset))
-        console.log(self.UnixTimestampToDateString(weatherData.data.sys.sunset));
+
+        _weatherData.removeClass("hide")
     },
 
     CalculateWind(windData: WindData) {
@@ -59,7 +62,7 @@ export default {
     },
 
     GetWindDirection(degrees: number) {
-        return WindDirections.de[Math.round(degrees % 360 / 22.5) % 16];
+        return windDirections.de[Math.round(degrees % 360 / 22.5) % 16];
     },
 
     UnixTimestampToDateString(unixTimestamp: number, full?: boolean) {
@@ -77,16 +80,16 @@ export default {
 }
 
 export interface CitySearchResult {
-    city: string,
-    city_ascii: string,
-    lat: string,
-    lng: string,
-    country: string,
-    iso2: string,
-    iso3: string,
-    admin_name: string,
-    population: string,
-    id: string
+    city?: string,
+    city_ascii?: string,
+    lat?: string,
+    lng?: string,
+    country?: string,
+    iso2?: string,
+    iso3?: string,
+    admin_name?: string,
+    population?: string,
+    id?: string
 }
 
 export interface ApiError {
