@@ -58,7 +58,7 @@
                 </div>
             </div>
         </div>
-        <div class="weather-data container left-align hide">
+        <div class="weather-data container left-align">
             <span class="weather-data-city-name">N/A, N/A</span>
             <div class="main-info">
                 <span class="main-info-temperature">
@@ -69,11 +69,11 @@
             <span class="weather-description">N/A</span>
             <div class="weather-data-info-item w100">
                 <div>
-                    <p class="sunsetrise-info-item-name">Wind</p>
+                    <p class="weather-data-info-item-name" data-stringname="WEATHER_INFO_WIND">Wind</p>
                     <span class="wind-speed-value">0km/h</span>
                 </div>
                 <div>
-                    <p class="sunsetrise-info-item-name">Böhen</p>
+                    <p class="weather-data-info-item-name" data-stringname="WEATHER_INFO_GUST">Böen</p>
                     <span class="windgust-speed-value">0km/h</span>
                 </div>
                 <div class="wind-direction">
@@ -82,19 +82,25 @@
                 </div>
             </div>
             <div class="sunsetrise-info">
-                <div class="weather-data-info-item">
+                <div class="weather-data-info-item clickable expandclick">
                     <div>
-                        <p class="sunsetrise-info-item-name">Sonnenaufgang</p>
-                        <p class="sunrise-value sunsetrise-info-item-value">00:00</p>
+                        <p class="weather-data-info-item-name" data-stringname="WEATHER_INFO_SUNRISE">Sonnenaufgang</p>
+                        <p class="sunrise-value weather-data-info-item-value">00:00</p>
                     </div>
                     <img class="sunsetrise-icon" src="./images/svg/static/day.svg" alt="windicon">
-                </div>
-                <div class="weather-data-info-item">
                     <div>
-                        <p class="sunsetrise-info-item-name">Sonnenuntergang</p>
-                        <p class="sunset-value sunsetrise-info-item-value">00:00</p>
+                        <p class="weather-data-info-item-name sunrise-in-value">in x Stunden</p>
+                    </div>
+                </div>
+                <div class="weather-data-info-item clickable expandclick">
+                    <div>
+                        <p class="weather-data-info-item-name" data-stringname="WEATHER_INFO_SUNSET">Sonnenuntergang</p>
+                        <p class="sunset-value weather-data-info-item-value">00:00</p>
                     </div>
                     <img class="sunsetrise-icon gray-filter" src="./images/svg/static/night.svg" alt="windicon">
+                    <div>
+                        <p class="weather-data-info-item-name sunset-in-value">in x Stunden</p>
+                    </div>
                 </div>
             </div>
         </div>

@@ -7868,14 +7868,99 @@ var require_lodash = __commonJS({
 // index.ts
 var import_jquery = __toESM(require_jquery_min());
 
+// modules/Strings.ts
+var Strings_default = {
+  de: {
+    WEATHER_INFO_WIND: "Wind",
+    WEATHER_INFO_GUST: "B\xF6en",
+    WEATHER_INFO_WIND_DIRECTIONS: ["aus Norden", "aus Nord-Nordosten", "aus Nordosten", "aus Ost-Nordosten", "aus Osten", "aus Ost-S\xFCdosten", "aus S\xFCdosten", "aus S\xFCd-S\xFCdosten", "aus S\xFCden", "aus S\xFCd-S\xFCdwesten", "aus S\xFCdwesten", "aus West-S\xFCdwesten", "aus Westen", "aus West-Nordwesten", "aus Nordwesten", "aus Nord-Nordwesten"],
+    WEATHER_INFO_SUNRISE: "Sonnenaufgang",
+    WEATHER_INFO_SUNSET: "Sonnenuntergang",
+    WEATHER_INFO_TIMEAGO_HOURS: "vor %VALUE% Stunden",
+    WEATHER_INFO_TIMEAGO_MINUTES: "vor %VALUE% Minuten",
+    WEATHER_INFO_TIMEAGO_SECONDS: "vor %VALUE% Sekunden",
+    WEATHER_INFO_TIMEIN_HOURS: "in %VALUE% Stunden",
+    WEATHER_INFO_TIMEIN_MINUTES: "in %VALUE% Minuten",
+    WEATHER_INFO_TIMEIN_SECONDS: "in %VALUE% Sekunden"
+  },
+  en: {
+    WEATHER_INFO_WIND: "Wind",
+    WEATHER_INFO_GUST: "Gusts",
+    WEATHER_INFO_WIND_DIRECTIONS: ["from the North", "from the North-Northeast", "from the Northeast", "from the East-Northeast", "from the East", "from the East-Southeast", "from the Southeast", "from the South-Southeast", "from the South", "from the South-Southwest", "from the Southwest", "from the West-Southwest", "from the West", "from the West-Northwest", "from the Northwest", "from the North-Northwest"],
+    WEATHER_INFO_SUNRISE: "Sunrise",
+    WEATHER_INFO_SUNSET: "Sunset",
+    WEATHER_INFO_TIMEAGO_HOURS: "%VALUE% hours ago",
+    WEATHER_INFO_TIMEAGO_MINUTES: "%VALUE% minutes ago",
+    WEATHER_INFO_TIMEAGO_SECONDS: "%VALUE% seconds ago",
+    WEATHER_INFO_TIMEIN_HOURS: "in %VALUE% hours",
+    WEATHER_INFO_TIMEIN_MINUTES: "in %VALUE% minutes",
+    WEATHER_INFO_TIMEIN_SECONDS: "in %VALUE% seconds"
+  },
+  ToString(string, value) {
+    return string.replace("%VALUE%", value);
+  }
+};
+
+// modules/Time.ts
+var Time_default = {
+  TimeAgo(dString = null) {
+    var d1 = new Date(dString);
+    var d2 = /* @__PURE__ */ new Date();
+    var t2 = d2.getTime();
+    var t1 = d1.getTime();
+    var d1Y = d1.getFullYear();
+    var d2Y = d2.getFullYear();
+    var d1M = d1.getMonth();
+    var d2M = d2.getMonth();
+    var time_obj = {};
+    time_obj.year = d2.getFullYear() - d1.getFullYear();
+    time_obj.month = d2M + 12 * d2Y - (d1M + 12 * d1Y);
+    time_obj.week = Math.floor((t2 - t1) / (24 * 3600 * 1e3 * 7));
+    time_obj.day = Math.floor((t2 - t1) / (24 * 3600 * 1e3));
+    time_obj.hour = Math.floor((t2 - t1) / (3600 * 1e3));
+    time_obj.minute = Math.floor((t2 - t1) / (60 * 1e3));
+    time_obj.second = Math.floor((t2 - t1) / 1e3);
+    for (const obj_key in time_obj) {
+      if (time_obj[obj_key] == 0) {
+        delete time_obj[obj_key];
+      }
+    }
+    var ago_text = "just now";
+    if (typeof Object.keys(time_obj)[0] != "undefined") {
+      var time_key = Object.keys(time_obj)[0];
+      var time_val = time_obj[Object.keys(time_obj)[0]];
+      time_key += time_val > 1 ? "s" : "";
+      ago_text = time_val + " " + time_key + " ago";
+    }
+    return ago_text;
+  },
+  TimeUntil(timestamp, toUnix) {
+    const difference = (toUnix ? timestamp * 1e3 : timestamp) - (/* @__PURE__ */ new Date()).getTime();
+    const absDifference = Math.abs(difference), hours = Math.floor(absDifference / (1e3 * 60 * 60)), minutes = Math.floor(absDifference % (1e3 * 60 * 60) / (1e3 * 60)), seconds = Math.floor(absDifference % (1e3 * 60) / 1e3);
+    if (difference > 0) {
+      if (hours > 0) {
+        return Strings_default.ToString(languageStrings.WEATHER_INFO_TIMEIN_HOURS, hours);
+      } else if (minutes > 0) {
+        return Strings_default.ToString(languageStrings.WEATHER_INFO_TIMEIN_MINUTES, minutes);
+      } else {
+        return Strings_default.ToString(languageStrings.WEATHER_INFO_TIMEIN_SECONDS, seconds);
+      }
+    } else if (difference < 0) {
+      if (hours > 0) {
+        return Strings_default.ToString(languageStrings.WEATHER_INFO_TIMEAGO_HOURS, hours);
+      } else if (minutes > 0) {
+        return Strings_default.ToString(languageStrings.WEATHER_INFO_TIMEAGO_MINUTES, minutes);
+      } else {
+        return Strings_default.ToString(languageStrings.WEATHER_INFO_TIMEAGO_SECONDS, seconds);
+      }
+    }
+  }
+};
+
 // modules/WeatherApi.ts
 var lodash = __toESM(require_lodash());
 var API_URL_DEV = "http://localhost:6968/v1/";
 var API_URL_PROD = "https://mopsflweather.mopsfl.de/v1/";
-var windDirections = {
-  en: ["from the North", "from the North-Northeast", "from the Northeast", "from the East-Northeast", "from the East", "from the East-Southeast", "from the Southeast", "from the South-Southeast", "from the South", "from the South-Southwest", "from the Southwest", "from the West-Southwest", "from the West", "from the West-Northwest", "from the Northwest", "from the North-Northwest"],
-  de: ["aus Norden", "aus Nord-Nordosten", "aus Nordosten", "aus Ost-Nordosten", "aus Osten", "aus Ost-S\xFCdosten", "aus S\xFCdosten", "aus S\xFCd-S\xFCdosten", "aus S\xFCden", "aus S\xFCd-S\xFCdwesten", "aus S\xFCdwesten", "aus West-S\xFCdwesten", "aus Westen", "aus West-Nordwesten", "aus Nordwesten", "aus Nord-Nordwesten"]
-};
 var _weatherData = $(".weather-data");
 var _cityName = $(".weather-data-city-name");
 var _temperatureValue = $(".temperature-value");
@@ -7886,6 +7971,8 @@ var _windDirectionIcon = $(".wind-direction-icon");
 var _windDirectionDeg = $(".wind-directiondeg");
 var _sunriseValue = $(".sunrise-value");
 var _sunsetValue = $(".sunset-value");
+var _sunriseInValue = $(".sunrise-in-value");
+var _sunsetInValue = $(".sunset-in-value");
 var WeatherApi_default = {
   async SearchCity(name) {
     return await fetch((!_dev ? API_URL_PROD : API_URL_DEV) + `data/searchcity?name=${name}`).then((res) => res.json()).catch((err) => {
@@ -7914,6 +8001,8 @@ var WeatherApi_default = {
     _windDirectionIcon.css("transform", `rotate(${wind.deg + 180}deg)`);
     _sunriseValue.text(WeatherApi_default.UnixTimestampToDateString(weatherData.data.sys.sunrise));
     _sunsetValue.text(WeatherApi_default.UnixTimestampToDateString(weatherData.data.sys.sunset));
+    _sunriseInValue.text(Time_default.TimeUntil(weatherData.data.sys.sunrise, true));
+    _sunsetInValue.text(Time_default.TimeUntil(weatherData.data.sys.sunset, true));
     _weatherData.removeClass("hide");
   },
   CalculateWind(windData) {
@@ -7923,7 +8012,7 @@ var WeatherApi_default = {
     return calc_wd;
   },
   GetWindDirection(degrees) {
-    return windDirections.de[Math.round(degrees % 360 / 22.5) % 16];
+    return languageStrings.WEATHER_INFO_WIND_DIRECTIONS[Math.round(degrees % 360 / 22.5) % 16];
   },
   UnixTimestampToDateString(unixTimestamp, full) {
     const date = new Date(unixTimestamp * 1e3);
@@ -8007,29 +8096,29 @@ var SearchCity_default = {
 
 // index.ts
 var _dev = location.hostname === "localhost";
+var languageStrings = Strings_default.de;
 (0, import_jquery.default)(async () => {
   const SearchCityInput = (0, import_jquery.default)(".searchcity_input");
   SearchCity_default.InitInput(SearchCityInput);
   window.toastr.options = {
-    "closeButton": false,
-    "debug": false,
     "newestOnTop": true,
-    "progressBar": false,
     "positionClass": "toast-bottom-right",
-    "preventDuplicates": true,
-    "onclick": null,
-    "showDuration": "300",
-    "hideDuration": "1000",
-    "timeOut": "5000",
-    "extendedTimeOut": "1000",
-    "showEasing": "swing",
-    "hideEasing": "linear",
-    "showMethod": "fadeIn",
-    "hideMethod": "fadeOut"
+    "preventDuplicates": true
   };
+  $(".expandclick").each((i, e) => {
+    $(e).on("click", () => {
+      $(e).toggleClass("expand");
+    });
+  });
+  $("*[data-stringname]").each((i, e) => {
+    const _string = languageStrings[$(e).attr("data-stringname")];
+    if (_string)
+      $(e).text(_string);
+  });
 });
 export {
-  _dev
+  _dev,
+  languageStrings
 };
 /*! jQuery v3.7.1 | (c) OpenJS Foundation and other contributors | jquery.org/license */
 /*! Bundled license information:

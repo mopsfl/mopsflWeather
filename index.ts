@@ -1,30 +1,30 @@
 import jQuery from "jquery";
-import { Materialbox } from "materialize-css";
 import SearchCity from "./modules/SearchCity";
+import Strings from "./modules/Strings";
 
-const _dev = location.hostname === "localhost"
+const _dev = location.hostname === "localhost",
+    languageStrings = Strings.de
 
 jQuery(async () => {
     const SearchCityInput = jQuery(".searchcity_input")
     SearchCity.InitInput(SearchCityInput)
 
     window.toastr.options = {
-        "closeButton": false,
-        "debug": false,
         "newestOnTop": true,
-        "progressBar": false,
         "positionClass": "toast-bottom-right",
         "preventDuplicates": true,
-        "onclick": null,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": "5000",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
     }
+
+    $(".expandclick").each((i, e) => {
+        $(e).on("click", () => {
+            $(e).toggleClass("expand")
+        })
+    })
+
+    $("*[data-stringname]").each((i, e) => {
+        const _string = languageStrings[$(e).attr("data-stringname")]
+        if (_string) $(e).text(_string)
+    })
 })
 
 declare global {
@@ -41,4 +41,4 @@ declare global {
     }
 }
 
-export { _dev }
+export { _dev, languageStrings }

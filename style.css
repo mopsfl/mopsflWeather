@@ -42,6 +42,10 @@ a:hover {
     margin-left: auto;
 }
 
+.clickable {
+    cursor: pointer;
+}
+
 .container-header {
     margin-top: 10px;
 }
@@ -79,6 +83,10 @@ input[type="text"]:not(.browser-default) {
 input[type="text"]:not(.browser-default):focus {
     box-shadow: 0 0px 0 0 !important;
     border-bottom: 1px solid #555555 !important;
+}
+
+.material-symbols-outlined {
+    user-select: none;
 }
 
 .search-box {
@@ -226,18 +234,28 @@ input[type="text"]:not(.browser-default):focus {
     padding: 10px;
     border-radius: 4px;
     width: 50%;
+    max-height: 65px;
+    flex-wrap: wrap;
+    overflow: hidden;
+    margin-bottom: auto;
+    transition: max-height .2s;
+}
+
+.weather-data-info-item.expand {
+    max-height: 150px !important;
 }
 
 .weather-data-info-item>img {
     margin-left: auto;
 }
 
-.sunsetrise-info-item-value {
+.weather-data-info-item-value {
     margin: 0;
     font-weight: bold;
+    user-select: none;
 }
 
-.sunsetrise-info-item-name {
+.weather-data-info-item-name {
     margin: 0;
     color: gray;
     font-size: 12px;

@@ -1,4 +1,5 @@
-import { _dev } from ".."
+import { _dev, languageStrings } from ".."
+import Time from "./Time";
 import self from "./WeatherApi"
 import * as lodash from "lodash"
 
@@ -18,7 +19,9 @@ const _weatherData = $(".weather-data"),
     _windDirectionIcon = $(".wind-direction-icon"),
     _windDirectionDeg = $(".wind-directiondeg"),
     _sunriseValue = $(".sunrise-value"),
-    _sunsetValue = $(".sunset-value")
+    _sunsetValue = $(".sunset-value"),
+    _sunriseInValue = $(".sunrise-in-value"),
+    _sunsetInValue = $(".sunset-in-value")
 
 export default {
     async SearchCity(name: string | number | string[]) {
@@ -50,6 +53,8 @@ export default {
         _windDirectionIcon.css("transform", `rotate(${wind.deg + 180}deg)`)
         _sunriseValue.text(self.UnixTimestampToDateString(weatherData.data.sys.sunrise))
         _sunsetValue.text(self.UnixTimestampToDateString(weatherData.data.sys.sunset))
+        _sunriseInValue.text(Time.TimeUntil(weatherData.data.sys.sunrise, true))
+        _sunsetInValue.text(Time.TimeUntil(weatherData.data.sys.sunset, true))
 
         _weatherData.removeClass("hide")
     },
@@ -62,7 +67,7 @@ export default {
     },
 
     GetWindDirection(degrees: number) {
-        return windDirections.de[Math.round(degrees % 360 / 22.5) % 16];
+        return languageStrings.WEATHER_INFO_WIND_DIRECTIONS[Math.round(degrees % 360 / 22.5) % 16];
     },
 
     UnixTimestampToDateString(unixTimestamp: number, full?: boolean) {
