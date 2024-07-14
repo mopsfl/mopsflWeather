@@ -30,12 +30,13 @@ const __1 = require("..");
 const Time_1 = __importDefault(require("./Time"));
 const WeatherApi_1 = __importDefault(require("./WeatherApi"));
 const lodash = __importStar(require("lodash"));
+const WeatherIcons_1 = __importDefault(require("./WeatherIcons"));
 const API_URL_DEV = "http://localhost:6968/v1/", API_URL_PROD = "https://mopsflweather.mopsfl.de/v1/";
 const windDirections = {
     en: ["from the North", "from the North-Northeast", "from the Northeast", "from the East-Northeast", "from the East", "from the East-Southeast", "from the Southeast", "from the South-Southeast", "from the South", "from the South-Southwest", "from the Southwest", "from the West-Southwest", "from the West", "from the West-Northwest", "from the Northwest", "from the North-Northwest"],
     de: ["aus Norden", "aus Nord-Nordosten", "aus Nordosten", "aus Ost-Nordosten", "aus Osten", "aus Ost-Südosten", "aus Südosten", "aus Süd-Südosten", "aus Süden", "aus Süd-Südwesten", "aus Südwesten", "aus West-Südwesten", "aus Westen", "aus West-Nordwesten", "aus Nordwesten", "aus Nord-Nordwesten"]
 };
-const _weatherData = $(".weather-data"), _cityName = $(".weather-data-city-name"), _temperatureValue = $(".temperature-value"), _weatherDescription = $(".weather-description"), _windSpeedValue = $(".wind-speed-value"), _windGustSpeedValue = $(".windgust-speed-value"), _windDirectionIcon = $(".wind-direction-icon"), _windDirectionDeg = $(".wind-directiondeg"), _sunriseValue = $(".sunrise-value"), _sunsetValue = $(".sunset-value"), _sunriseInValue = $(".sunrise-in-value"), _sunsetInValue = $(".sunset-in-value");
+const _weatherData = $(".weather-data"), _cityName = $(".weather-data-city-name"), _temperatureValue = $(".temperature-value"), _weatherDescription = $(".weather-description"), _windSpeedValue = $(".wind-speed-value"), _windGustSpeedValue = $(".windgust-speed-value"), _windDirectionIcon = $(".wind-direction-icon"), _windDirectionDeg = $(".wind-directiondeg"), _sunriseValue = $(".sunrise-value"), _sunsetValue = $(".sunset-value"), _sunriseInValue = $(".sunrise-in-value"), _sunsetInValue = $(".sunset-in-value"), _weatherIcon = $(".main-info-weather-icon");
 exports.default = {
     async SearchCity(name) {
         return await fetch((!__1._dev ? API_URL_PROD : API_URL_DEV) + `data/searchcity?name=${name}`).then(res => res.json()).catch(err => {
@@ -54,10 +55,10 @@ exports.default = {
     UpdateWeatherData(weatherData, cityName) {
         if (weatherData.code !== 200 && weatherData.internal_error)
             return window.toastr.error(weatherData.internal_error.message.en, weatherData.internal_error.error);
-        const wind = WeatherApi_1.default.CalculateWind(weatherData.data.wind);
+        const wind = WeatherApi_1.default.CalculateWind(weatherData.data.wind), weather = weatherData.data.weather[weatherData.data.weather.length - 1];
         _cityName.text(`${cityName || weatherData.data.name}, ${weatherData.data.sys.country}`);
         _temperatureValue.text(`${lodash.round(weatherData.data.main.temp)}°C`);
-        _weatherDescription.text(weatherData.data.weather[0].description);
+        _weatherDescription.text(weather.description);
         _windSpeedValue.text(`${wind.speed}km/h`);
         _windGustSpeedValue.text(wind.gust ? `${wind.gust}km/h` : "N/A");
         _windDirectionDeg.html(WeatherApi_1.default.GetWindDirection(wind.deg).replace(/\s/, "<br>"));
@@ -66,6 +67,7 @@ exports.default = {
         _sunsetValue.text(WeatherApi_1.default.UnixTimestampToDateString(weatherData.data.sys.sunset));
         _sunriseInValue.text(Time_1.default.TimeUntil(weatherData.data.sys.sunrise, true));
         _sunsetInValue.text(Time_1.default.TimeUntil(weatherData.data.sys.sunset, true));
+        _weatherIcon.attr("src", WeatherIcons_1.default.GetIcon(WeatherIcons_1.default.Icons[weather.id], weatherData.data.timezone, true));
         _weatherData.removeClass("hide");
     },
     CalculateWind(windData) {

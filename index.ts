@@ -1,6 +1,8 @@
 import jQuery from "jquery";
 import SearchCity from "./modules/SearchCity";
 import Strings from "./modules/Strings";
+import WeatherIcons from "./modules/WeatherIcons";
+import Time from "./modules/Time";
 
 const _dev = location.hostname === "localhost",
     languageStrings = Strings.de
@@ -25,6 +27,9 @@ jQuery(async () => {
         const _string = languageStrings[$(e).attr("data-stringname")]
         if (_string) $(e).text(_string)
     })
+
+    window["icons"] = WeatherIcons
+    window["time"] = Time
 })
 
 declare global {

@@ -2,6 +2,7 @@ import { _dev, languageStrings } from ".."
 import Time from "./Time";
 import self from "./WeatherApi"
 import * as lodash from "lodash"
+import WeatherIcons from "./WeatherIcons";
 
 const API_URL_DEV: RequestInfo = "http://localhost:6968/v1/",
     API_URL_PROD: RequestInfo = "https://mopsflweather.mopsfl.de/v1/"
@@ -21,7 +22,8 @@ const _weatherData = $(".weather-data"),
     _sunriseValue = $(".sunrise-value"),
     _sunsetValue = $(".sunset-value"),
     _sunriseInValue = $(".sunrise-in-value"),
-    _sunsetInValue = $(".sunset-in-value")
+    _sunsetInValue = $(".sunset-in-value"),
+    _weatherIcon = $(".main-info-weather-icon")
 
 export default {
     async SearchCity(name: string | number | string[]) {
@@ -42,11 +44,12 @@ export default {
 
     UpdateWeatherData(weatherData: WeatherData, cityName?: string) {
         if (weatherData.code !== 200 && weatherData.internal_error) return window.toastr.error(weatherData.internal_error.message.en, weatherData.internal_error.error)
-        const wind = self.CalculateWind(weatherData.data.wind)
+        const wind = self.CalculateWind(weatherData.data.wind),
+            weather = weatherData.data.weather[weatherData.data.weather.length - 1]
 
         _cityName.text(`${cityName || weatherData.data.name}, ${weatherData.data.sys.country}`)
         _temperatureValue.text(`${lodash.round(weatherData.data.main.temp)}°C`)
-        _weatherDescription.text(weatherData.data.weather[0].description)
+        _weatherDescription.text(weather.description)
         _windSpeedValue.text(`${wind.speed}km/h`)
         _windGustSpeedValue.text(wind.gust ? `${wind.gust}km/h` : "N/A")
         _windDirectionDeg.html(self.GetWindDirection(wind.deg).replace(/\s/, "<br>"))
@@ -55,6 +58,7 @@ export default {
         _sunsetValue.text(self.UnixTimestampToDateString(weatherData.data.sys.sunset))
         _sunriseInValue.text(Time.TimeUntil(weatherData.data.sys.sunrise, true))
         _sunsetInValue.text(Time.TimeUntil(weatherData.data.sys.sunset, true))
+        _weatherIcon.attr("src", WeatherIcons.GetIcon(WeatherIcons.Icons[weather.id], weatherData.data.timezone, true))
 
         _weatherData.removeClass("hide")
     },

@@ -182,6 +182,11 @@ input[type="text"]:not(.browser-default):focus {
 
 .main-info-weather-icon {
     user-select: none;
+    transform: scale(75%);
+}
+
+.temperature-value {
+    transform: translateX(-10px);
 }
 
 .weather-data>.main-info {
