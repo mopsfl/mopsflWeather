@@ -85,16 +85,12 @@ export default {
 }
 
 export interface CitySearchResult {
-    city?: string,
-    city_ascii?: string,
-    lat?: string,
-    lng?: string,
-    country?: string,
-    iso2?: string,
-    iso3?: string,
-    admin_name?: string,
-    population?: string,
-    id?: string
+    name: string,
+    lat: string,
+    lng: string,
+    country: string,
+    admin1: string,
+    admin2: string,
 }
 
 export interface ApiError {

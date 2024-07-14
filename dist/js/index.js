@@ -8053,8 +8053,8 @@ var SearchCity_default = {
     WeatherApi_default.SearchCity(value).then((res) => {
       res.forEach((city) => {
         const dropdownItem = _dropdownItemTemplate.contents().clone();
-        dropdownItem.find(".city-name").text(city.city);
-        dropdownItem.find(".city-iso").text(city.iso2);
+        dropdownItem.find(".city-name").text(city.name);
+        dropdownItem.find(".city-iso").text(city.country);
         dropdownItem.appendTo(_autocompleteDropdown);
         dropdownItem.on("click", async () => await SearchCity_default.HandleDropdownAutoCompleteClick(city, inputElement));
       });
@@ -8062,7 +8062,7 @@ var SearchCity_default = {
       dropdownItemCityName.find(".city-name").text(value.toString());
       dropdownItemCityName.find(".city-iso").text("");
       dropdownItemCityName.appendTo(_autocompleteDropdown);
-      dropdownItemCityName.on("click", async () => await SearchCity_default.HandleDropdownAutoCompleteClick({ city: value.toString() }, inputElement));
+      dropdownItemCityName.on("click", async () => await SearchCity_default.HandleDropdownAutoCompleteClick({ name: value }, inputElement));
     }).catch((err) => {
       SearchCity_default.ToggleAutocompleteDropdown(false);
       _searchBoxLoadingSpinner.addClass("hide");
@@ -8073,9 +8073,9 @@ var SearchCity_default = {
   async HandleDropdownAutoCompleteClick(city, inputElement) {
     SearchCity_default.ToggleAutocompleteDropdown(false);
     _searchBoxLoadingSpinner.removeClass("hide");
-    await WeatherApi_default.GetWeatherData({ lat: city.lat, lon: city.lng, name: city.city }).then((res) => {
+    await WeatherApi_default.GetWeatherData({ lat: city.lat, lon: city.lng, name: city.name }).then((res) => {
       _searchBoxLoadingSpinner.addClass("hide");
-      WeatherApi_default.UpdateWeatherData(res, city.city);
+      WeatherApi_default.UpdateWeatherData(res, city.name);
     }).catch((err) => {
       _searchBoxLoadingSpinner.addClass("hide");
     }).finally(() => {

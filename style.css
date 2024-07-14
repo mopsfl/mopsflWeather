@@ -114,6 +114,8 @@ input[type="text"]:not(.browser-default):focus {
     padding-bottom: 5px;
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
+    max-height: 300px;
+    overflow: scroll;
 }
 
 .dropdown-item {
@@ -245,9 +247,6 @@ input[type="text"]:not(.browser-default):focus {
     max-height: 150px !important;
 }
 
-.weather-data-info-item>img {
-    margin-left: auto;
-}
 
 .weather-data-info-item-value {
     margin: 0;
@@ -262,10 +261,11 @@ input[type="text"]:not(.browser-default):focus {
     user-select: none;
 }
 
-.sunsetrise-icon {
+.weather-data-info-icon {
     width: 45px;
     height: 45px;
     user-select: none;
+    margin-left: auto;
 }
 
 @media only screen and (max-width: 600px) {
@@ -279,6 +279,12 @@ input[type="text"]:not(.browser-default):focus {
 
     .title-miscinfo {
         font-size: 10px;
+    }
+}
+
+@media only screen and (max-width: 430px) {
+    .weather-data-info-icon {
+        display: none;
     }
 }
 

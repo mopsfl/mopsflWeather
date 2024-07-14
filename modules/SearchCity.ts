@@ -30,8 +30,8 @@ export default {
         WeatherApi.SearchCity(value).then((res: CitySearchResult[]) => {
             res.forEach(city => {
                 const dropdownItem = _dropdownItemTemplate.contents().clone()
-                dropdownItem.find(".city-name").text(city.city)
-                dropdownItem.find(".city-iso").text(city.iso2)
+                dropdownItem.find(".city-name").text(city.name)
+                dropdownItem.find(".city-iso").text(city.country)
                 dropdownItem.appendTo(_autocompleteDropdown)
                 dropdownItem.on("click", async () => await self.HandleDropdownAutoCompleteClick(city, inputElement))
             })
@@ -39,7 +39,7 @@ export default {
             dropdownItemCityName.find(".city-name").text(value.toString())
             dropdownItemCityName.find(".city-iso").text("")
             dropdownItemCityName.appendTo(_autocompleteDropdown)
-            dropdownItemCityName.on("click", async () => await self.HandleDropdownAutoCompleteClick({ city: value.toString() }, inputElement))
+            dropdownItemCityName.on("click", async () => await self.HandleDropdownAutoCompleteClick({ name: value }, inputElement))
         }).catch(err => {
             self.ToggleAutocompleteDropdown(false)
             _searchBoxLoadingSpinner.addClass("hide")
@@ -49,13 +49,13 @@ export default {
         _searchBoxLoadingSpinner.addClass("hide")
     },
 
-    async HandleDropdownAutoCompleteClick(city: CitySearchResult, inputElement: JQuery<HTMLElement>) {
+    async HandleDropdownAutoCompleteClick(city: any, inputElement: JQuery<HTMLElement>) {
         self.ToggleAutocompleteDropdown(false)
         _searchBoxLoadingSpinner.removeClass("hide")
 
-        await WeatherApi.GetWeatherData({ lat: city.lat, lon: city.lng, name: city.city }).then(res => {
+        await WeatherApi.GetWeatherData({ lat: city.lat, lon: city.lng, name: city.name }).then(res => {
             _searchBoxLoadingSpinner.addClass("hide")
-            WeatherApi.UpdateWeatherData(res, city.city)
+            WeatherApi.UpdateWeatherData(res, city.name)
         }).catch(err => {
             _searchBoxLoadingSpinner.addClass("hide")
         }).finally(() => {
