@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = {
     GetIcon(name, timezone, animated) {
-        const hours = new Date(new Date().getTime() + timezone * 1000).getUTCHours(), isDayTime = hours > 6 && hours < 20;
+        const hours = new Date(new Date().getTime() + (timezone || 0) * 1000).getUTCHours(), isDayTime = hours > 6 && hours < 20;
         if (["day.svg"].includes(name) && !isDayTime) {
             name = "night.svg";
         }
@@ -58,8 +58,8 @@ exports.default = {
         /* SKY */
         800: "day.svg",
         801: "cloudy-day-1.svg",
-        802: "cloudy-day-3.svg",
-        803: "cloudy.svg",
+        802: "cloudy-day-2.svg",
+        803: "cloudy-day-3.svg",
         804: "cloudy.svg",
         /* MISC */
         701: "cloudy.svg",

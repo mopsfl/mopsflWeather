@@ -7,11 +7,16 @@ import self from "./Languages"
 export default {
     ["Deutsch - DE"]: "de",
     ["English - EN"]: "en",
+    ["French - FR"]: "fr",
+    ["Russian - RU"]: "ru",
+    ["Japanese - JA"]: "ja",
+    ["Arabic - AR"]: "ar",
+    ["Polish - PL"]: "pl",
 
     UpdateStrings() {
         $("*[data-stringname]").each((i, e) => {
             let _settings: SettingsValues = LocalStorage.GetKey(localStorageKey, "settings"),
-                _string = Strings[self[_settings.setting_language || "de"]][$(e).attr("data-stringname")]
+                _string = (Strings[self[_settings.setting_language || "de"]] || Strings.de)[$(e).attr("data-stringname") || "de"]
             if (_string) $(e).text(_string)
         })
     }

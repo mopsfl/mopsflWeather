@@ -35,7 +35,7 @@
                 <h5 class="title-name"><u>mopsfl</u><b>Weather</b></h5>
                 <span class="align_mright title-miscinfo">
                     <span>by mopsfl <span style="user-select: none;">&bull;</span> 1.0.0</span><br>
-                    <span>using <a target="_blank" href="https://openweathermap.org/api">OpenWeather</a> & <a target="_blank" href="https://www.amcharts.com/free-animated-svg-weather-icons/">amcharts</a></span>
+                    <span>using <a target="_blank" href="https://openweathermap.org/api">OpenWeather</a> & <a target="_blank" href="https://www.weatherapi.com">WeatherAPI</a> & <a target="_blank" href="https://www.amcharts.com/free-animated-svg-weather-icons/">amcharts</a></span>
                 </span>
             </div>
             <div class="divider"></div>
@@ -60,15 +60,20 @@
             </div>
         </div>
         <div class="weather-data container left-align">
-            <span class="weather-data-city-name">N/A, N/A</span>
             <div class="main-info">
-                <span class="main-info-temperature">
-                    <img class="main-info-weather-icon" src="" alt="main-info-weather-icon">
-                    <span class="temperature-value">N/A</span>
-                </span>
+                <div class="main-info-right">
+                    <span class="main-info-temperature">
+                        <img class="main-info-weather-icon" src="" alt="main-info-weather-icon">
+                        <span class="temperature-value">N/A</span>
+                    </span>
+                    <span class="weather-description">N/A</span>
+                </div>
+                <div class="main-info-left">
+                    <p class="weather-data-current-time">00:00</p>
+                    <span class="weather-data-city-name">N/A, N/A</span>
+                </div>
             </div>
-            <span class="weather-description">N/A</span>
-            <div class="weather-data-info-item w100">
+            <div class="weather-data-info-item weather-data-info-wind w100">
                 <div>
                     <p class="weather-data-info-item-name" data-stringname="WEATHER_INFO_WIND">Wind</p>
                     <span class="wind-speed-value weather-data-info-item-value">0km/h</span>
@@ -89,6 +94,7 @@
                         <p class="sunrise-value weather-data-info-item-value">00:00</p>
                     </div>
                     <img class="weather-data-info-icon" src="./images/svg/static/day.svg" alt="windicon">
+                    <div class="break"></div>
                     <div>
                         <p class="weather-data-info-item-name sunrise-in-value">in x Stunden</p>
                     </div>
@@ -99,14 +105,36 @@
                         <p class="sunset-value weather-data-info-item-value">00:00</p>
                     </div>
                     <img class="weather-data-info-icon gray-filter" src="./images/svg/static/night.svg" alt="windicon">
+                    <div class="break"></div>
                     <div>
                         <p class="weather-data-info-item-name sunset-in-value">in x Stunden</p>
+                    </div>
+                </div>
+            </div>
+            <div class="misc-weather-info">
+                <div class="weather-data-info-item">
+                    <div>
+                        <p class="weather-data-info-item-name" data-stringname="WEATHER_INFO_HUMIDITY">Luftfeuchtigkeit</p>
+                        <span class="humidity-value weather-data-info-item-value">N/A</span>
+                    </div>
+                </div>
+                <div class="weather-data-info-item">
+                    <div>
+                        <p class="weather-data-info-item-name" data-stringname="WEATHER_INFO_AIRPRESSURE">Luftdruck</p>
+                        <span class="airpressure-value weather-data-info-item-value">N/A</span>
+                    </div>
+                </div>
+                <div class="weather-data-info-item">
+                    <div>
+                        <p class="weather-data-info-item-name" data-stringname="WEATHER_INFO_UVINDEX">UV-Index</p>
+                        <span class="uvindex-value weather-data-info-item-value">0</span>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
+    <!--SETTINGS MODAL-->
     <div id="settingsmodal" class="modal bottom-sheet modal-fixed-footer">
         <div class="modal-content">
             <h4>Settings</h4>
@@ -116,6 +144,11 @@
                     <select id="setting_language">
                         <option value="0" selected>Deutsch - DE</option>
                         <option value="1">English - EN</option>
+                        <option value="2">French - FR</option>
+                        <option value="3">Russian - RU</option>
+                        <option value="4">Japanese - JA</option>
+                        <option value="5">Arabic - AR</option>
+                        <option value="6">Polish - PL</option>
                     </select>
                     <label>Materialize Select</label>
                 </div>

@@ -37,9 +37,8 @@ exports.default = {
         }
         return ago_text;
     },
-    TimeUntil(timestamp, toUnix) {
-        const difference = (toUnix ? timestamp * 1000 : timestamp) - new Date().getTime();
-        const absDifference = Math.abs(difference), hours = Math.floor(absDifference / (1000 * 60 * 60)), minutes = Math.floor((absDifference % (1000 * 60 * 60)) / (1000 * 60)), seconds = Math.floor((absDifference % (1000 * 60)) / 1000);
+    TimeUntil(timestamp, timezone = 0, toUnix) {
+        const difference = (toUnix ? timestamp * 1000 : timestamp) - new Date().getTime() + timezone, absDifference = Math.abs(difference), hours = Math.floor(absDifference / (1000 * 60 * 60)), minutes = Math.floor((absDifference % (1000 * 60 * 60)) / (1000 * 60)), seconds = Math.floor((absDifference % (1000 * 60)) / 1000);
         if (difference > 0) {
             if (hours > 0) {
                 return Strings_1.default.ToString(__1.languageStrings.WEATHER_INFO_TIMEIN_HOURS, hours);
@@ -61,6 +60,26 @@ exports.default = {
             else {
                 return Strings_1.default.ToString(__1.languageStrings.WEATHER_INFO_TIMEAGO_SECONDS, seconds);
             }
+        }
+    },
+    GetCurrentTimeWithTimezone(timezone = 0, type = 0) {
+        const date = new Date((new Date().getTime() + (timezone * 1000)));
+        const year = date.getUTCFullYear();
+        const month = ('0' + (date.getUTCMonth() + 1)).slice(-2);
+        const day = ('0' + date.getUTCDate()).slice(-2);
+        const hours = ('0' + date.getUTCHours()).slice(-2);
+        const minutes = ('0' + date.getUTCMinutes()).slice(-2);
+        const seconds = ('0' + date.getUTCSeconds()).slice(-2);
+        switch (type) {
+            case 0:
+                return `${hours}:${minutes}`;
+            case 1:
+                return `${hours}:${minutes}:${seconds}`;
+            case 2:
+                return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            default:
+                return `${hours}:${minutes}`;
+                break;
         }
     }
 };

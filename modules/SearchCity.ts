@@ -6,6 +6,7 @@ const doneTypingInterval = 350;
 const _dropdownItemTemplate = $(".dropdown-item-template")
 const _autocompleteDropdown = $(".autocomplete-dropdown")
 const _searchBoxLoadingSpinner = $(".search-box-loading-spinner")
+const _weatherDataContainer = $(".weather-data")
 
 export default {
     InitInput(inputElement: JQuery<HTMLElement>) {
@@ -53,9 +54,10 @@ export default {
         self.ToggleAutocompleteDropdown(false)
         _searchBoxLoadingSpinner.removeClass("hide")
 
-        await WeatherApi.GetWeatherData({ lat: city.lat, lon: city.lng, name: city.name }).then(res => {
+        await WeatherApi.GetWeatherApiData({ lat: city.lat, lon: city.lng, name: city.name }).then(WeatherApi.UpdateWeatherApiData)
+        await WeatherApi.GetOpenWeatherData({ lat: city.lat, lon: city.lng, name: city.name }).then(res => {
             _searchBoxLoadingSpinner.addClass("hide")
-            WeatherApi.UpdateWeatherData(res, city.name, notFromCityList)
+            WeatherApi.UpdateOpenWeatherData(res, city.name, notFromCityList)
         }).catch(err => {
             _searchBoxLoadingSpinner.addClass("hide")
         }).finally(() => {
@@ -67,9 +69,11 @@ export default {
         if (state === true) {
             if (clear) _autocompleteDropdown.empty()
             _autocompleteDropdown.removeClass("hide")
+            _weatherDataContainer.addClass("blur")
         } else {
             _autocompleteDropdown.empty()
             _autocompleteDropdown.addClass("hide")
+            _weatherDataContainer.removeClass("blur")
         }
     }
 }

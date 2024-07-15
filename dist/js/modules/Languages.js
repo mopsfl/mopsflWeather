@@ -10,9 +10,14 @@ const Languages_1 = __importDefault(require("./Languages"));
 exports.default = {
     ["Deutsch - DE"]: "de",
     ["English - EN"]: "en",
+    ["French - FR"]: "fr",
+    ["Russian - RU"]: "ru",
+    ["Japanese - JA"]: "ja",
+    ["Arabic - AR"]: "ar",
+    ["Polish - PL"]: "pl",
     UpdateStrings() {
         $("*[data-stringname]").each((i, e) => {
-            let _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), _string = Strings_1.default[Languages_1.default[_settings.setting_language || "de"]][$(e).attr("data-stringname")];
+            let _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), _string = (Strings_1.default[Languages_1.default[_settings.setting_language || "de"]] || Strings_1.default.de)[$(e).attr("data-stringname") || "de"];
             if (_string)
                 $(e).text(_string);
         });

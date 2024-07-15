@@ -9,21 +9,21 @@ exports.default = {
         return localStorage.setItem(key, btoa(JSON.stringify(value || {})));
     },
     Set(key, name, value) {
-        const _data = LocalStorage_1.default.Exists(key) && JSON.parse(atob(localStorage.getItem(key)));
+        const _data = LocalStorage_1.default.Exists(key) && JSON.parse(decodeURIComponent(atob(localStorage.getItem(key))));
         if (!_data)
             return console.warn(`invalid localstorage key '${key}'`);
         _data[name] = value;
-        localStorage.setItem(key, btoa(JSON.stringify(_data)));
+        localStorage.setItem(key, btoa(encodeURIComponent(JSON.stringify(_data))));
     },
     Edit(key, index, name, value) {
-        const _data = LocalStorage_1.default.Exists(key) && JSON.parse(atob(localStorage.getItem(key)));
+        const _data = LocalStorage_1.default.Exists(key) && JSON.parse(decodeURIComponent(atob(localStorage.getItem(key))));
         if (!_data)
             return console.warn(`invalid localstorage key '${key}'`);
         _data[index][name] = value;
-        localStorage.setItem(key, btoa(JSON.stringify(_data)));
+        localStorage.setItem(key, btoa(encodeURIComponent(JSON.stringify(_data))));
     },
     GetKey(key, index) {
-        const _data = LocalStorage_1.default.Exists(key) && JSON.parse(atob(localStorage.getItem(key)));
+        const _data = LocalStorage_1.default.Exists(key) && JSON.parse(decodeURIComponent(atob(localStorage.getItem(key))));
         if (!_data)
             return console.warn(`invalid localstorage key '${key}'`);
         return _data[index];

@@ -11,6 +11,7 @@ const _dropdownItemTemplate = $(".dropdown-item-template");
 const _autocompleteDropdown = $(".autocomplete-dropdown");
 const _searchBoxLoadingSpinner = $(".search-box-loading-spinner");
 exports._searchBoxLoadingSpinner = _searchBoxLoadingSpinner;
+const _weatherDataContainer = $(".weather-data");
 exports.default = {
     InitInput(inputElement) {
         var _typingTimer;
@@ -53,9 +54,10 @@ exports.default = {
     async HandleDropdownAutoCompleteClick(city, inputElement, notFromCityList) {
         SearchCity_1.default.ToggleAutocompleteDropdown(false);
         _searchBoxLoadingSpinner.removeClass("hide");
-        await WeatherApi_1.default.GetWeatherData({ lat: city.lat, lon: city.lng, name: city.name }).then(res => {
+        await WeatherApi_1.default.GetWeatherApiData({ lat: city.lat, lon: city.lng, name: city.name }).then(WeatherApi_1.default.UpdateWeatherApiData);
+        await WeatherApi_1.default.GetOpenWeatherData({ lat: city.lat, lon: city.lng, name: city.name }).then(res => {
             _searchBoxLoadingSpinner.addClass("hide");
-            WeatherApi_1.default.UpdateWeatherData(res, city.name, notFromCityList);
+            WeatherApi_1.default.UpdateOpenWeatherData(res, city.name, notFromCityList);
         }).catch(err => {
             _searchBoxLoadingSpinner.addClass("hide");
         }).finally(() => {
@@ -67,10 +69,12 @@ exports.default = {
             if (clear)
                 _autocompleteDropdown.empty();
             _autocompleteDropdown.removeClass("hide");
+            _weatherDataContainer.addClass("blur");
         }
         else {
             _autocompleteDropdown.empty();
             _autocompleteDropdown.addClass("hide");
+            _weatherDataContainer.removeClass("blur");
         }
     }
 };

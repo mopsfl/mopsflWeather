@@ -23,7 +23,8 @@ export default {
         switch (err.code) {
             case 1:
                 _searchBoxLoadingSpinner.removeClass("hide")
-                WeatherApi.GetWeatherData(undefined, true).then(WeatherApi.UpdateWeatherData)
+                WeatherApi.GetOpenWeatherData(undefined, true).then(WeatherApi.UpdateOpenWeatherData)
+                WeatherApi.GetWeatherApiData(undefined).then(WeatherApi.UpdateWeatherApiData)
                 _searchBoxLoadingSpinner.addClass("hide")
                 break;
             case 2:

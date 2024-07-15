@@ -9,6 +9,7 @@ import WeatherApi from "./modules/WeatherApi";
 import Settings, { SettingsValues } from "./modules/Settings";
 import Languages from "./modules/Languages";
 import { CustomEvents } from "./modules/CustomEvents";
+import Util from "./modules/Util";
 
 const _dev = location.hostname === "localhost",
     languageStrings = Strings.de,
@@ -43,14 +44,16 @@ jQuery(async () => {
         switch (res.state) {
             case "denied":
                 _searchBoxLoadingSpinner.removeClass("hide")
-                await WeatherApi.GetWeatherData(undefined, true).then(WeatherApi.UpdateWeatherData)
+                await WeatherApi.GetOpenWeatherData(undefined, true).then(WeatherApi.UpdateOpenWeatherData)
+                await WeatherApi.GetWeatherApiData(undefined).then(WeatherApi.UpdateWeatherApiData)
                 _searchBoxLoadingSpinner.addClass("hide")
                 break;
             case "granted":
             case "prompt":
                 _searchBoxLoadingSpinner.removeClass("hide")
                 GeoLocation.GetGeoLocation(async (pos: GeolocationPosition) => {
-                    await WeatherApi.GetWeatherData({ lat: pos.coords.latitude, lon: pos.coords.longitude }).then(WeatherApi.UpdateWeatherData)
+                    await WeatherApi.GetOpenWeatherData({ lat: pos.coords.latitude, lon: pos.coords.longitude }).then(WeatherApi.UpdateOpenWeatherData)
+                    await WeatherApi.GetWeatherApiData({ lat: pos.coords.latitude, lon: pos.coords.longitude }).then(WeatherApi.UpdateWeatherApiData)
                     _searchBoxLoadingSpinner.addClass("hide")
                 }, GeoLocation.GetGeoLocationErrorCallback)
                 break;
@@ -61,11 +64,16 @@ jQuery(async () => {
         Languages.UpdateStrings()
     })
 
-    window["icons"] = WeatherIcons
-    window["time"] = Time
+    window["WeatherIcons"] = WeatherIcons
+    window["Time"] = Time
     window["lstorage"] = LocalStorage
-    window["languages"] = Languages
-    window["customevents"] = CustomEvents
+    window["Languages"] = Languages
+    window["CustomEvents"] = CustomEvents
+    _dev && (window["WeatherApi"] = WeatherApi)
+    window["SearchCity"] = SearchCity
+    window["Util"] = Util
+    window["Settings"] = settings
+    window["GeoLocation"] = GeoLocation
 })
 
 declare global {

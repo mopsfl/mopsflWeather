@@ -24,7 +24,8 @@ exports.default = {
         switch (err.code) {
             case 1:
                 SearchCity_1._searchBoxLoadingSpinner.removeClass("hide");
-                WeatherApi_1.default.GetWeatherData(undefined, true).then(WeatherApi_1.default.UpdateWeatherData);
+                WeatherApi_1.default.GetOpenWeatherData(undefined, true).then(WeatherApi_1.default.UpdateOpenWeatherData);
+                WeatherApi_1.default.GetWeatherApiData(undefined).then(WeatherApi_1.default.UpdateWeatherApiData);
                 SearchCity_1._searchBoxLoadingSpinner.addClass("hide");
                 break;
             case 2:
