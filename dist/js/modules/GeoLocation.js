@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("..");
+const Loading_1 = __importDefault(require("./Loading"));
 const LocalStorage_1 = __importDefault(require("./LocalStorage"));
-const SearchCity_1 = require("./SearchCity");
 const WeatherApi_1 = __importDefault(require("./WeatherApi"));
 exports.default = {
     GetGeoLocation(positionCallback, errorCallback) {
@@ -23,10 +23,10 @@ exports.default = {
         console.error(err);
         switch (err.code) {
             case 1:
-                SearchCity_1._searchBoxLoadingSpinner.removeClass("hide");
+                Loading_1.default.Toggle(true);
                 WeatherApi_1.default.GetOpenWeatherData(undefined, true).then(WeatherApi_1.default.UpdateOpenWeatherData);
-                WeatherApi_1.default.GetWeatherApiData(undefined).then(WeatherApi_1.default.UpdateWeatherApiData);
-                SearchCity_1._searchBoxLoadingSpinner.addClass("hide");
+                WeatherApi_1.default.GetWeatherApiData({ name: "Frankfurt" }).then(WeatherApi_1.default.UpdateWeatherApiData);
+                Loading_1.default.Toggle(false);
                 break;
             case 2:
             case 3:

@@ -10,6 +10,7 @@ import Settings, { SettingsValues } from "./modules/Settings";
 import Languages from "./modules/Languages";
 import { CustomEvents } from "./modules/CustomEvents";
 import Util from "./modules/Util";
+import Loading from "./modules/Loading";
 
 const _dev = location.hostname === "localhost",
     languageStrings = Strings.de,
@@ -44,18 +45,18 @@ jQuery(async () => {
     await GeoLocation.QueryPermission("geolocation").then(async res => {
         switch (res.state) {
             case "denied":
-                _searchBoxLoadingSpinner.removeClass("hide")
+                Loading.Toggle(true)
                 await WeatherApi.GetOpenWeatherData(undefined, true).then(WeatherApi.UpdateOpenWeatherData)
-                await WeatherApi.GetWeatherApiData(undefined).then(WeatherApi.UpdateWeatherApiData)
-                _searchBoxLoadingSpinner.addClass("hide")
+                await WeatherApi.GetWeatherApiData({ name: "Frankfurt" }).then(WeatherApi.UpdateWeatherApiData)
+                Loading.Toggle(false)
                 break;
             case "granted":
             case "prompt":
-                _searchBoxLoadingSpinner.removeClass("hide")
+                Loading.Toggle(true)
                 GeoLocation.GetGeoLocation(async (pos: GeolocationPosition) => {
                     await WeatherApi.GetOpenWeatherData({ lat: pos.coords.latitude, lon: pos.coords.longitude }).then(WeatherApi.UpdateOpenWeatherData)
                     await WeatherApi.GetWeatherApiData({ lat: pos.coords.latitude, lon: pos.coords.longitude }).then(WeatherApi.UpdateWeatherApiData)
-                    _searchBoxLoadingSpinner.addClass("hide")
+                    Loading.Toggle(false)
                 }, GeoLocation.GetGeoLocationErrorCallback)
                 break;
         }
@@ -80,6 +81,7 @@ jQuery(async () => {
     window["Util"] = Util
     window["Settings"] = settings
     window["GeoLocation"] = GeoLocation
+    window["Loading"] = Loading
 })
 
 declare global {

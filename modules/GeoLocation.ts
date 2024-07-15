@@ -1,4 +1,5 @@
 import { localStorageKey } from ".."
+import Loading from "./Loading"
 import LocalStorage from "./LocalStorage"
 import { _searchBoxLoadingSpinner } from "./SearchCity"
 import { SettingsValues } from "./Settings"
@@ -22,10 +23,10 @@ export default {
         console.error(err)
         switch (err.code) {
             case 1:
-                _searchBoxLoadingSpinner.removeClass("hide")
+                Loading.Toggle(true)
                 WeatherApi.GetOpenWeatherData(undefined, true).then(WeatherApi.UpdateOpenWeatherData)
-                WeatherApi.GetWeatherApiData(undefined).then(WeatherApi.UpdateWeatherApiData)
-                _searchBoxLoadingSpinner.addClass("hide")
+                WeatherApi.GetWeatherApiData({ name: "Frankfurt" }).then(WeatherApi.UpdateWeatherApiData)
+                Loading.Toggle(false)
                 break;
             case 2:
             case 3:

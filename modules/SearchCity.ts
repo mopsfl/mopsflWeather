@@ -1,6 +1,7 @@
 import { _dev } from "..";
+import Loading from "./Loading";
 import self from "./SearchCity"
-import WeatherApi, { CitySearchResult } from "./WeatherApi";
+import WeatherApi, { _weatherForecastItems, CitySearchResult } from "./WeatherApi";
 const doneTypingInterval = 350;
 
 const _dropdownItemTemplate = $(".dropdown-item-template")
@@ -43,25 +44,30 @@ export default {
             dropdownItemCityName.on("click", async () => await self.HandleDropdownAutoCompleteClick({ name: value }, inputElement, true))
         }).catch(err => {
             self.ToggleAutocompleteDropdown(false)
-            _searchBoxLoadingSpinner.addClass("hide")
+            Loading.Toggle(false)
+        }).then(res => {
+            Loading.Toggle(false)
         })
 
         self.ToggleAutocompleteDropdown(true, true)
-        _searchBoxLoadingSpinner.addClass("hide")
     },
 
     async HandleDropdownAutoCompleteClick(city: any, inputElement: JQuery<HTMLElement>, notFromCityList?: boolean) {
         self.ToggleAutocompleteDropdown(false)
-        _searchBoxLoadingSpinner.removeClass("hide")
+        Loading.Toggle(true)
 
-        await WeatherApi.GetWeatherApiData({ lat: city.lat, lon: city.lng, name: city.name }).then(WeatherApi.UpdateWeatherApiData)
+        _weatherForecastItems.empty()
         await WeatherApi.GetOpenWeatherData({ lat: city.lat, lon: city.lng, name: city.name }).then(res => {
-            _searchBoxLoadingSpinner.addClass("hide")
             WeatherApi.UpdateOpenWeatherData(res, city.name, notFromCityList)
         }).catch(err => {
-            _searchBoxLoadingSpinner.addClass("hide")
+            Loading.Toggle(false)
+            console.error(err)
         }).finally(() => {
             inputElement.val("")
+            Loading.Toggle(false)
+        })
+        await WeatherApi.GetWeatherApiData({ lat: city.lat, lon: city.lng, name: city.name }).then(WeatherApi.UpdateWeatherApiData).catch(err => {
+            Loading.Toggle(false)
         })
     },
 
@@ -74,6 +80,7 @@ export default {
             _autocompleteDropdown.empty()
             _autocompleteDropdown.addClass("hide")
             _weatherDataContainer.removeClass("blur")
+            _searchBoxLoadingSpinner.addClass("hide")
         }
     }
 }

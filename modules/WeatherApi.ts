@@ -302,3 +302,5 @@ export interface InternalError {
 export interface WindData {
     speed: number, deg: number, gust: number,
 }
+
+export { _weatherForecastItems }
