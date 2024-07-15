@@ -62,6 +62,12 @@ exports.default = {
             }
         }
     },
+    GetHourString(timestamp) {
+        const date = new Date(timestamp);
+        const hours = ('0' + date.getHours()).slice(-2);
+        const minutes = ('0' + date.getMinutes()).slice(-2);
+        return `${hours}:${minutes}`;
+    },
     GetCurrentTimeWithTimezone(timezone = 0, type = 0) {
         const date = new Date((new Date().getTime() + (timezone * 1000)));
         const year = date.getUTCFullYear();

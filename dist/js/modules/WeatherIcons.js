@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = {
-    GetIcon(name, timezone, animated) {
-        const hours = new Date(new Date().getTime() + (timezone || 0) * 1000).getUTCHours(), isDayTime = hours > 6 && hours < 20;
+    GetIcon(name, timezone, animated, isDay) {
+        const hours = new Date(new Date().getTime() + (timezone || 0) * 1000).getUTCHours(), isDayTime = isDay || hours > 6 && hours < 20;
         if (["day.svg"].includes(name) && !isDayTime) {
             name = "night.svg";
         }
@@ -55,12 +55,6 @@ exports.default = {
         620: "snowy-4.svg",
         621: "snowy-5.svg",
         622: "snowy-6.svg",
-        /* SKY */
-        800: "day.svg",
-        801: "cloudy-day-1.svg",
-        802: "cloudy-day-2.svg",
-        803: "cloudy-day-3.svg",
-        804: "cloudy.svg",
         /* MISC */
         701: "cloudy.svg",
         711: "cloudy.svg",
@@ -72,5 +66,60 @@ exports.default = {
         762: "cloudy.svg",
         771: "cloudy.svg",
         781: "cloudy.svg",
+        /* SKY */
+        800: "day.svg",
+        801: "cloudy-day-1.svg",
+        802: "cloudy-day-2.svg",
+        803: "cloudy-day-3.svg",
+        804: "cloudy.svg",
+        811: "night.svg",
+        1000: "day.svg",
+        1003: "cloudy-day-1.svg",
+        1006: "cloudy-day-1.svg",
+        1009: "cloudy.svg",
+        1030: "cloudy.svg",
+        1063: "cloudy-day-3.svg",
+        1066: "snowy-1.svg",
+        1069: "snowy-3.svg",
+        1082: "snowy-4.svg",
+        1087: "thunder.svg",
+        1114: "snowy-5.svg",
+        1117: "snowy-6.svg",
+        1135: "cloudy.svg",
+        1147: "cloudy.svg",
+        1150: "rainy-4.svg",
+        1153: "rainy-4.svg",
+        1168: "rainy-4.svg",
+        1171: "rainy-5.svg",
+        1180: "rainy-4.svg",
+        1183: "rainy-4.svg",
+        1186: "rainy-5.svg",
+        1189: "rainy-6.svg",
+        1192: "rainy-7.svg",
+        1195: "rainy-7.svg",
+        1198: "rainy-4.svg",
+        1201: "rainy-5.svg",
+        1204: "snowy-5.svg",
+        1207: "snowy-6.svg",
+        1210: "snowy-4.svg",
+        1213: "snowy-4.svg",
+        1216: "snowy-5.svg",
+        1219: "snowy-5.svg",
+        1222: "snowy-6.svg",
+        1225: "snowy-6.svg",
+        1227: "rainy-7.svg",
+        1240: "rainy-4.svg",
+        1243: "rainy-5.svg",
+        1246: "rainy-5.svg",
+        1249: "rainy-5.svg",
+        1252: "rainy-5.svg",
+        1255: "snowy-4.svg",
+        1258: "snowy-5.svg",
+        1261: "snowy-5.svg",
+        1264: "snowy-5.svg",
+        1273: "thunder.svg",
+        1276: "thunder.svg",
+        1279: "thunder.svg",
+        1282: "thunder.svg",
     },
 };

@@ -9,6 +9,7 @@ export default {
         WEATHER_INFO_HUMIDITY: "Luftfeuchtigkeit",
         WEATHER_INFO_AIRPRESSURE: "Luftdruck",
         WEATHER_INFO_UVINDEX: "UV-Index",
+        WEATHER_HOURLY_FORECAST: "Stündliche Vorhersage",
 
         WEATHER_INFO_TIMEAGO_HOURS: "vor %VALUE% Stunden",
         WEATHER_INFO_TIMEAGO_MINUTES: "vor %VALUE% Minuten",
@@ -29,6 +30,7 @@ export default {
         WEATHER_INFO_HUMIDITY: "Air Humidity",
         WEATHER_INFO_AIRPRESSURE: "Air Pressure",
         WEATHER_INFO_UVINDEX: "UV-Index",
+        WEATHER_HOURLY_FORECAST: "Hourly Forecast",
 
         WEATHER_INFO_TIMEAGO_HOURS: "%VALUE% hours ago",
         WEATHER_INFO_TIMEAGO_MINUTES: "%VALUE% minutes ago",

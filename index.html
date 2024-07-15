@@ -45,10 +45,11 @@
             <div class="search-city-input-field input-field">
                 <div class="search-box-container">
                     <input type="text" id="searchcity_input" class="searchcity_input" placeholder="Search city" value="">
-                    <div class="loading-spinner search-box-loading-spinner hide">
+                    <!--<div class="loading-spinner search-box-loading-spinner hide">
                         <div class="cube1"></div>
                         <div class="cube2"></div>
-                    </div>
+                    </div>-->
+                    <div class="loading-spinner search-box-loading-spinner hide"></div>
                 </div>
                 <div class="autocomplete-dropdown hide">
                     <template class="dropdown-item-template">
@@ -71,6 +72,21 @@
                 <div class="main-info-left">
                     <p class="weather-data-current-time">00:00</p>
                     <span class="weather-data-city-name">N/A, N/A</span>
+                </div>
+            </div>
+            <div class="weather-data-info-item w100 weather-forecast-list">
+                <p class="weather-data-info-item-name weather-forecast-list-header" data-stringname="WEATHER_HOURLY_FORECAST">Stündliche Vorhersage</p>
+                <div class="break"></div>
+                <!--<div class="card-img skeleton"></div>-->
+                <div class="weather-forecast-items">
+                    <template class="weather-forecast-item-template">
+                        <div class="weather-forecast-item">
+                            <span class="weather-forecast-temperature-value">N/A</span>
+                            <span class="weather-forecast-rain-chance">N/A</span>
+                            <img class="weather-forecast-icon" src="" alt="weather-forecast-icon">
+                            <span class="weather-forecast-time-value">N/A</span>
+                        </div>
+                    </template>
                 </div>
             </div>
             <div class="weather-data-info-item weather-data-info-wind w100">

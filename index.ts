@@ -20,7 +20,8 @@ const settings = new Settings()
 jQuery(async () => {
     M.AutoInit()
     const SearchCityInput = jQuery(".searchcity_input"),
-        SettingsModal = M.Modal.getInstance(document.getElementById("settingsmodal"))
+        SettingsModal = M.Modal.getInstance(document.getElementById("settingsmodal")),
+        weatherForecastItems = document.querySelector('.weather-forecast-items')
 
     settings.init()
     SearchCity.InitInput(SearchCityInput)
@@ -63,6 +64,11 @@ jQuery(async () => {
     CustomEvents.AddEventListener(window, settings.config.settingUpdateEventName, (e) => {
         Languages.UpdateStrings()
     })
+
+    weatherForecastItems.addEventListener('wheel', function (e: any) {
+        e.preventDefault();
+        weatherForecastItems.scrollLeft += e.deltaY * 0.2
+    }, { passive: false });
 
     window["WeatherIcons"] = WeatherIcons
     window["Time"] = Time
