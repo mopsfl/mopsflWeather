@@ -39,7 +39,7 @@ export default {
             dropdownItemCityName.find(".city-name").text(value.toString())
             dropdownItemCityName.find(".city-iso").text("")
             dropdownItemCityName.appendTo(_autocompleteDropdown)
-            dropdownItemCityName.on("click", async () => await self.HandleDropdownAutoCompleteClick({ name: value }, inputElement))
+            dropdownItemCityName.on("click", async () => await self.HandleDropdownAutoCompleteClick({ name: value }, inputElement, true))
         }).catch(err => {
             self.ToggleAutocompleteDropdown(false)
             _searchBoxLoadingSpinner.addClass("hide")
@@ -49,13 +49,13 @@ export default {
         _searchBoxLoadingSpinner.addClass("hide")
     },
 
-    async HandleDropdownAutoCompleteClick(city: any, inputElement: JQuery<HTMLElement>) {
+    async HandleDropdownAutoCompleteClick(city: any, inputElement: JQuery<HTMLElement>, notFromCityList?: boolean) {
         self.ToggleAutocompleteDropdown(false)
         _searchBoxLoadingSpinner.removeClass("hide")
 
         await WeatherApi.GetWeatherData({ lat: city.lat, lon: city.lng, name: city.name }).then(res => {
             _searchBoxLoadingSpinner.addClass("hide")
-            WeatherApi.UpdateWeatherData(res, city.name)
+            WeatherApi.UpdateWeatherData(res, city.name, notFromCityList)
         }).catch(err => {
             _searchBoxLoadingSpinner.addClass("hide")
         }).finally(() => {
@@ -73,3 +73,5 @@ export default {
         }
     }
 }
+
+export { _searchBoxLoadingSpinner }

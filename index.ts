@@ -1,15 +1,29 @@
 import jQuery from "jquery";
-import SearchCity from "./modules/SearchCity";
+import SearchCity, { _searchBoxLoadingSpinner } from "./modules/SearchCity";
 import Strings from "./modules/Strings";
 import WeatherIcons from "./modules/WeatherIcons";
 import Time from "./modules/Time";
+import LocalStorage from "./modules/LocalStorage";
+import GeoLocation from "./modules/GeoLocation";
+import WeatherApi from "./modules/WeatherApi";
+import Settings, { SettingsValues } from "./modules/Settings";
+import Languages from "./modules/Languages";
+import { CustomEvents } from "./modules/CustomEvents";
 
 const _dev = location.hostname === "localhost",
-    languageStrings = Strings.de
+    languageStrings = Strings.de,
+    localStorageKey = "__mopsflweather"
+
+const settings = new Settings()
 
 jQuery(async () => {
-    const SearchCityInput = jQuery(".searchcity_input")
+    M.AutoInit()
+    const SearchCityInput = jQuery(".searchcity_input"),
+        SettingsModal = M.Modal.getInstance(document.getElementById("settingsmodal"))
+
+    settings.init()
     SearchCity.InitInput(SearchCityInput)
+    Languages.UpdateStrings()
 
     window.toastr.options = {
         "newestOnTop": true,
@@ -21,15 +35,37 @@ jQuery(async () => {
         $(e).on("click", () => {
             $(e).toggleClass("expand")
         })
-    })
+    });
+    $(".settings-btn").on("click", () => SettingsModal.open())
 
-    $("*[data-stringname]").each((i, e) => {
-        const _string = languageStrings[$(e).attr("data-stringname")]
-        if (_string) $(e).text(_string)
+    if (!LocalStorage.Exists(localStorageKey)) LocalStorage.Create(localStorageKey, {})
+    await GeoLocation.QueryPermission("geolocation").then(async res => {
+        switch (res.state) {
+            case "denied":
+                _searchBoxLoadingSpinner.removeClass("hide")
+                await WeatherApi.GetWeatherData(undefined, true).then(WeatherApi.UpdateWeatherData)
+                _searchBoxLoadingSpinner.addClass("hide")
+                break;
+            case "granted":
+            case "prompt":
+                _searchBoxLoadingSpinner.removeClass("hide")
+                GeoLocation.GetGeoLocation(async (pos: GeolocationPosition) => {
+                    await WeatherApi.GetWeatherData({ lat: pos.coords.latitude, lon: pos.coords.longitude }).then(WeatherApi.UpdateWeatherData)
+                    _searchBoxLoadingSpinner.addClass("hide")
+                }, GeoLocation.GetGeoLocationErrorCallback)
+                break;
+        }
+    }).catch(console.error)
+
+    CustomEvents.AddEventListener(window, settings.config.settingUpdateEventName, (e) => {
+        Languages.UpdateStrings()
     })
 
     window["icons"] = WeatherIcons
     window["time"] = Time
+    window["lstorage"] = LocalStorage
+    window["languages"] = Languages
+    window["customevents"] = CustomEvents
 })
 
 declare global {
@@ -46,4 +82,4 @@ declare global {
     }
 }
 
-export { _dev, languageStrings }
+export { _dev, languageStrings, localStorageKey, settings }

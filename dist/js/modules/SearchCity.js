@@ -3,12 +3,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports._searchBoxLoadingSpinner = void 0;
 const SearchCity_1 = __importDefault(require("./SearchCity"));
 const WeatherApi_1 = __importDefault(require("./WeatherApi"));
 const doneTypingInterval = 350;
 const _dropdownItemTemplate = $(".dropdown-item-template");
 const _autocompleteDropdown = $(".autocomplete-dropdown");
 const _searchBoxLoadingSpinner = $(".search-box-loading-spinner");
+exports._searchBoxLoadingSpinner = _searchBoxLoadingSpinner;
 exports.default = {
     InitInput(inputElement) {
         var _typingTimer;
@@ -40,7 +42,7 @@ exports.default = {
             dropdownItemCityName.find(".city-name").text(value.toString());
             dropdownItemCityName.find(".city-iso").text("");
             dropdownItemCityName.appendTo(_autocompleteDropdown);
-            dropdownItemCityName.on("click", async () => await SearchCity_1.default.HandleDropdownAutoCompleteClick({ name: value }, inputElement));
+            dropdownItemCityName.on("click", async () => await SearchCity_1.default.HandleDropdownAutoCompleteClick({ name: value }, inputElement, true));
         }).catch(err => {
             SearchCity_1.default.ToggleAutocompleteDropdown(false);
             _searchBoxLoadingSpinner.addClass("hide");
@@ -48,12 +50,12 @@ exports.default = {
         SearchCity_1.default.ToggleAutocompleteDropdown(true, true);
         _searchBoxLoadingSpinner.addClass("hide");
     },
-    async HandleDropdownAutoCompleteClick(city, inputElement) {
+    async HandleDropdownAutoCompleteClick(city, inputElement, notFromCityList) {
         SearchCity_1.default.ToggleAutocompleteDropdown(false);
         _searchBoxLoadingSpinner.removeClass("hide");
         await WeatherApi_1.default.GetWeatherData({ lat: city.lat, lon: city.lng, name: city.name }).then(res => {
             _searchBoxLoadingSpinner.addClass("hide");
-            WeatherApi_1.default.UpdateWeatherData(res, city.name);
+            WeatherApi_1.default.UpdateWeatherData(res, city.name, notFromCityList);
         }).catch(err => {
             _searchBoxLoadingSpinner.addClass("hide");
         }).finally(() => {

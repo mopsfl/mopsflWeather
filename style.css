@@ -76,6 +76,95 @@ a:hover {
     width: 100% !important;
 }
 
+.modal,
+.modal-footer {
+    background-color: #1e1e1e !important;
+}
+
+.modal-close {
+    margin-right: 5px !important;
+}
+
+.modal.modal-fixed-footer .modal-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important
+}
+
+.setting {
+    height: 29px !important;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    margin-top: 15px;
+}
+
+
+.settings-grid {
+    display: grid;
+}
+
+.settings-grid>.seperator {
+    margin-top: 15px;
+}
+
+
+.input-field.col>label {
+    left: 0 !important;
+}
+
+.setting>.input-field {
+    margin: 0;
+    margin-bottom: 5px;
+    margin-left: auto !important;
+}
+
+.setting>.input-field>input {
+    height: 2.5rem !important;
+}
+
+.setting.input-field>.select-wrapper {
+    margin-left: auto !important;
+}
+
+.input-field>label {
+    display: none;
+}
+
+.setting>label {
+    margin-left: auto;
+}
+
+.setting>.input-field>input {
+    height: 29px !important;
+    font-size: 15px !important;
+}
+
+.range-field,
+.range-field>input {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+}
+
+.setting-name {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.seperator {
+    background-color: #3b3b3b;
+    height: 1px;
+}
+
+.setting-info {
+    font-size: 17px !important;
+    margin-left: 5px;
+    background-color: #333333;
+    border-radius: 1em;
+    padding: 1px;
+}
+
 input[type="text"]:not(.browser-default) {
     border-bottom: 1px solid #3a3a3a !important;
 }
@@ -87,6 +176,7 @@ input[type="text"]:not(.browser-default):focus {
 
 .material-symbols-outlined {
     user-select: none;
+    pointer-events: none;
 }
 
 .search-box {
@@ -271,6 +361,23 @@ input[type="text"]:not(.browser-default):focus {
     height: 45px;
     user-select: none;
     margin-left: auto;
+}
+
+.settings-button-container {
+    width: 100%;
+    display: flex;
+    justify-content: right;
+    margin-top: 5px;
+}
+
+.settings-btn {
+    width: 30px !important;
+    height: 30px !important;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    display: flex !important;
+    box-shadow: none !important;
 }
 
 @media only screen and (max-width: 600px) {

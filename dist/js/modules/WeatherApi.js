@@ -31,6 +31,9 @@ const Time_1 = __importDefault(require("./Time"));
 const WeatherApi_1 = __importDefault(require("./WeatherApi"));
 const lodash = __importStar(require("lodash"));
 const WeatherIcons_1 = __importDefault(require("./WeatherIcons"));
+const LocalStorage_1 = __importDefault(require("./LocalStorage"));
+const Languages_1 = __importDefault(require("./Languages"));
+const Util_1 = __importDefault(require("./Util"));
 const API_URL_DEV = "http://localhost:6968/v1/", API_URL_PROD = "https://mopsflweather.mopsfl.de/v1/";
 const windDirections = {
     en: ["from the North", "from the North-Northeast", "from the Northeast", "from the East-Northeast", "from the East", "from the East-Southeast", "from the Southeast", "from the South-Southeast", "from the South", "from the South-Southwest", "from the Southwest", "from the West-Southwest", "from the West", "from the West-Northwest", "from the Northwest", "from the North-Northwest"],
@@ -44,21 +47,22 @@ exports.default = {
             console.error(err);
         });
     },
-    async GetWeatherData(args) {
-        if (!(args))
+    async GetWeatherData(args, useDefault) {
+        if (!(args) && !useDefault)
             throw new Error("Missing <WeatherRequestArguments>");
-        return await fetch((!__1._dev ? API_URL_PROD : API_URL_DEV) + `data/currentweather?${(args.lat && args.lon) ? `lat=${args.lat}&lon=${args.lon}` : `name=${args.name}`}`).then(res => res.json()).catch(err => {
+        let _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), query = !useDefault ? `${(args.lat && args.lon) ? `lat=${args.lat}&lon=${args.lon}` : `location=${args.name}`}` : "";
+        return await fetch((!__1._dev ? API_URL_PROD : API_URL_DEV) + `data/currentweather?${query}${_settings?.setting_language ? `&lang=${Languages_1.default[_settings?.setting_language]}` : ""}`).then(res => res.json()).catch(err => {
             window.toastr.error(err, "ApiError");
             console.error(err);
         });
     },
-    UpdateWeatherData(weatherData, cityName) {
+    UpdateWeatherData(weatherData, cityName, notFromCityList) {
         if (weatherData.code !== 200 && weatherData.internal_error)
             return window.toastr.error(weatherData.internal_error.message.en, weatherData.internal_error.error);
-        const wind = WeatherApi_1.default.CalculateWind(weatherData.data.wind), weather = weatherData.data.weather[weatherData.data.weather.length - 1];
-        _cityName.text(`${cityName || weatherData.data.name}, ${weatherData.data.sys.country}`);
+        const _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), wind = WeatherApi_1.default.CalculateWind(weatherData.data.wind), weather = weatherData.data.weather[0];
+        _cityName.text(`${(!notFromCityList && cityName) || weatherData.data.name}, ${weatherData.data.sys.country}`);
         _temperatureValue.text(`${lodash.round(weatherData.data.main.temp)}°C`);
-        _weatherDescription.text(weather.description);
+        _weatherDescription.text(Util_1.default.CapitalizeFirstLetter(weather.description));
         _windSpeedValue.text(`${wind.speed}km/h`);
         _windGustSpeedValue.text(wind.gust ? `${wind.gust}km/h` : "N/A");
         _windDirectionDeg.html(WeatherApi_1.default.GetWindDirection(wind.deg).replace(/\s/, "<br>"));
@@ -67,8 +71,9 @@ exports.default = {
         _sunsetValue.text(WeatherApi_1.default.UnixTimestampToDateString(weatherData.data.sys.sunset));
         _sunriseInValue.text(Time_1.default.TimeUntil(weatherData.data.sys.sunrise, true));
         _sunsetInValue.text(Time_1.default.TimeUntil(weatherData.data.sys.sunset, true));
-        _weatherIcon.attr("src", WeatherIcons_1.default.GetIcon(WeatherIcons_1.default.Icons[weather.id], weatherData.data.timezone, true));
+        _weatherIcon.attr("src", WeatherIcons_1.default.GetIcon(WeatherIcons_1.default.Icons[weather.id], weatherData.data.timezone, _settings.animated_weather_icons));
         _weatherData.removeClass("hide");
+        LocalStorage_1.default.Set(__1.localStorageKey, "weatherdata", weatherData);
     },
     CalculateWind(windData) {
         const calc_wd = lodash.clone(windData);

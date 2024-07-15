@@ -4,7 +4,7 @@
 <head>
     <title>mopsflWeather</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <title>GoofyLuaUglifier</title>
     <link rel="stylesheet" href="./dist/css/style.css">
     <link rel="manifest" href="manifest.json">
@@ -39,6 +39,7 @@
                 </span>
             </div>
             <div class="divider"></div>
+            <div class="settings-button-container"><button class="btn btn-floating waves-effect waves-light settings-btn transparent" id="#settingsmodal"><span class="material-symbols-outlined">settings</span></button></div>
         </header>
         <div class="search-box container center">
             <div class="search-city-input-field input-field">
@@ -58,11 +59,11 @@
                 </div>
             </div>
         </div>
-        <div class="weather-data container left-align hide">
+        <div class="weather-data container left-align">
             <span class="weather-data-city-name">N/A, N/A</span>
             <div class="main-info">
                 <span class="main-info-temperature">
-                    <img class="main-info-weather-icon" src="./images/svg/static/day.svg" alt="weathericon">
+                    <img class="main-info-weather-icon" src="" alt="main-info-weather-icon">
                     <span class="temperature-value">N/A</span>
                 </span>
             </div>
@@ -105,6 +106,40 @@
             </div>
         </div>
     </main>
+
+    <div id="settingsmodal" class="modal bottom-sheet modal-fixed-footer">
+        <div class="modal-content">
+            <h4>Settings</h4>
+            <div class="settings-grid">
+                <div class="setting input-field col s12">
+                    <span class="setting-name tooltipped" data-position="right" data-tooltip="">Language</span>
+                    <select id="setting_language">
+                        <option value="0" selected>Deutsch - DE</option>
+                        <option value="1">English - EN</option>
+                    </select>
+                    <label>Materialize Select</label>
+                </div>
+                <div class="setting">
+                    <span class="setting-name tooltipped" data-position="right" data-tooltip="">Animated Weather Icons</span>
+                    <label>
+                        <input type="checkbox" class="filled-in" id="animated_weather_icons" checked="true" />
+                        <span></span>
+                    </label>
+                </div>
+                <div class="setting">
+                    <span class="setting-name tooltipped" data-position="right" data-tooltip="">High Accuracy Location</span>
+                    <label>
+                        <input type="checkbox" class="filled-in" id="high_accuracy_location" checked="true" />
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button href="#!" class="waves-red waves-effect btn-flat red-text tooltipped" id="resetdefault" data-position="top" data-tooltip="Resets all settings to default.">Reset to Default</button>
+            <button href="#!" class="modal-close waves-light waves-effect btn-flat white-text" id="close">Close</button>
+        </div>
+    </div>
 </body>
 
 </html>

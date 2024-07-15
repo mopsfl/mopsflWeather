@@ -1,8 +1,12 @@
-import { _dev, languageStrings } from ".."
+import { _dev, languageStrings, localStorageKey } from ".."
 import Time from "./Time";
 import self from "./WeatherApi"
 import * as lodash from "lodash"
 import WeatherIcons from "./WeatherIcons";
+import LocalStorage from "./LocalStorage";
+import { SettingsValues } from "./Settings";
+import Languages from "./Languages";
+import Util from "./Util";
 
 const API_URL_DEV: RequestInfo = "http://localhost:6968/v1/",
     API_URL_PROD: RequestInfo = "https://mopsflweather.mopsfl.de/v1/"
@@ -33,23 +37,26 @@ export default {
         })
     },
 
-    async GetWeatherData(args: WeatherRequestArguments) {
-        if (!(args)) throw new Error("Missing <WeatherRequestArguments>")
+    async GetWeatherData(args: WeatherRequestArguments, useDefault?: boolean): Promise<WeatherData> {
+        if (!(args) && !useDefault) throw new Error("Missing <WeatherRequestArguments>")
+        let _settings: SettingsValues = LocalStorage.GetKey(localStorageKey, "settings"),
+            query = !useDefault ? `${(args.lat && args.lon) ? `lat=${args.lat}&lon=${args.lon}` : `location=${args.name}`}` : ""
 
-        return await fetch((!_dev ? API_URL_PROD : API_URL_DEV) + `data/currentweather?${(args.lat && args.lon) ? `lat=${args.lat}&lon=${args.lon}` : `name=${args.name}`}`).then(res => res.json()).catch(err => {
+        return await fetch((!_dev ? API_URL_PROD : API_URL_DEV) + `data/currentweather?${query}${_settings?.setting_language ? `&lang=${Languages[_settings?.setting_language]}` : ""}`).then(res => res.json()).catch(err => {
             window.toastr.error(err, "ApiError")
             console.error(err)
         })
     },
 
-    UpdateWeatherData(weatherData: WeatherData, cityName?: string) {
+    UpdateWeatherData(weatherData: WeatherData, cityName?: string, notFromCityList?: boolean) {
         if (weatherData.code !== 200 && weatherData.internal_error) return window.toastr.error(weatherData.internal_error.message.en, weatherData.internal_error.error)
-        const wind = self.CalculateWind(weatherData.data.wind),
-            weather = weatherData.data.weather[weatherData.data.weather.length - 1]
+        const _settings: SettingsValues = LocalStorage.GetKey(localStorageKey, "settings"),
+            wind = self.CalculateWind(weatherData.data.wind),
+            weather = weatherData.data.weather[0]
 
-        _cityName.text(`${cityName || weatherData.data.name}, ${weatherData.data.sys.country}`)
+        _cityName.text(`${(!notFromCityList && cityName) || weatherData.data.name}, ${weatherData.data.sys.country}`)
         _temperatureValue.text(`${lodash.round(weatherData.data.main.temp)}°C`)
-        _weatherDescription.text(weather.description)
+        _weatherDescription.text(Util.CapitalizeFirstLetter(weather.description))
         _windSpeedValue.text(`${wind.speed}km/h`)
         _windGustSpeedValue.text(wind.gust ? `${wind.gust}km/h` : "N/A")
         _windDirectionDeg.html(self.GetWindDirection(wind.deg).replace(/\s/, "<br>"))
@@ -58,9 +65,10 @@ export default {
         _sunsetValue.text(self.UnixTimestampToDateString(weatherData.data.sys.sunset))
         _sunriseInValue.text(Time.TimeUntil(weatherData.data.sys.sunrise, true))
         _sunsetInValue.text(Time.TimeUntil(weatherData.data.sys.sunset, true))
-        _weatherIcon.attr("src", WeatherIcons.GetIcon(WeatherIcons.Icons[weather.id], weatherData.data.timezone, true))
-
+        _weatherIcon.attr("src", WeatherIcons.GetIcon(WeatherIcons.Icons[weather.id], weatherData.data.timezone, _settings.animated_weather_icons))
         _weatherData.removeClass("hide")
+
+        LocalStorage.Set(localStorageKey, "weatherdata", weatherData)
     },
 
     CalculateWind(windData: WindData) {
@@ -120,7 +128,7 @@ export interface WeatherData {
         dt: number,
         base: string,
         sys: { type: number, id: number, country: string, sunrise: number, sunset: number },
-        weather: [{ id: number, main: string, description: string, icon: string }],
+        weather: Array<{ id: number, main: string, description: string, icon: string }>,
         timezone: number,
         id: number,
         name: string,
