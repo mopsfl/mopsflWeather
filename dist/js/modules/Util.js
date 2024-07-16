@@ -32,5 +32,12 @@ exports.default = {
     },
     UncompressData(data) {
         return JSON.parse(pako_1.default.inflate(new Uint8Array(atob(decodeURIComponent(data)).split('').map(c => c.charCodeAt(0))), { to: 'string' }));
+    },
+    CreateElementWithClass(tag, className, innerText) {
+        const element = document.createElement(tag);
+        element.classList.add(className);
+        if (innerText)
+            element.innerText = innerText;
+        return element;
     }
 };

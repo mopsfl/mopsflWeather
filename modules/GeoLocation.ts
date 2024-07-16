@@ -1,4 +1,4 @@
-import { localStorageKey } from ".."
+import { localStorageKey, notifications } from ".."
 import Loading from "./Loading"
 import LocalStorage from "./LocalStorage"
 import { _searchBoxLoadingSpinner } from "./SearchCity"
@@ -30,7 +30,7 @@ export default {
                 break;
             case 2:
             case 3:
-                toastr.error(err.message, "GeolocationPositionError")
+                notifications.error("GeolocationPositionError", err.message)
                 break;
             default: break;
         }

@@ -37,17 +37,13 @@ const Languages_1 = __importDefault(require("./Languages"));
 const Util_1 = __importDefault(require("./Util"));
 const Strings_1 = __importDefault(require("./Strings"));
 const API_URL_DEV = "http://localhost:6968/v1/", API_URL_PROD = "https://mopsflweather.mopsfl.de/v1/";
-const windDirections = {
-    en: ["from the North", "from the North-Northeast", "from the Northeast", "from the East-Northeast", "from the East", "from the East-Southeast", "from the Southeast", "from the South-Southeast", "from the South", "from the South-Southwest", "from the Southwest", "from the West-Southwest", "from the West", "from the West-Northwest", "from the Northwest", "from the North-Northwest"],
-    de: ["aus Norden", "aus Nord-Nordosten", "aus Nordosten", "aus Ost-Nordosten", "aus Osten", "aus Ost-Südosten", "aus Südosten", "aus Süd-Südosten", "aus Süden", "aus Süd-Südwesten", "aus Südwesten", "aus West-Südwesten", "aus Westen", "aus West-Nordwesten", "aus Nordwesten", "aus Nord-Nordwesten"]
-};
 const _weatherData = $(".weather-data"), _cityName = $(".weather-data-city-name"), _temperatureValue = $(".temperature-value"), _weatherDescription = $(".weather-description"), _windSpeedValue = $(".wind-speed-value"), _windGustSpeedValue = $(".windgust-speed-value"), _windDirectionIcon = $(".wind-direction-icon"), _windDirectionDeg = $(".wind-directiondeg"), _sunriseValue = $(".sunrise-value"), _sunsetValue = $(".sunset-value"), _sunriseInValue = $(".sunrise-in-value"), _sunsetInValue = $(".sunset-in-value"), _weatherIcon = $(".main-info-weather-icon"), _currentTime = $(".weather-data-current-time"), _humidityValue = $(".humidity-value"), _airpressureValue = $(".airpressure-value"), _uvIndexValue = $(".uvindex-value");
 const _weatherForecastItems = $(".weather-forecast-items"), _weatherForecastItemTemplate = $(".weather-forecast-item-template");
 exports._weatherForecastItems = _weatherForecastItems;
 exports.default = {
     async SearchCity(name) {
         return await fetch((!__1._dev ? API_URL_PROD : API_URL_DEV) + `data/searchcity?name=${name}`).then(res => res.json()).catch(err => {
-            toastr.error(err, "ApiError");
+            __1.notifications.error("ApiError", err);
             console.error(err);
         });
     },
@@ -55,8 +51,8 @@ exports.default = {
         if (!(args) && !useDefault)
             throw new Error("Missing <WeatherRequestArguments>");
         let _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), query = !useDefault ? `${(args.lat && args.lon) ? `lat=${args.lat}&lon=${args.lon}` : `location=${args.name}`}` : "";
-        return await fetch((!__1._dev ? API_URL_PROD : API_URL_DEV) + `data/currentweather?${query}${_settings?.setting_language ? `&lang=${Languages_1.default[_settings?.setting_language]}` : ""}`).then(res => res.json()).catch(err => {
-            toastr.error(err, "ApiError");
+        return await fetch((!__1._dev ? API_URL_PROD : API_URL_DEV) + `data/currentweather?${query}${_settings?.setting_language ? `&lang=${Languages_1.default[_settings?.setting_language]}` : ""}`).catch(err => {
+            __1.notifications.error("ApiError", err);
             console.error(err);
         });
     },
@@ -64,14 +60,17 @@ exports.default = {
         if (!(args))
             throw new Error("Missing <WeatherRequestArguments>");
         let _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), query = `${(args.lat && args.lon) ? `q=${args.lat},${args.lon}` : `q=${args.name}`}`;
-        return await fetch((!__1._dev ? API_URL_PROD : API_URL_DEV) + `data/weatherapi/forecast?${query}&alerts=yes${_settings?.setting_language ? `&lang=${Languages_1.default[_settings?.setting_language]}` : ""}&days=2`).then(res => res.json()).catch(err => {
-            toastr.error(err, "ApiError");
+        return await fetch((!__1._dev ? API_URL_PROD : API_URL_DEV) + `data/weatherapi/forecast?${query}&alerts=yes${_settings?.setting_language ? `&lang=${Languages_1.default[_settings?.setting_language]}` : ""}&days=2`).catch(err => {
+            __1.notifications.error("ApiError", err);
             console.error(err);
         });
     },
-    UpdateOpenWeatherData(weatherData, cityName, notFromCityList) {
+    async UpdateOpenWeatherData(weatherDataResponse, cityName, notFromCityList) {
+        if (!weatherDataResponse.ok)
+            return WeatherApi_1.default.HandleFailedRequest(weatherDataResponse);
+        const weatherData = await weatherDataResponse.json();
         if (weatherData.code !== 200 && weatherData.internal_error)
-            return toastr.error(weatherData.internal_error.message.en, weatherData.internal_error.error);
+            return __1.notifications.error(weatherData.internal_error.code, weatherData.message);
         const _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), wind = Util_1.default.CalculateWind(weatherData.data.wind), weather = weatherData.data.weather[0];
         _cityName.text(`${(!notFromCityList && cityName) || weatherData.data.name}, ${weatherData.data.sys.country}`);
         _temperatureValue.text(`${lodash.round(weatherData.data.main.temp)}°C`);
@@ -91,7 +90,10 @@ exports.default = {
         _weatherData.removeClass("hide");
         LocalStorage_1.default.Set(__1.localStorageKey, "_openWeatherData", weatherData);
     },
-    UpdateWeatherApiData(weatherData) {
+    async UpdateWeatherApiData(weatherDataResponse) {
+        if (!weatherDataResponse.ok)
+            return WeatherApi_1.default.HandleFailedRequest(weatherDataResponse);
+        const weatherData = await weatherDataResponse.json();
         _uvIndexValue.text(weatherData.data.current.uv);
         WeatherApi_1.default.UpdateForecastData(weatherData);
         LocalStorage_1.default.Set(__1.localStorageKey, "_weatherApiData", weatherData);
@@ -108,7 +110,7 @@ exports.default = {
                 if (index === 0 && _dataHour >= _currentHour) {
                     const [_forecastItem, _forecastTemperatureValue, _forecastIcon, _weatherForecastTimeValue, _rainChanceValue] = WeatherApi_1.default.CreateForecastItem();
                     if (_dataHour === _currentHour) {
-                        _weatherForecastTimeValue.text(Strings_1.default[Languages_1.default[_settings.setting_language]].WEATHER_HOURLY_FORECAST_NOW);
+                        _weatherForecastTimeValue.text(Strings_1.default[Languages_1.default[_settings.setting_language]]?.WEATHER_HOURLY_FORECAST_NOW);
                         _forecastTemperatureValue.text(`${lodash.round(_openWeatherData.data.main.temp || hourWeatherData.temp_c)}°C`);
                         _forecastIcon.attr("src", WeatherIcons_1.default.GetIcon(WeatherIcons_1.default.Icons[_openWeatherData.data.weather[0].id], _openWeatherData.data.timezone, _settings.animated_weather_icons));
                     }
@@ -143,4 +145,12 @@ exports.default = {
         const _forecastItem = _weatherForecastItemTemplate.contents().clone(), _forecastTemperatureValue = _forecastItem.find(".weather-forecast-temperature-value"), _forecastIcon = _forecastItem.find(".weather-forecast-icon"), _weatherForecastTimeValue = _forecastItem.find(".weather-forecast-time-value"), _rainChanceValue = _forecastItem.find(".weather-forecast-rain-chance");
         return [_forecastItem, _forecastTemperatureValue, _forecastIcon, _weatherForecastTimeValue, _rainChanceValue];
     },
+    async HandleFailedRequest(response) {
+        const isJSON = response.headers.get("content-type").includes("application/json");
+        if (!isJSON)
+            return __1.notifications.error(`ApiError - ${response.status}`, `${response.statusText}`);
+        const internal_error = await response.json();
+        if (internal_error.internal_error)
+            return __1.notifications.error(`ApiError - ${response.status}`, `${internal_error.internal_error.message.de}`);
+    }
 };

@@ -10,24 +10,40 @@ exports.default = {
         return localStorage.setItem(key, Util_1.default.CompressData(value));
     },
     Set(key, name, value) {
-        const storedData = LocalStorage_1.default.Exists(key) && Util_1.default.UncompressData(localStorage.getItem(key));
-        if (!storedData)
-            return console.warn(`Invalid localStorage key '${key}'`);
-        storedData[name] = value;
-        localStorage.setItem(key, Util_1.default.CompressData(storedData));
+        try {
+            const storedData = LocalStorage_1.default.Exists(key) && Util_1.default.UncompressData(localStorage.getItem(key));
+            if (!storedData)
+                return console.warn(`Invalid localStorage key '${key}'`);
+            storedData[name] = value;
+            localStorage.setItem(key, Util_1.default.CompressData(storedData));
+        }
+        catch (error) {
+            console.error(error);
+        }
     },
     Edit(key, index, name, value) {
-        const storedData = LocalStorage_1.default.Exists(key) && Util_1.default.UncompressData(localStorage.getItem(key));
-        if (!storedData)
-            return console.warn(`Invalid localStorage key '${key}'`);
-        storedData[index][name] = value;
-        localStorage.setItem(key, Util_1.default.CompressData(storedData));
+        try {
+            const storedData = LocalStorage_1.default.Exists(key) && Util_1.default.UncompressData(localStorage.getItem(key));
+            if (!storedData)
+                return console.warn(`Invalid localStorage key '${key}'`);
+            storedData[index] && (storedData[index][name] = value);
+            localStorage.setItem(key, Util_1.default.CompressData(storedData));
+        }
+        catch (error) {
+            console.error(error);
+            localStorage.setItem(key, Util_1.default.CompressData({}));
+        }
     },
     GetKey(key, index) {
-        const storedData = LocalStorage_1.default.Exists(key) && Util_1.default.UncompressData(localStorage.getItem(key));
-        if (!storedData)
-            return console.warn(`Invalid localStorage key '${key}'`);
-        return storedData[index];
+        try {
+            const storedData = LocalStorage_1.default.Exists(key) && Util_1.default.UncompressData(localStorage.getItem(key));
+            if (!storedData)
+                return console.warn(`Invalid localStorage key '${key}'`);
+            return storedData[index];
+        }
+        catch (error) {
+            return {};
+        }
     },
     Exists(key) {
         return localStorage.getItem(key);

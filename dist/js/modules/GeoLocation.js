@@ -30,7 +30,7 @@ exports.default = {
                 break;
             case 2:
             case 3:
-                toastr.error(err.message, "GeolocationPositionError");
+                __1.notifications.error("GeolocationPositionError", err.message);
                 break;
             default: break;
         }

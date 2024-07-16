@@ -2,6 +2,8 @@
   "devDependencies": {
     "@types/jquery": "^3.5.16",
     "@types/lodash": "^4.14.195",
+    "@types/materialize-css": "^1.0.11",
+    "@types/pako": "^2.0.3",
     "bower": "^1.8.14",
     "esbuild": "^0.18.12",
     "rimraf": "^5.0.1",
@@ -20,10 +22,6 @@
   "author": "mopsfl",
   "license": "ISC",
   "dependencies": {
-    "@types/materialize-css": "^1.0.11",
-    "@types/pako": "^2.0.3",
-    "@types/toastr": "^2.1.43",
-    "pako": "^2.1.0",
-    "toastr": "^2.1.4"
+    "pako": "^2.1.0"
   }
 }

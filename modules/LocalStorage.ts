@@ -7,23 +7,36 @@ export default {
     },
 
     Set(key: string, name: string, value: any) {
-        const storedData = self.Exists(key) && Util.UncompressData(localStorage.getItem(key));
-        if (!storedData) return console.warn(`Invalid localStorage key '${key}'`);
-        storedData[name] = value;
-        localStorage.setItem(key, Util.CompressData(storedData));
+        try {
+            const storedData = self.Exists(key) && Util.UncompressData(localStorage.getItem(key));
+            if (!storedData) return console.warn(`Invalid localStorage key '${key}'`);
+            storedData[name] = value;
+            localStorage.setItem(key, Util.CompressData(storedData));
+        } catch (error) {
+            console.error(error)
+        }
     },
 
     Edit(key: string, index: number | string, name: string, value: any) {
-        const storedData = self.Exists(key) && Util.UncompressData(localStorage.getItem(key));
-        if (!storedData) return console.warn(`Invalid localStorage key '${key}'`);
-        storedData[index][name] = value;
-        localStorage.setItem(key, Util.CompressData(storedData));
+        try {
+            const storedData = self.Exists(key) && Util.UncompressData(localStorage.getItem(key));
+            if (!storedData) return console.warn(`Invalid localStorage key '${key}'`);
+            storedData[index] && (storedData[index][name] = value);
+            localStorage.setItem(key, Util.CompressData(storedData));
+        } catch (error) {
+            console.error(error)
+            localStorage.setItem(key, Util.CompressData({}));
+        }
     },
 
     GetKey(key: string, index: number | string) {
-        const storedData = self.Exists(key) && Util.UncompressData(localStorage.getItem(key));
-        if (!storedData) return console.warn(`Invalid localStorage key '${key}'`);
-        return storedData[index];
+        try {
+            const storedData = self.Exists(key) && Util.UncompressData(localStorage.getItem(key));
+            if (!storedData) return console.warn(`Invalid localStorage key '${key}'`);
+            return storedData[index];
+        } catch (error) {
+            return {}
+        }
     },
 
     Exists(key: string) {

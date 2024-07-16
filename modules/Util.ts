@@ -36,6 +36,13 @@ export default {
 
     UncompressData(data: string) {
         return JSON.parse(pako.inflate(new Uint8Array(atob(decodeURIComponent(data)).split('').map(c => c.charCodeAt(0))), { to: 'string' }));
+    },
+
+    CreateElementWithClass(tag: string, className: string, innerText?: string) {
+        const element = document.createElement(tag);
+        element.classList.add(className);
+        if (innerText) element.innerText = innerText;
+        return element;
     }
 
 }

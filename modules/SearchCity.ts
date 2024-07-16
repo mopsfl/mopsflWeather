@@ -57,9 +57,7 @@ export default {
         Loading.Toggle(true)
 
         _weatherForecastItems.empty()
-        await WeatherApi.GetOpenWeatherData({ lat: city.lat, lon: city.lng, name: city.name }).then(res => {
-            WeatherApi.UpdateOpenWeatherData(res, city.name, notFromCityList)
-        }).catch(err => {
+        await WeatherApi.GetOpenWeatherData({ lat: city.lat, lon: city.lng, name: city.name }).then(res => WeatherApi.UpdateOpenWeatherData(res, city.name, notFromCityList)).catch(err => {
             Loading.Toggle(false)
             console.error(err)
         }).finally(() => {

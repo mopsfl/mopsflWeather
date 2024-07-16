@@ -17,7 +17,7 @@ exports.default = {
     ["Polish - PL"]: "pl",
     UpdateStrings() {
         $("*[data-stringname]").each((i, e) => {
-            let _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), _string = (Strings_1.default[Languages_1.default[_settings.setting_language || "de"]] || Strings_1.default.de)[$(e).attr("data-stringname") || "de"];
+            let _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), _string = (Strings_1.default[Languages_1.default[_settings.setting_language || "en"]] || Strings_1.default.de)[$(e).attr("data-stringname") || "en"];
             if (_string)
                 $(e).text(_string);
         });

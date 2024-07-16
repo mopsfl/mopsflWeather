@@ -1,3 +1,7 @@
+/* todo:
+ use calc-size for expandable elements when its fully released
+*/
+
 * {
     scrollbar-width: thin;
     color: white;
@@ -439,6 +443,10 @@ input[type="text"]:not(.browser-default):focus {
     box-shadow: none !important;
 }
 
+.test-setting-item {
+    margin-top: 10px;
+}
+
 .weather-forecast-list {
     max-height: 300px !important;
     height: max-content !important;
@@ -496,35 +504,65 @@ input[type="text"]:not(.browser-default):focus {
 }
 
 .notifications {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+    overflow: hidden;
     padding: 10px;
-    display: grid;
-    grid-template-rows: repeat(auto-fit, minmax(auto, 10em));
-    gap: 15px;
     position: absolute;
     top: 0;
     right: 0;
     height: 100%;
     width: 300px;
     background-color: transparent;
-    justify-content: center;
 }
 
 .notification:first-child {
-    max-height: 10em !important;
+    margin-bottom: auto;
 }
 
 .notification {
+    z-index: 99999999;
     cursor: pointer;
     position: relative;
     padding: 10px;
-    border-radius: 3px;
+    border-radius: 2px;
     background-color: #313131;
     width: 100%;
-    max-height: 5em;
+    max-height: 6.5em;
     user-select: none;
     word-break: break-all;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: transform .2s, max-height .2s;
+    animation: notification-in .2s;
+}
+
+.notification-close {
+    background: transparent;
+    border: none;
+    outline: none;
+    position: absolute;
+    right: 0;
+    top: 5px;
+    cursor: pointer;
+    z-index: 3;
+}
+
+.notification-close:focus {
+    background-color: transparent !important;
+}
+
+.notification-expand {
+    max-height: 10em;
+}
+
+.notification-out {
+    transform: translateX(110%) !important;
+}
+
+.notification:hover {
+    transform: translateX(-5px);
 }
 
 .notification::after {
@@ -537,12 +575,8 @@ input[type="text"]:not(.browser-default):focus {
     box-shadow: inset rgba(0, 0, 0, 0.651) 0 -5px 5px;
 }
 
-.notification.error::after {
-    box-shadow: inset rgba(173, 0, 0, 0.55) 0 -5px 5px;
-}
-
-.notification.error {
-    background-color: #b70000;
+.notification::after {
+    box-shadow: inset var(--notification-boxshadow-color) 0 -5px 5px;
 }
 
 .notification-title {
@@ -564,6 +598,8 @@ input[type="text"]:not(.browser-default):focus {
 
 .notification-body {
     margin-top: 5px;
+    margin-bottom: 0px;
+    word-break: break-word;
 }
 
 @media only screen and (max-width: 700px) {
@@ -582,11 +618,29 @@ input[type="text"]:not(.browser-default):focus {
     .autocomplete-dropdown {
         width: 90%;
     }
+
+    .notifications {
+        width: 100%;
+    }
+
+    .notification {
+        margin-bottom: 0 !important;
+    }
 }
 
 @media only screen and (max-width: 430px) {
     .weather-data-info-icon {
         display: none;
+    }
+}
+
+@keyframes notification-in {
+    from {
+        transform: translateX(110%);
+    }
+
+    to {
+        transform: translateX(0);
     }
 }
 

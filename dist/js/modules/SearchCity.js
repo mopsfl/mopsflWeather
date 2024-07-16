@@ -80,9 +80,7 @@ exports.default = {
         SearchCity_1.default.ToggleAutocompleteDropdown(false);
         Loading_1.default.Toggle(true);
         WeatherApi_1._weatherForecastItems.empty();
-        await WeatherApi_1.default.GetOpenWeatherData({ lat: city.lat, lon: city.lng, name: city.name }).then(res => {
-            WeatherApi_1.default.UpdateOpenWeatherData(res, city.name, notFromCityList);
-        }).catch(err => {
+        await WeatherApi_1.default.GetOpenWeatherData({ lat: city.lat, lon: city.lng, name: city.name }).then(res => WeatherApi_1.default.UpdateOpenWeatherData(res, city.name, notFromCityList)).catch(err => {
             Loading_1.default.Toggle(false);
             console.error(err);
         }).finally(() => {

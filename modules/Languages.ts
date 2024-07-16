@@ -16,7 +16,7 @@ export default {
     UpdateStrings() {
         $("*[data-stringname]").each((i, e) => {
             let _settings: SettingsValues = LocalStorage.GetKey(localStorageKey, "settings"),
-                _string = (Strings[self[_settings.setting_language || "de"]] || Strings.de)[$(e).attr("data-stringname") || "de"]
+                _string = (Strings[self[_settings.setting_language || "en"]] || Strings.de)[$(e).attr("data-stringname") || "en"]
             if (_string) $(e).text(_string)
         })
     }

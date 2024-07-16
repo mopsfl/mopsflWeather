@@ -1,4 +1,4 @@
-import { _dev, languageStrings, localStorageKey } from ".."
+import { _dev, languageStrings, localStorageKey, notifications } from ".."
 import Time from "./Time";
 import self from "./WeatherApi"
 import * as lodash from "lodash"
@@ -11,11 +11,6 @@ import Strings from "./Strings";
 
 const API_URL_DEV: RequestInfo = "http://localhost:6968/v1/",
     API_URL_PROD: RequestInfo = "https://mopsflweather.mopsfl.de/v1/"
-
-const windDirections = {
-    en: ["from the North", "from the North-Northeast", "from the Northeast", "from the East-Northeast", "from the East", "from the East-Southeast", "from the Southeast", "from the South-Southeast", "from the South", "from the South-Southwest", "from the Southwest", "from the West-Southwest", "from the West", "from the West-Northwest", "from the Northwest", "from the North-Northwest"],
-    de: ["aus Norden", "aus Nord-Nordosten", "aus Nordosten", "aus Ost-Nordosten", "aus Osten", "aus Ost-Südosten", "aus Südosten", "aus Süd-Südosten", "aus Süden", "aus Süd-Südwesten", "aus Südwesten", "aus West-Südwesten", "aus Westen", "aus West-Nordwesten", "aus Nordwesten", "aus Nord-Nordwesten"]
-};
 
 const _weatherData = $(".weather-data"),
     _cityName = $(".weather-data-city-name"),
@@ -41,35 +36,38 @@ const _weatherForecastItems = $(".weather-forecast-items"),
 export default {
     async SearchCity(name: string | number | string[]) {
         return await fetch((!_dev ? API_URL_PROD : API_URL_DEV) + `data/searchcity?name=${name}`).then(res => res.json()).catch(err => {
-            toastr.error(err, "ApiError")
+            notifications.error("ApiError", err)
             console.error(err)
         })
     },
 
-    async GetOpenWeatherData(args: WeatherRequestArguments, useDefault?: boolean): Promise<OpenWeatherData> {
+    async GetOpenWeatherData(args: WeatherRequestArguments, useDefault?: boolean): Promise<any | Response> {
         if (!(args) && !useDefault) throw new Error("Missing <WeatherRequestArguments>")
         let _settings: SettingsValues = LocalStorage.GetKey(localStorageKey, "settings"),
             query = !useDefault ? `${(args.lat && args.lon) ? `lat=${args.lat}&lon=${args.lon}` : `location=${args.name}`}` : ""
 
-        return await fetch((!_dev ? API_URL_PROD : API_URL_DEV) + `data/currentweather?${query}${_settings?.setting_language ? `&lang=${Languages[_settings?.setting_language]}` : ""}`).then(res => res.json()).catch(err => {
-            toastr.error(err, "ApiError")
+        return await fetch((!_dev ? API_URL_PROD : API_URL_DEV) + `data/currentweather?${query}${_settings?.setting_language ? `&lang=${Languages[_settings?.setting_language]}` : ""}`).catch(err => {
+            notifications.error("ApiError", err)
             console.error(err)
         })
     },
 
-    async GetWeatherApiData(args: WeatherRequestArguments) {
+    async GetWeatherApiData(args: WeatherRequestArguments): Promise<void | Response> {
         if (!(args)) throw new Error("Missing <WeatherRequestArguments>")
         let _settings: SettingsValues = LocalStorage.GetKey(localStorageKey, "settings"),
             query = `${(args.lat && args.lon) ? `q=${args.lat},${args.lon}` : `q=${args.name}`}`
 
-        return await fetch((!_dev ? API_URL_PROD : API_URL_DEV) + `data/weatherapi/forecast?${query}&alerts=yes${_settings?.setting_language ? `&lang=${Languages[_settings?.setting_language]}` : ""}&days=2`).then(res => res.json()).catch(err => {
-            toastr.error(err, "ApiError")
+        return await fetch((!_dev ? API_URL_PROD : API_URL_DEV) + `data/weatherapi/forecast?${query}&alerts=yes${_settings?.setting_language ? `&lang=${Languages[_settings?.setting_language]}` : ""}&days=2`).catch(err => {
+            notifications.error("ApiError", err)
             console.error(err)
         })
     },
 
-    UpdateOpenWeatherData(weatherData: OpenWeatherData, cityName?: string, notFromCityList?: boolean) {
-        if (weatherData.code !== 200 && weatherData.internal_error) return toastr.error(weatherData.internal_error.message.en, weatherData.internal_error.error)
+    async UpdateOpenWeatherData(weatherDataResponse: Response, cityName?: string, notFromCityList?: boolean) {
+        if (!weatherDataResponse.ok) return self.HandleFailedRequest(weatherDataResponse)
+        const weatherData: OpenWeatherData = await weatherDataResponse.json()
+
+        if (weatherData.code !== 200 && weatherData.internal_error) return notifications.error(weatherData.internal_error.code, weatherData.message)
         const _settings: SettingsValues = LocalStorage.GetKey(localStorageKey, "settings"),
             wind = Util.CalculateWind(weatherData.data.wind),
             weather = weatherData.data.weather[0]
@@ -94,7 +92,9 @@ export default {
         LocalStorage.Set(localStorageKey, "_openWeatherData", weatherData)
     },
 
-    UpdateWeatherApiData(weatherData: WeatherApiData) {
+    async UpdateWeatherApiData(weatherDataResponse: Response) {
+        if (!weatherDataResponse.ok) return self.HandleFailedRequest(weatherDataResponse)
+        const weatherData: WeatherApiData = await weatherDataResponse.json()
         _uvIndexValue.text(weatherData.data.current.uv)
         self.UpdateForecastData(weatherData)
 
@@ -115,7 +115,7 @@ export default {
                 if (index === 0 && _dataHour >= _currentHour) {
                     const [_forecastItem, _forecastTemperatureValue, _forecastIcon, _weatherForecastTimeValue, _rainChanceValue] = self.CreateForecastItem()
                     if (_dataHour === _currentHour) {
-                        _weatherForecastTimeValue.text(Strings[Languages[_settings.setting_language]].WEATHER_HOURLY_FORECAST_NOW)
+                        _weatherForecastTimeValue.text(Strings[Languages[_settings.setting_language]]?.WEATHER_HOURLY_FORECAST_NOW)
                         _forecastTemperatureValue.text(`${lodash.round(_openWeatherData.data.main.temp || hourWeatherData.temp_c)}°C`)
                         _forecastIcon.attr("src", WeatherIcons.GetIcon(WeatherIcons.Icons[_openWeatherData.data.weather[0].id], _openWeatherData.data.timezone, _settings.animated_weather_icons))
                     } else {
@@ -153,6 +153,13 @@ export default {
 
         return [_forecastItem, _forecastTemperatureValue, _forecastIcon, _weatherForecastTimeValue, _rainChanceValue]
     },
+
+    async HandleFailedRequest(response: Response) {
+        const isJSON = response.headers.get("content-type").includes("application/json")
+        if (!isJSON) return notifications.error(`ApiError - ${response.status}`, `${response.statusText}`)
+        const internal_error: InternalError = await response.json()
+        if (internal_error.internal_error) return notifications.error(`ApiError - ${response.status}`, `${internal_error.internal_error.message.de}`)
+    }
 }
 
 export interface CitySearchResult {
@@ -270,11 +277,14 @@ export interface WeatherApiAlert {
 
 export interface InternalError {
     code: number,
-    error: string,
-    message: {
-        de: string,
-        en: string
-    }
+    internal_error: {
+        code: number,
+        message: {
+            de: string,
+            en: string
+        }
+    },
+    message: string
 }
 
 export interface WindData {

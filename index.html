@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="bower_components/toastr/toastr.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="./bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="./bower_components/toastr/toastr.min.js"></script>
     <script type="module" src="./bower_components/pako/pako.js"></script>
     <script type="module" src="./dist/js/index.js" defer></script>
     <style>
@@ -110,7 +109,7 @@
                         <p class="weather-data-info-item-name" data-stringname="WEATHER_INFO_SUNRISE">Sonnenaufgang</p>
                         <p class="sunrise-value weather-data-info-item-value">00:00</p>
                     </div>
-                    <img class="weather-data-info-icon" src="./images/svg/static/day.svg" alt="windicon">
+                    <img class="weather-data-info-icon static-icon" src="./images/svg/static/day.svg" alt="windicon">
                     <div class="break"></div>
                     <div>
                         <p class="weather-data-info-item-name sunrise-in-value">in N/A Stunden</p>
@@ -121,7 +120,7 @@
                         <p class="weather-data-info-item-name" data-stringname="WEATHER_INFO_SUNSET">Sonnenuntergang</p>
                         <p class="sunset-value weather-data-info-item-value">00:00</p>
                     </div>
-                    <img class="weather-data-info-icon gray-filter" src="./images/svg/static/night.svg" alt="windicon">
+                    <img class="weather-data-info-icon gray-filter static-icon" src="./images/svg/static/night.svg" alt="windicon">
                     <div class="break"></div>
                     <div>
                         <p class="weather-data-info-item-name sunset-in-value">in N/A Stunden</p>
@@ -186,21 +185,19 @@
             </div>
         </div>
         <div class="modal-footer">
+            <button class="waves-effect waves-light  btn-flat green-text test-notif-btn">Test Notification</button>
             <button href="#!" class="waves-red waves-effect btn-flat red-text tooltipped" id="resetdefault" data-position="top" data-tooltip="Resets all settings to default.">Reset to Default</button>
             <button href="#!" class="modal-close waves-light waves-effect btn-flat white-text" id="close">Close</button>
         </div>
     </div>
 
-    <!--<div class="notifications">
-        <div class="notification error">
-            <div class="notification-title"><span class="material-symbols-outlined">error</span> <span class="notification-title-text">ApiError</span></div>
+    <div class="notifications">
+        <!--<div class="notification">
+            <button class="notification-close"><span class="material-symbols-outlined">close</span></button>
+            <div class="notification-title"><span class="material-symbols-outlined">error</span><span class="notification-title-text">ApiError</span></div>
             <p class="notification-body">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam</p>
-        </div>
-        <div class="notification error">
-            <div class="notification-title"><span class="material-symbols-outlined">error</span> <span class="notification-title-text">ApiError</span></div>
-            <p class="notification-body">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam</p>
-        </div>
-    </div>-->
+        </div>-->
+    </div>
 </body>
 
 </html>
