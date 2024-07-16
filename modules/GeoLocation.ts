@@ -30,7 +30,7 @@ export default {
                 break;
             case 2:
             case 3:
-                window.toastr.error(err.message, "GeolocationPositionError")
+                toastr.error(err.message, "GeolocationPositionError")
                 break;
             default: break;
         }

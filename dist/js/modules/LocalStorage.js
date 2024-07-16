@@ -4,29 +4,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const LocalStorage_1 = __importDefault(require("./LocalStorage"));
+const Util_1 = __importDefault(require("./Util"));
 exports.default = {
-    Create(key, value) {
-        return localStorage.setItem(key, btoa(JSON.stringify(value || {})));
+    Create(key, value = {}) {
+        return localStorage.setItem(key, Util_1.default.CompressData(value));
     },
     Set(key, name, value) {
-        const _data = LocalStorage_1.default.Exists(key) && JSON.parse(decodeURIComponent(atob(localStorage.getItem(key))));
-        if (!_data)
-            return console.warn(`invalid localstorage key '${key}'`);
-        _data[name] = value;
-        localStorage.setItem(key, btoa(encodeURIComponent(JSON.stringify(_data))));
+        const storedData = LocalStorage_1.default.Exists(key) && Util_1.default.UncompressData(localStorage.getItem(key));
+        if (!storedData)
+            return console.warn(`Invalid localStorage key '${key}'`);
+        storedData[name] = value;
+        localStorage.setItem(key, Util_1.default.CompressData(storedData));
     },
     Edit(key, index, name, value) {
-        const _data = LocalStorage_1.default.Exists(key) && JSON.parse(decodeURIComponent(atob(localStorage.getItem(key))));
-        if (!_data)
-            return console.warn(`invalid localstorage key '${key}'`);
-        _data[index][name] = value;
-        localStorage.setItem(key, btoa(encodeURIComponent(JSON.stringify(_data))));
+        const storedData = LocalStorage_1.default.Exists(key) && Util_1.default.UncompressData(localStorage.getItem(key));
+        if (!storedData)
+            return console.warn(`Invalid localStorage key '${key}'`);
+        storedData[index][name] = value;
+        localStorage.setItem(key, Util_1.default.CompressData(storedData));
     },
     GetKey(key, index) {
-        const _data = LocalStorage_1.default.Exists(key) && JSON.parse(decodeURIComponent(atob(localStorage.getItem(key))));
-        if (!_data)
-            return console.warn(`invalid localstorage key '${key}'`);
-        return _data[index];
+        const storedData = LocalStorage_1.default.Exists(key) && Util_1.default.UncompressData(localStorage.getItem(key));
+        if (!storedData)
+            return console.warn(`Invalid localStorage key '${key}'`);
+        return storedData[index];
     },
     Exists(key) {
         return localStorage.getItem(key);

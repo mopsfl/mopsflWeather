@@ -35,6 +35,7 @@ const WeatherIcons_1 = __importDefault(require("./WeatherIcons"));
 const LocalStorage_1 = __importDefault(require("./LocalStorage"));
 const Languages_1 = __importDefault(require("./Languages"));
 const Util_1 = __importDefault(require("./Util"));
+const Strings_1 = __importDefault(require("./Strings"));
 const API_URL_DEV = "http://localhost:6968/v1/", API_URL_PROD = "https://mopsflweather.mopsfl.de/v1/";
 const windDirections = {
     en: ["from the North", "from the North-Northeast", "from the Northeast", "from the East-Northeast", "from the East", "from the East-Southeast", "from the Southeast", "from the South-Southeast", "from the South", "from the South-Southwest", "from the Southwest", "from the West-Southwest", "from the West", "from the West-Northwest", "from the Northwest", "from the North-Northwest"],
@@ -46,7 +47,7 @@ exports._weatherForecastItems = _weatherForecastItems;
 exports.default = {
     async SearchCity(name) {
         return await fetch((!__1._dev ? API_URL_PROD : API_URL_DEV) + `data/searchcity?name=${name}`).then(res => res.json()).catch(err => {
-            window.toastr.error(err, "ApiError");
+            toastr.error(err, "ApiError");
             console.error(err);
         });
     },
@@ -55,7 +56,7 @@ exports.default = {
             throw new Error("Missing <WeatherRequestArguments>");
         let _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), query = !useDefault ? `${(args.lat && args.lon) ? `lat=${args.lat}&lon=${args.lon}` : `location=${args.name}`}` : "";
         return await fetch((!__1._dev ? API_URL_PROD : API_URL_DEV) + `data/currentweather?${query}${_settings?.setting_language ? `&lang=${Languages_1.default[_settings?.setting_language]}` : ""}`).then(res => res.json()).catch(err => {
-            window.toastr.error(err, "ApiError");
+            toastr.error(err, "ApiError");
             console.error(err);
         });
     },
@@ -64,23 +65,23 @@ exports.default = {
             throw new Error("Missing <WeatherRequestArguments>");
         let _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), query = `${(args.lat && args.lon) ? `q=${args.lat},${args.lon}` : `q=${args.name}`}`;
         return await fetch((!__1._dev ? API_URL_PROD : API_URL_DEV) + `data/weatherapi/forecast?${query}&alerts=yes${_settings?.setting_language ? `&lang=${Languages_1.default[_settings?.setting_language]}` : ""}&days=2`).then(res => res.json()).catch(err => {
-            window.toastr.error(err, "ApiError");
+            toastr.error(err, "ApiError");
             console.error(err);
         });
     },
     UpdateOpenWeatherData(weatherData, cityName, notFromCityList) {
         if (weatherData.code !== 200 && weatherData.internal_error)
-            return window.toastr.error(weatherData.internal_error.message.en, weatherData.internal_error.error);
-        const _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), wind = WeatherApi_1.default.CalculateWind(weatherData.data.wind), weather = weatherData.data.weather[0];
+            return toastr.error(weatherData.internal_error.message.en, weatherData.internal_error.error);
+        const _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), wind = Util_1.default.CalculateWind(weatherData.data.wind), weather = weatherData.data.weather[0];
         _cityName.text(`${(!notFromCityList && cityName) || weatherData.data.name}, ${weatherData.data.sys.country}`);
         _temperatureValue.text(`${lodash.round(weatherData.data.main.temp)}°C`);
         _weatherDescription.html(`${Util_1.default.CapitalizeFirstLetter(weather.description)} &bull; &ShortUpArrow; ${lodash.round(weatherData.data.main.temp_max)}°C &bull; &ShortDownArrow; ${lodash.round(weatherData.data.main.temp_min)}°C`);
         _windSpeedValue.text(`${wind.speed}km/h`);
         _windGustSpeedValue.text(wind.gust ? `${wind.gust}km/h` : "N/A");
-        _windDirectionDeg.html(WeatherApi_1.default.GetWindDirection(wind.deg).replace(/\s/, "<br>"));
+        _windDirectionDeg.html(Util_1.default.GetWindDirection(wind.deg).replace(/\s/, "<br>"));
         _windDirectionIcon.css("transform", `rotate(${wind.deg + 180}deg)`);
-        _sunriseValue.text(WeatherApi_1.default.UnixTimestampToDateString(weatherData.data.sys.sunrise, weatherData.data.timezone));
-        _sunsetValue.text(WeatherApi_1.default.UnixTimestampToDateString(weatherData.data.sys.sunset, weatherData.data.timezone));
+        _sunriseValue.text(Time_1.default.UnixTimestampToDateString(weatherData.data.sys.sunrise, weatherData.data.timezone));
+        _sunsetValue.text(Time_1.default.UnixTimestampToDateString(weatherData.data.sys.sunset, weatherData.data.timezone));
         _sunriseInValue.text(Time_1.default.TimeUntil(weatherData.data.sys.sunrise, weatherData.data.timezone, true));
         _sunsetInValue.text(Time_1.default.TimeUntil(weatherData.data.sys.sunset, weatherData.data.timezone, true));
         _weatherIcon.attr("src", WeatherIcons_1.default.GetIcon(WeatherIcons_1.default.Icons[weather.id], weatherData.data.timezone, _settings.animated_weather_icons));
@@ -107,13 +108,13 @@ exports.default = {
                 if (index === 0 && _dataHour >= _currentHour) {
                     const [_forecastItem, _forecastTemperatureValue, _forecastIcon, _weatherForecastTimeValue, _rainChanceValue] = WeatherApi_1.default.CreateForecastItem();
                     if (_dataHour === _currentHour) {
-                        _weatherForecastTimeValue.text("Jetzt");
+                        _weatherForecastTimeValue.text(Strings_1.default[Languages_1.default[_settings.setting_language]].WEATHER_HOURLY_FORECAST_NOW);
                         _forecastTemperatureValue.text(`${lodash.round(_openWeatherData.data.main.temp || hourWeatherData.temp_c)}°C`);
                         _forecastIcon.attr("src", WeatherIcons_1.default.GetIcon(WeatherIcons_1.default.Icons[_openWeatherData.data.weather[0].id], _openWeatherData.data.timezone, _settings.animated_weather_icons));
                     }
                     else {
                         _forecastTemperatureValue.text(`${lodash.round(hourWeatherData.temp_c)}°C`);
-                        _weatherForecastTimeValue.text(Time_1.default.GetHourString(hourWeatherData.time));
+                        _weatherForecastTimeValue.text(Time_1.default.GetHourString(hourWeatherData.time, _openWeatherData.data.timezone));
                         _forecastIcon.attr("src", WeatherIcons_1.default.GetIcon(WeatherIcons_1.default.Icons[hourWeatherData.condition.code], _openWeatherData.data.timezone, _settings.animated_weather_icons, !!hourWeatherData.is_day));
                     }
                     if (hourWeatherData.chance_of_rain > 0) {
@@ -126,7 +127,7 @@ exports.default = {
                 else if (index === 1) {
                     const [_forecastItem, _forecastTemperatureValue, _forecastIcon, _weatherForecastTimeValue, _rainChanceValue] = WeatherApi_1.default.CreateForecastItem();
                     _forecastTemperatureValue.text(`${lodash.round(hourWeatherData.temp_c)}°C`);
-                    _weatherForecastTimeValue.text(Time_1.default.GetHourString(hourWeatherData.time));
+                    _weatherForecastTimeValue.text(Time_1.default.GetHourString(hourWeatherData.time, _openWeatherData.data.timezone));
                     _forecastIcon.attr("src", WeatherIcons_1.default.GetIcon(WeatherIcons_1.default.Icons[hourWeatherData.condition.code], _openWeatherData.data.timezone, _settings.animated_weather_icons, !!hourWeatherData.is_day));
                     if (hourWeatherData.chance_of_rain > 0) {
                         _rainChanceValue.html(`<span class="material-symbols-outlined">water_drop</span>${hourWeatherData.chance_of_rain} %`);
@@ -142,23 +143,4 @@ exports.default = {
         const _forecastItem = _weatherForecastItemTemplate.contents().clone(), _forecastTemperatureValue = _forecastItem.find(".weather-forecast-temperature-value"), _forecastIcon = _forecastItem.find(".weather-forecast-icon"), _weatherForecastTimeValue = _forecastItem.find(".weather-forecast-time-value"), _rainChanceValue = _forecastItem.find(".weather-forecast-rain-chance");
         return [_forecastItem, _forecastTemperatureValue, _forecastIcon, _weatherForecastTimeValue, _rainChanceValue];
     },
-    CalculateWind(windData) {
-        const calc_wd = lodash.clone(windData);
-        calc_wd.speed = lodash.round(calc_wd.speed * 3.16, 0);
-        calc_wd.gust = lodash.round(calc_wd.gust * 3.16, 0);
-        return calc_wd;
-    },
-    GetWindDirection(degrees) {
-        return __1.languageStrings.WEATHER_INFO_WIND_DIRECTIONS[Math.round(degrees % 360 / 22.5) % 16];
-    },
-    UnixTimestampToDateString(unixTimestamp, timezone = 0, full) {
-        const date = new Date((unixTimestamp + timezone) * 1000);
-        const year = date.getUTCFullYear();
-        const month = ('0' + (date.getUTCMonth() + 1)).slice(-2);
-        const day = ('0' + date.getUTCDate()).slice(-2);
-        const hours = ('0' + date.getUTCHours()).slice(-2);
-        const minutes = ('0' + date.getUTCMinutes()).slice(-2);
-        const seconds = ('0' + date.getUTCSeconds()).slice(-2);
-        return full ? `${year}-${month}-${day} ${hours}:${minutes}:${seconds}` : `${hours}:${minutes}`;
-    }
 };

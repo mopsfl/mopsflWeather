@@ -11,6 +11,7 @@ import Languages from "./modules/Languages";
 import { CustomEvents } from "./modules/CustomEvents";
 import Util from "./modules/Util";
 import Loading from "./modules/Loading";
+import toastr from "toastr"
 
 const _dev = location.hostname === "localhost",
     languageStrings = Strings.de,
@@ -28,7 +29,7 @@ jQuery(async () => {
     SearchCity.InitInput(SearchCityInput)
     Languages.UpdateStrings()
 
-    window.toastr.options = {
+    toastr.options = {
         "newestOnTop": true,
         "positionClass": "toast-bottom-right",
         "preventDuplicates": true,
@@ -85,17 +86,7 @@ jQuery(async () => {
 })
 
 declare global {
-    interface Window {
-        toastr: {
-            info: any,
-            success: any,
-            warning: any,
-            error: any,
-            clear: any,
-            version: string,
-            options: Object
-        },
-    }
+    interface Window { }
 }
 
 export { _dev, languageStrings, localStorageKey, settings }

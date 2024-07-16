@@ -11,6 +11,8 @@ export default {
         WEATHER_INFO_UVINDEX: "UV-Index",
         WEATHER_HOURLY_FORECAST: "Stündliche Vorhersage",
 
+        WEATHER_HOURLY_FORECAST_NOW: "Jetzt",
+
         WEATHER_INFO_TIMEAGO_HOURS: "vor %VALUE% Stunden",
         WEATHER_INFO_TIMEAGO_MINUTES: "vor %VALUE% Minuten",
         WEATHER_INFO_TIMEAGO_SECONDS: "vor %VALUE% Sekunden",
@@ -31,6 +33,8 @@ export default {
         WEATHER_INFO_AIRPRESSURE: "Air Pressure",
         WEATHER_INFO_UVINDEX: "UV-Index",
         WEATHER_HOURLY_FORECAST: "Hourly Forecast",
+
+        WEATHER_HOURLY_FORECAST_NOW: "Now",
 
         WEATHER_INFO_TIMEAGO_HOURS: "%VALUE% hours ago",
         WEATHER_INFO_TIMEAGO_MINUTES: "%VALUE% minutes ago",

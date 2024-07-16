@@ -327,6 +327,7 @@ input[type="text"]:not(.browser-default):focus {
     font-size: 12px;
     color: gray;
     text-wrap: nowrap;
+    margin-top: 5px;
 }
 
 .wind-direction {
@@ -492,6 +493,77 @@ input[type="text"]:not(.browser-default):focus {
     height: 40px;
     width: 40px;
     user-select: none;
+}
+
+.notifications {
+    padding: 10px;
+    display: grid;
+    grid-template-rows: repeat(auto-fit, minmax(auto, 10em));
+    gap: 15px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 300px;
+    background-color: transparent;
+    justify-content: center;
+}
+
+.notification:first-child {
+    max-height: 10em !important;
+}
+
+.notification {
+    cursor: pointer;
+    position: relative;
+    padding: 10px;
+    border-radius: 3px;
+    background-color: #313131;
+    width: 100%;
+    max-height: 5em;
+    user-select: none;
+    word-break: break-all;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.notification::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -15px;
+    right: -15px;
+    box-shadow: inset rgba(0, 0, 0, 0.651) 0 -5px 5px;
+}
+
+.notification.error::after {
+    box-shadow: inset rgba(173, 0, 0, 0.55) 0 -5px 5px;
+}
+
+.notification.error {
+    background-color: #b70000;
+}
+
+.notification-title {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    align-self: center;
+}
+
+.notification-title-text {
+    word-break: keep-all;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-left: 5px;
+    margin-bottom: 0px;
+    font-weight: bold;
+}
+
+.notification-body {
+    margin-top: 5px;
 }
 
 @media only screen and (max-width: 700px) {

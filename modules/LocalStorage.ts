@@ -1,35 +1,36 @@
 import self from "./LocalStorage"
+import Util from "./Util";
 
 export default {
-    Create(key: string, value?: any) {
-        return localStorage.setItem(key, btoa(JSON.stringify(value || {})))
+    Create(key: string, value = {}) {
+        return localStorage.setItem(key, Util.CompressData(value));
     },
 
-    Set(key: string, name: string, value: string | Object | Array<any>) {
-        const _data = self.Exists(key) && JSON.parse(decodeURIComponent(atob(localStorage.getItem(key))))
-        if (!_data) return console.warn(`invalid localstorage key '${key}'`);
-        _data[name] = value
-        localStorage.setItem(key, btoa(encodeURIComponent(JSON.stringify(_data))))
+    Set(key: string, name: string, value: any) {
+        const storedData = self.Exists(key) && Util.UncompressData(localStorage.getItem(key));
+        if (!storedData) return console.warn(`Invalid localStorage key '${key}'`);
+        storedData[name] = value;
+        localStorage.setItem(key, Util.CompressData(storedData));
     },
 
-    Edit(key: string, index: string, name: string, value: string | Object | Array<any>) {
-        const _data = self.Exists(key) && JSON.parse(decodeURIComponent(atob(localStorage.getItem(key))))
-        if (!_data) return console.warn(`invalid localstorage key '${key}'`);
-        _data[index][name] = value
-        localStorage.setItem(key, btoa(encodeURIComponent(JSON.stringify(_data))))
+    Edit(key: string, index: number | string, name: string, value: any) {
+        const storedData = self.Exists(key) && Util.UncompressData(localStorage.getItem(key));
+        if (!storedData) return console.warn(`Invalid localStorage key '${key}'`);
+        storedData[index][name] = value;
+        localStorage.setItem(key, Util.CompressData(storedData));
     },
 
-    GetKey(key: string, index: string) {
-        const _data = self.Exists(key) && JSON.parse(decodeURIComponent(atob(localStorage.getItem(key))))
-        if (!_data) return console.warn(`invalid localstorage key '${key}'`);
-        return _data[index]
+    GetKey(key: string, index: number | string) {
+        const storedData = self.Exists(key) && Util.UncompressData(localStorage.getItem(key));
+        if (!storedData) return console.warn(`Invalid localStorage key '${key}'`);
+        return storedData[index];
     },
 
     Exists(key: string) {
-        return localStorage.getItem(key)
+        return localStorage.getItem(key);
     },
 
     Clear(key: string) {
-        return localStorage.removeItem(key)
+        return localStorage.removeItem(key);
     }
 }

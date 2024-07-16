@@ -1,10 +1,14 @@
 export default {
     GetIcon(name: string, timezone?: number, animated?: boolean, isDay?: boolean) {
-        const hours = new Date(new Date().getTime() + (timezone || 0) * 1000).getUTCHours(),
-            isDayTime = isDay || hours > 6 && hours < 20;
+        const hours = new Date(new Date().getTime() + (timezone !== undefined ? timezone : 0) * 1000).getUTCHours();
+        const isDayTime = isDay !== undefined ? isDay : (hours > 6 && hours < 20);
 
-        if (["day.svg"].includes(name) && !isDayTime) { name = "night.svg" }
-        else if (["cloudy-day-1.svg", "cloudy-day-2.svg", "cloudy-day-3.svg"].includes(name) && !isDayTime) name = name.replace(/\-day\-/gm, "-night-")
+        if (["day.svg"].includes(name) && !isDayTime) {
+            name = "night.svg";
+        } else if (["cloudy-day-1.svg", "cloudy-day-2.svg", "cloudy-day-3.svg"].includes(name) && !isDayTime) {
+            name = name.replace(/-day-/g, "-night-");
+        }
+
         return `./images/svg/${animated === true ? "animated" : "static"}/${name || "day.svg"}`;
     },
 

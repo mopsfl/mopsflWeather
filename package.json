@@ -20,6 +20,10 @@
   "author": "mopsfl",
   "license": "ISC",
   "dependencies": {
-    "@types/materialize-css": "^1.0.11"
+    "@types/materialize-css": "^1.0.11",
+    "@types/pako": "^2.0.3",
+    "@types/toastr": "^2.1.43",
+    "pako": "^2.1.0",
+    "toastr": "^2.1.4"
   }
 }

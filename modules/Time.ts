@@ -1,5 +1,6 @@
 import { languageStrings } from "..";
 import Strings from "./Strings";
+import * as lodash from "lodash"
 
 export default {
     TimeAgo(dString = null) {
@@ -65,12 +66,24 @@ export default {
         }
     },
 
-    GetHourString(timestamp: string) {
-        const date = new Date(timestamp);
-        const hours = ('0' + date.getHours()).slice(-2)
-        const minutes = ('0' + date.getMinutes()).slice(-2)
+    GetHourString(timestamp: string, timezone = 0) {
+        const adjustedDate = new Date(new Date(timestamp).getTime() + timezone * 1000);
+        const hours = ('0' + adjustedDate.getUTCHours()).slice(-2);
+        const minutes = ('0' + adjustedDate.getUTCMinutes()).slice(-2);
 
-        return `${hours}:${minutes}`
+        return `${hours}:${minutes}`;
+    },
+
+    UnixTimestampToDateString(unixTimestamp: number, timezone = 0, full?: boolean) {
+        const date = new Date((unixTimestamp + timezone) * 1000);
+        const year = date.getUTCFullYear();
+        const month = ('0' + (date.getUTCMonth() + 1)).slice(-2);
+        const day = ('0' + date.getUTCDate()).slice(-2);
+        const hours = ('0' + date.getUTCHours()).slice(-2);
+        const minutes = ('0' + date.getUTCMinutes()).slice(-2);
+        const seconds = ('0' + date.getUTCSeconds()).slice(-2);
+
+        return full ? `${year}-${month}-${day} ${hours}:${minutes}:${seconds}` : `${hours}:${minutes}`;
     },
 
     GetCurrentTimeWithTimezone(timezone = 0, type = 0) {
