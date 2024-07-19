@@ -10,6 +10,7 @@ export default {
         WEATHER_INFO_AIRPRESSURE: "Luftdruck",
         WEATHER_INFO_UVINDEX: "UV-Index",
         WEATHER_HOURLY_FORECAST: "Stündliche Vorhersage",
+        WEATHER_HOURLY_DETAILS: "Stündliche Details",
 
         WEATHER_HOURLY_FORECAST_NOW: "Jetzt",
 
@@ -33,6 +34,7 @@ export default {
         WEATHER_INFO_AIRPRESSURE: "Air Pressure",
         WEATHER_INFO_UVINDEX: "UV-Index",
         WEATHER_HOURLY_FORECAST: "Hourly Forecast",
+        WEATHER_HOURLY_DETAILS: "Hourly Details",
 
         WEATHER_HOURLY_FORECAST_NOW: "Now",
 

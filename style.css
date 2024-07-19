@@ -29,6 +29,7 @@
 
 body {
     background-color: rgb(27, 27, 27);
+    padding-bottom: 20px;
 }
 
 main {
@@ -458,7 +459,8 @@ input[type="text"]:not(.browser-default):focus {
     gap: 0;
 }
 
-.weather-forecast-items {
+.weather-forecast-items,
+.weather-forecast-misc-items {
     margin-top: 10px;
     display: flex;
     gap: 10px;
@@ -467,6 +469,10 @@ input[type="text"]:not(.browser-default):focus {
     overflow-x: scroll;
     scrollbar-width: none;
     -ms-overflow-style: none;
+}
+
+.weather-forecast-misc-items {
+    gap: 17px
 }
 
 .weather-forecast-rain-chance,
@@ -484,7 +490,8 @@ input[type="text"]:not(.browser-default):focus {
     display: none;
 }
 
-.weather-forecast-item {
+.weather-forecast-item,
+.weather-forecast-misc-item {
     display: grid;
     justify-content: center;
     align-content: center;
@@ -496,6 +503,28 @@ input[type="text"]:not(.browser-default):focus {
 .weather-forecast-time-value {
     font-size: 12px;
     font-weight: bold;
+}
+
+.weather-forecast-misc-windspeed-value {
+    font-size: 12px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.weather-forecast-misc-windspeed-value {
+    display: flex;
+    white-space: nowrap;
+    align-items: baseline;
+}
+
+.unitText {
+    font-size: 8px !important;
+    margin-left: 2px;
+}
+
+.weather-forecast-misc-time-value {
+    margin-top: 5px;
+    font-size: 12px;
 }
 
 .weather-forecast-time-value {

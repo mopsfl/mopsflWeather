@@ -38,7 +38,7 @@ const Util_1 = __importDefault(require("./Util"));
 const Strings_1 = __importDefault(require("./Strings"));
 const API_URL_DEV = "http://localhost:6968/v1/", API_URL_PROD = "https://mopsflweather.mopsfl.de/v1/";
 const _weatherData = $(".weather-data"), _cityName = $(".weather-data-city-name"), _temperatureValue = $(".temperature-value"), _weatherDescription = $(".weather-description"), _windSpeedValue = $(".wind-speed-value"), _windGustSpeedValue = $(".windgust-speed-value"), _windDirectionIcon = $(".wind-direction-icon"), _windDirectionDeg = $(".wind-directiondeg"), _sunriseValue = $(".sunrise-value"), _sunsetValue = $(".sunset-value"), _sunriseInValue = $(".sunrise-in-value"), _sunsetInValue = $(".sunset-in-value"), _weatherIcon = $(".main-info-weather-icon"), _currentTime = $(".weather-data-current-time"), _humidityValue = $(".humidity-value"), _airpressureValue = $(".airpressure-value"), _uvIndexValue = $(".uvindex-value");
-const _weatherForecastItems = $(".weather-forecast-items"), _weatherForecastItemTemplate = $(".weather-forecast-item-template");
+const _weatherForecastItems = $(".weather-forecast-items"), _weatherForecastMiscItems = $(".weather-forecast-misc-items"), _weatherForecastItemTemplate = $(".weather-forecast-item-template"), _weatherForecastMiscItemTemplate = $(".weather-forecast-misc-item-template");
 exports._weatherForecastItems = _weatherForecastItems;
 exports.default = {
     async SearchCity(name) {
@@ -107,16 +107,17 @@ exports.default = {
         weatherApiData.data?.forecast?.forecastday.forEach((forecastday, index) => {
             forecastday.hour.forEach(hourWeatherData => {
                 const _dataHour = new Date(hourWeatherData.time).getHours();
+                // Hourly Weather Forecast Details (Temperature, ...)
                 if (index === 0 && _dataHour >= _currentHour) {
-                    const [_forecastItem, _forecastTemperatureValue, _forecastIcon, _weatherForecastTimeValue, _rainChanceValue] = WeatherApi_1.default.CreateForecastItem();
+                    const [_forecastItem, _forecastTemperatureValue, _forecastIcon, _forecastTimeValue, _rainChanceValue] = WeatherApi_1.default.CreateForecastItem();
                     if (_dataHour === _currentHour) {
-                        _weatherForecastTimeValue.text(Strings_1.default[Languages_1.default[_settings.setting_language]]?.WEATHER_HOURLY_FORECAST_NOW);
+                        _forecastTimeValue.text(Strings_1.default[Languages_1.default[_settings.setting_language]]?.WEATHER_HOURLY_FORECAST_NOW);
                         _forecastTemperatureValue.text(`${lodash.round(_openWeatherData.data.main.temp || hourWeatherData.temp_c)}°C`);
                         _forecastIcon.attr("src", WeatherIcons_1.default.GetIcon(WeatherIcons_1.default.Icons[_openWeatherData.data.weather[0].id], _openWeatherData.data.timezone, _settings.animated_weather_icons));
                     }
                     else {
                         _forecastTemperatureValue.text(`${lodash.round(hourWeatherData.temp_c)}°C`);
-                        _weatherForecastTimeValue.text(Time_1.default.GetHourString(hourWeatherData.time, _openWeatherData.data.timezone));
+                        _forecastTimeValue.text(Time_1.default.GetHourString(hourWeatherData.time, _openWeatherData.data.timezone));
                         _forecastIcon.attr("src", WeatherIcons_1.default.GetIcon(WeatherIcons_1.default.Icons[hourWeatherData.condition.code], _openWeatherData.data.timezone, _settings.animated_weather_icons, !!hourWeatherData.is_day));
                     }
                     if (hourWeatherData.chance_of_rain > 0) {
@@ -127,9 +128,9 @@ exports.default = {
                     _forecastItem.appendTo(_weatherForecastItems);
                 }
                 else if (index === 1) {
-                    const [_forecastItem, _forecastTemperatureValue, _forecastIcon, _weatherForecastTimeValue, _rainChanceValue] = WeatherApi_1.default.CreateForecastItem();
+                    const [_forecastItem, _forecastTemperatureValue, _forecastIcon, _forecastTimeValue, _rainChanceValue] = WeatherApi_1.default.CreateForecastItem();
                     _forecastTemperatureValue.text(`${lodash.round(hourWeatherData.temp_c)}°C`);
-                    _weatherForecastTimeValue.text(Time_1.default.GetHourString(hourWeatherData.time, _openWeatherData.data.timezone));
+                    _forecastTimeValue.text(Time_1.default.GetHourString(hourWeatherData.time, _openWeatherData.data.timezone));
                     _forecastIcon.attr("src", WeatherIcons_1.default.GetIcon(WeatherIcons_1.default.Icons[hourWeatherData.condition.code], _openWeatherData.data.timezone, _settings.animated_weather_icons, !!hourWeatherData.is_day));
                     if (hourWeatherData.chance_of_rain > 0) {
                         _rainChanceValue.html(`<span class="material-symbols-outlined">water_drop</span>${hourWeatherData.chance_of_rain} %`);
@@ -138,12 +139,36 @@ exports.default = {
                         _rainChanceValue.html(`&zwnj;`);
                     _forecastItem.appendTo(_weatherForecastItems);
                 }
+                // Hourly Misc Forecast Details (Temperature, ...)
+                if (index === 0 && _dataHour >= _currentHour) {
+                    const [_forecastDetailItem, _forecastWindspeedValue, _forecastWindDirectionIcon, _forecastTimeValue] = WeatherApi_1.default.CreateForecastDetailItem();
+                    _forecastWindspeedValue.html(`${lodash.round(hourWeatherData.wind_kph)}<span class="smallgray unitText">km/h</span>`);
+                    _forecastWindDirectionIcon.css("transform", `rotate(${hourWeatherData.wind_degree + 180}deg)`);
+                    if (_dataHour === _currentHour) {
+                        _forecastTimeValue.text(Strings_1.default[Languages_1.default[_settings.setting_language]]?.WEATHER_HOURLY_FORECAST_NOW);
+                    }
+                    else {
+                        _forecastTimeValue.text(Time_1.default.GetHourString(hourWeatherData.time, _openWeatherData.data.timezone));
+                    }
+                    _forecastDetailItem.appendTo(_weatherForecastMiscItems);
+                }
+                else if (index === 1) {
+                    const [_forecastDetailItem, _forecastWindspeedValue, _forecastWindDirectionIcon, _forecastTimeValue] = WeatherApi_1.default.CreateForecastDetailItem();
+                    _forecastWindspeedValue.html(`${lodash.round(hourWeatherData.wind_kph)}<span class="smallgray unitText">km/h</span>`);
+                    _forecastWindDirectionIcon.css("transform", `rotate(${hourWeatherData.wind_degree + 180}deg)`);
+                    _forecastTimeValue.text(Time_1.default.GetHourString(hourWeatherData.time, _openWeatherData.data.timezone));
+                    _forecastDetailItem.appendTo(_weatherForecastMiscItems);
+                }
             });
         });
     },
     CreateForecastItem() {
-        const _forecastItem = _weatherForecastItemTemplate.contents().clone(), _forecastTemperatureValue = _forecastItem.find(".weather-forecast-temperature-value"), _forecastIcon = _forecastItem.find(".weather-forecast-icon"), _weatherForecastTimeValue = _forecastItem.find(".weather-forecast-time-value"), _rainChanceValue = _forecastItem.find(".weather-forecast-rain-chance");
-        return [_forecastItem, _forecastTemperatureValue, _forecastIcon, _weatherForecastTimeValue, _rainChanceValue];
+        const _forecastDetailItem = _weatherForecastItemTemplate.contents().clone(), _forecastTemperatureValue = _forecastDetailItem.find(".weather-forecast-temperature-value"), _forecastIcon = _forecastDetailItem.find(".weather-forecast-icon"), _forecastTimeValue = _forecastDetailItem.find(".weather-forecast-time-value"), _rainChanceValue = _forecastDetailItem.find(".weather-forecast-rain-chance");
+        return [_forecastDetailItem, _forecastTemperatureValue, _forecastIcon, _forecastTimeValue, _rainChanceValue];
+    },
+    CreateForecastDetailItem() {
+        const _forecastItem = _weatherForecastMiscItemTemplate.contents().clone(), _forecastWindspeedValue = _forecastItem.find(".weather-forecast-misc-windspeed-value"), _forecastWindDirectionIcon = _forecastItem.find(".weather-forecast-misc-wind-direction-icon"), _forecastTimeValue = _forecastItem.find(".weather-forecast-misc-time-value");
+        return [_forecastItem, _forecastWindspeedValue, _forecastWindDirectionIcon, _forecastTimeValue];
     },
     async HandleFailedRequest(response) {
         const isJSON = response.headers.get("content-type").includes("application/json");

@@ -69,10 +69,12 @@ jQuery(async () => {
         })
     })
 
-    weatherForecastItems.addEventListener('wheel', function (e: any) {
-        e.preventDefault();
-        weatherForecastItems.scrollLeft += e.deltaY * 0.2
-    }, { passive: false });
+    $(".mouseScrollEvent").each((i, element) => {
+        element.addEventListener('wheel', function (e: any) {
+            e.preventDefault();
+            element.scrollLeft += e.deltaY * 0.2
+        }, { passive: false });
+    })
 
     $(".test-notif-btn").on("click", () => {
         let notifType = Math.floor(Math.random() * 3)
