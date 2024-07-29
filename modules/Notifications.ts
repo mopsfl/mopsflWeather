@@ -18,7 +18,7 @@ export default class Notifications {
         if (!(args instanceof Object)) this.throwError(`invalid NotificationArguments.`, `argument being typeof ${typeof (args)}`)
 
         let [notification, notificationBody, closeButton] = this.CreateNotificationDiv(args)
-        console.log(notificationBody);
+
         notification.addEventListener("click", (e) => {
             if (e.target !== notification) return
             notification.classList.toggle("notification-expand")

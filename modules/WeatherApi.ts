@@ -9,8 +9,8 @@ import Languages from "./Languages";
 import Util from "./Util";
 import Strings from "./Strings";
 
-const API_URL_DEV: RequestInfo = "http://localhost:6968/v1/",
-    API_URL_PROD: RequestInfo = "https://mopsflweather.mopsfl.de/v1/"
+const API_URL_DEV: RequestInfo = "http://localhost:6969/v1/mopsflWeather/",
+    API_URL_PROD: RequestInfo = "https://api.mopsfl.de/v1/mopsflWeather/"
 
 const _weatherData = $(".weather-data"),
     _cityName = $(".weather-data-city-name"),
@@ -59,7 +59,7 @@ export default {
         let _settings: SettingsValues = LocalStorage.GetKey(localStorageKey, "settings"),
             query = `${(args.lat && args.lon) ? `q=${args.lat},${args.lon}` : `q=${args.name}`}`
 
-        return await fetch((!_dev ? API_URL_PROD : API_URL_DEV) + `data/weatherapi/forecast?${query}&alerts=yes${_settings?.setting_language ? `&lang=${Languages[_settings?.setting_language]}` : ""}&days=2`).catch(err => {
+        return await fetch((!_dev ? API_URL_PROD : API_URL_DEV) + `data/forecast?${query}&alerts=yes${_settings?.setting_language ? `&lang=${Languages[_settings?.setting_language]}` : ""}&days=2`).catch(err => {
             notifications.error("ApiError", err)
             console.error(err)
         })
@@ -69,26 +69,25 @@ export default {
         if (!weatherDataResponse.ok) return self.HandleFailedRequest(weatherDataResponse)
         const weatherData: OpenWeatherData = await weatherDataResponse.json()
 
-        if (weatherData.code !== 200 && weatherData.internal_error) return notifications.error(weatherData.internal_error.code, weatherData.message)
+        if (weatherData.code !== 200 && weatherData.internal_error) return notifications.error(weatherData.internal_error.code, "%weatherData.message%")
         const _settings: SettingsValues = LocalStorage.GetKey(localStorageKey, "settings"),
-            wind = Util.CalculateWind(weatherData.data.wind),
-            weather = weatherData.data.weather[0]
+            wind = Util.CalculateWind(weatherData.data.weather.wind)
 
-        _cityName.text(`${(!notFromCityList && cityName) || weatherData.data.name}, ${weatherData.data.sys.country}`)
-        _temperatureValue.text(`${lodash.round(weatherData.data.main.temp)}°C`)
-        _weatherDescription.html(`${Util.CapitalizeFirstLetter(weather.description)} &bull; &ShortUpArrow; ${lodash.round(weatherData.data.main.temp_max)}°C &bull; &ShortDownArrow; ${lodash.round(weatherData.data.main.temp_min)}°C`)
+        _cityName.text(`${(!notFromCityList && cityName || weatherData.data.name)}, ${weatherData.data.country}`)
+        _temperatureValue.text(`${lodash.round(weatherData.data.weather.temp.cur)}°C`)
+        _weatherDescription.html(`${Util.CapitalizeFirstLetter(weatherData.data.weather.description)} &bull; &ShortUpArrow; ${lodash.round(weatherData.data.weather.temp.max)}°C &bull; &ShortDownArrow; ${lodash.round(weatherData.data.weather.temp.min)}°C`)
         _windSpeedValue.text(`${wind.speed}km/h`)
         _windGustSpeedValue.text(wind.gust ? `${wind.gust}km/h` : "N/A")
         _windDirectionDeg.html(Util.GetWindDirection(wind.deg).replace(/\s/, "<br>"))
         _windDirectionIcon.css("transform", `rotate(${wind.deg + 180}deg)`)
-        _sunriseValue.text(Time.UnixTimestampToDateString(weatherData.data.sys.sunrise, weatherData.data.timezone))
-        _sunsetValue.text(Time.UnixTimestampToDateString(weatherData.data.sys.sunset, weatherData.data.timezone))
-        _sunriseInValue.text(Time.TimeUntil(weatherData.data.sys.sunrise, weatherData.data.timezone, true))
-        _sunsetInValue.text(Time.TimeUntil(weatherData.data.sys.sunset, weatherData.data.timezone, true))
-        _weatherIcon.attr("src", WeatherIcons.GetIcon(WeatherIcons.Icons[weather.id], weatherData.data.timezone, _settings.animated_weather_icons))
-        _currentTime.text(Time.GetCurrentTimeWithTimezone(weatherData.data.timezone, 0))
-        _humidityValue.html(`${weatherData.data.main.humidity} <span class="smallgray">%</span>`)
-        _airpressureValue.html(`${Util.NumberToFloatingPoint(weatherData.data.main.pressure)} <span class="smallgray">mbar</span>`)
+        _sunriseValue.text(Time.UnixTimestampToDateString(weatherData.data.astronomical.sunriseRaw, weatherData.data.timezoneOffset))
+        _sunsetValue.text(Time.UnixTimestampToDateString(weatherData.data.astronomical.sunsetRaw, weatherData.data.timezoneOffset))
+        _sunriseInValue.text(Time.TimeUntil(weatherData.data.astronomical.sunriseRaw, weatherData.data.timezoneOffset, true))
+        _sunsetInValue.text(Time.TimeUntil(weatherData.data.astronomical.sunsetRaw, weatherData.data.timezoneOffset, true))
+        _weatherIcon.attr("src", WeatherIcons.GetIcon(WeatherIcons.Icons[weatherData.data.weather.conditionId], weatherData.data.timezoneOffset, _settings.animated_weather_icons))
+        _currentTime.text(Time.GetCurrentTimeWithTimezone(weatherData.data.timezoneOffset, 0))
+        _humidityValue.html(`${weatherData.data.weather.humidity} <span class="smallgray">%</span>`)
+        _airpressureValue.html(`${Util.NumberToFloatingPoint(weatherData.data.weather.pressure)} <span class="smallgray">mbar</span>`)
         _weatherData.removeClass("hide")
 
         LocalStorage.Set(localStorageKey, "_openWeatherData", weatherData)
@@ -120,12 +119,12 @@ export default {
                     const [_forecastItem, _forecastTemperatureValue, _forecastIcon, _forecastTimeValue, _rainChanceValue] = self.CreateForecastItem()
                     if (_dataHour === _currentHour) {
                         _forecastTimeValue.text(Strings[Languages[_settings.setting_language]]?.WEATHER_HOURLY_FORECAST_NOW)
-                        _forecastTemperatureValue.text(`${lodash.round(_openWeatherData.data.main.temp || hourWeatherData.temp_c)}°C`)
-                        _forecastIcon.attr("src", WeatherIcons.GetIcon(WeatherIcons.Icons[_openWeatherData.data.weather[0].id], _openWeatherData.data.timezone, _settings.animated_weather_icons))
+                        _forecastTemperatureValue.text(`${lodash.round(_openWeatherData.data.weather.temp.cur || hourWeatherData.temp_c)}°C`)
+                        _forecastIcon.attr("src", WeatherIcons.GetIcon(WeatherIcons.Icons[_openWeatherData.data.weather.conditionId], _openWeatherData.data.timezoneOffset, _settings.animated_weather_icons))
                     } else {
                         _forecastTemperatureValue.text(`${lodash.round(hourWeatherData.temp_c)}°C`)
-                        _forecastTimeValue.text(Time.GetHourString(hourWeatherData.time, _openWeatherData.data.timezone))
-                        _forecastIcon.attr("src", WeatherIcons.GetIcon(WeatherIcons.Icons[hourWeatherData.condition.code], _openWeatherData.data.timezone, _settings.animated_weather_icons, !!hourWeatherData.is_day))
+                        _forecastTimeValue.text(Time.GetHourString(hourWeatherData.time, _openWeatherData.data.timezoneOffset))
+                        _forecastIcon.attr("src", WeatherIcons.GetIcon(WeatherIcons.Icons[hourWeatherData.condition.code], _openWeatherData.data.timezoneOffset, _settings.animated_weather_icons, !!hourWeatherData.is_day))
                     }
                     if (hourWeatherData.chance_of_rain > 0) {
                         _rainChanceValue.html(`<span class="material-symbols-outlined">water_drop</span>${hourWeatherData.chance_of_rain} %`)
@@ -136,8 +135,8 @@ export default {
                     const [_forecastItem, _forecastTemperatureValue, _forecastIcon, _forecastTimeValue, _rainChanceValue] = self.CreateForecastItem()
 
                     _forecastTemperatureValue.text(`${lodash.round(hourWeatherData.temp_c)}°C`)
-                    _forecastTimeValue.text(Time.GetHourString(hourWeatherData.time, _openWeatherData.data.timezone))
-                    _forecastIcon.attr("src", WeatherIcons.GetIcon(WeatherIcons.Icons[hourWeatherData.condition.code], _openWeatherData.data.timezone, _settings.animated_weather_icons, !!hourWeatherData.is_day))
+                    _forecastTimeValue.text(Time.GetHourString(hourWeatherData.time, _openWeatherData.data.timezoneOffset))
+                    _forecastIcon.attr("src", WeatherIcons.GetIcon(WeatherIcons.Icons[hourWeatherData.condition.code], _openWeatherData.data.timezoneOffset, _settings.animated_weather_icons, !!hourWeatherData.is_day))
                     if (hourWeatherData.chance_of_rain > 0) {
                         _rainChanceValue.html(`<span class="material-symbols-outlined">water_drop</span>${hourWeatherData.chance_of_rain} %`)
                     } else _rainChanceValue.html(`&zwnj;`)
@@ -154,7 +153,7 @@ export default {
                     if (_dataHour === _currentHour) {
                         _forecastTimeValue.text(Strings[Languages[_settings.setting_language]]?.WEATHER_HOURLY_FORECAST_NOW)
                     } else {
-                        _forecastTimeValue.text(Time.GetHourString(hourWeatherData.time, _openWeatherData.data.timezone))
+                        _forecastTimeValue.text(Time.GetHourString(hourWeatherData.time, _openWeatherData.data.timezoneOffset))
                     }
 
                     _forecastDetailItem.appendTo(_weatherForecastMiscItems)
@@ -162,7 +161,7 @@ export default {
                     const [_forecastDetailItem, _forecastWindspeedValue, _forecastWindDirectionIcon, _forecastTimeValue] = self.CreateForecastDetailItem()
                     _forecastWindspeedValue.html(`${lodash.round(hourWeatherData.wind_kph)}<span class="smallgray unitText">km/h</span>`)
                     _forecastWindDirectionIcon.css("transform", `rotate(${hourWeatherData.wind_degree + 180}deg)`)
-                    _forecastTimeValue.text(Time.GetHourString(hourWeatherData.time, _openWeatherData.data.timezone))
+                    _forecastTimeValue.text(Time.GetHourString(hourWeatherData.time, _openWeatherData.data.timezoneOffset))
 
                     _forecastDetailItem.appendTo(_weatherForecastMiscItems)
                 }
@@ -193,7 +192,7 @@ export default {
         const isJSON = response.headers.get("content-type").includes("application/json")
         if (!isJSON) return notifications.error(`ApiError - ${response.status}`, `${response.statusText}`)
         const internal_error: InternalError = await response.json()
-        if (internal_error.internal_error) return notifications.error(`ApiError - ${response.status}`, `${internal_error.internal_error.message.de}`)
+        if (internal_error.internal_error) return notifications.error(`ApiError - ${response.status}`, `${internal_error.internal_error.message?.de || internal_error.internal_error.message}`)
     }
 }
 
@@ -219,24 +218,44 @@ export interface WeatherRequestArguments {
 }
 
 export interface OpenWeatherData {
-    code?: number,
-    message?: string,
-    data?: {
-        main: { temp: number, feels_like: number, temp_min: number, temp_max: number, pressure: number, humidity: number },
-        visibility: number,
-        wind: WindData,
-        clouds: {},
-        dt: number,
-        base: string,
-        sys: { type: number, id: number, country: string, sunrise: number, sunset: number },
-        weather: Array<{ id: number, main: string, description: string, icon: string }>,
-        timezone: number,
-        id: number,
-        name: string,
-        cod: number
-    },
+    code: number,
     cached: boolean,
-    internal_error?: InternalError
+    internal_error?: InternalError,
+    data: {
+        lat: number;
+        lon: number;
+        dt: Date;
+        dtRaw: number;
+        name: string,
+        country: string,
+        timezoneOffset: number;
+        weather: {
+            temp: { cur: number, max: number, min: number };
+            feelsLike: { cur: number };
+            pressure: number;
+            humidity: number;
+            dewPoint: number | undefined;
+            clouds: number;
+            uvi: number | undefined;
+            visibility: number;
+            wind: WindData;
+            rain: number;
+            snow: number;
+            conditionId: number;
+            main: string;
+            description: string;
+            icon: {
+                url: string;
+                raw: string;
+            };
+        },
+        astronomical: {
+            sunrise: Date;
+            sunriseRaw: number;
+            sunset: Date;
+            sunsetRaw: number;
+        }
+    }
 }
 
 export interface WeatherApiData {
