@@ -75,8 +75,8 @@ exports.default = {
         _cityName.text(`${(!notFromCityList && cityName || weatherData.data.name)}, ${weatherData.data.country}`);
         _temperatureValue.text(`${lodash.round(weatherData.data.weather.temp.cur)}°C`);
         _weatherDescription.html(`${Util_1.default.CapitalizeFirstLetter(weatherData.data.weather.description)} &bull; &ShortUpArrow; ${lodash.round(weatherData.data.weather.temp.max)}°C &bull; &ShortDownArrow; ${lodash.round(weatherData.data.weather.temp.min)}°C`);
-        _windSpeedValue.text(`${wind.speed}km/h`);
-        _windGustSpeedValue.text(wind.gust ? `${wind.gust}km/h` : "N/A");
+        _windSpeedValue.html(`${wind.speed} <span class="smallgray">km/h</span>`);
+        _windGustSpeedValue.html(wind.gust ? `${wind.gust} <span class="smallgray">km/h</span>` : "N/A");
         _windDirectionDeg.html(Util_1.default.GetWindDirection(wind.deg).replace(/\s/, "<br>"));
         _windDirectionIcon.css("transform", `rotate(${wind.deg + 180}deg)`);
         _sunriseValue.text(Time_1.default.UnixTimestampToDateString(weatherData.data.astronomical.sunriseRaw, weatherData.data.timezoneOffset));
