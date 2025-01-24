@@ -37,7 +37,7 @@ const Languages_1 = __importDefault(require("./Languages"));
 const Util_1 = __importDefault(require("./Util"));
 const Strings_1 = __importDefault(require("./Strings"));
 const API_URL_DEV = "http://localhost:6969/v1/mopsflWeather/", API_URL_PROD = "https://api.mopsfl.de/v1/mopsflWeather/";
-const _weatherData = $(".weather-data"), _cityName = $(".weather-data-city-name"), _temperatureValue = $(".temperature-value"), _weatherDescription = $(".weather-description"), _windSpeedValue = $(".wind-speed-value"), _windGustSpeedValue = $(".windgust-speed-value"), _windDirectionIcon = $(".wind-direction-icon"), _windDirectionDeg = $(".wind-directiondeg"), _sunriseValue = $(".sunrise-value"), _sunsetValue = $(".sunset-value"), _sunriseInValue = $(".sunrise-in-value"), _sunsetInValue = $(".sunset-in-value"), _weatherIcon = $(".main-info-weather-icon"), _currentTime = $(".weather-data-current-time"), _humidityValue = $(".humidity-value"), _airpressureValue = $(".airpressure-value"), _uvIndexValue = $(".uvindex-value");
+const _weatherData = $(".weather-data"), _cityName = $(".weather-data-city-name"), _temperatureValue = $(".temperature-value"), _weatherDescription = $(".weather-description"), _windSpeedValue = $(".wind-speed-value"), _windGustSpeedValue = $(".windgust-speed-value"), _windDirectionIcon = $(".wind-direction-icon"), _windDirectionDeg = $(".wind-directiondeg"), _sunriseValue = $(".sunrise-value"), _sunsetValue = $(".sunset-value"), _sunriseInValue = $(".sunrise-in-value"), _sunsetInValue = $(".sunset-in-value"), _weatherIcon = $(".main-info-weather-icon"), _currentTime = $(".weather-data-current-time"), _humidityValue = $(".humidity-value"), _airpressureValue = $(".airpressure-value"), _uvIndexValue = $(".uvindex-value"), _weatherAlert = $(".weather-alert");
 const _weatherForecastItems = $(".weather-forecast-items"), _weatherForecastMiscItems = $(".weather-forecast-misc-items"), _weatherForecastItemTemplate = $(".weather-forecast-item-template"), _weatherForecastMiscItemTemplate = $(".weather-forecast-misc-item-template");
 exports._weatherForecastItems = _weatherForecastItems;
 exports.default = {
@@ -161,6 +161,15 @@ exports.default = {
                 }
             });
         });
+        if (weatherApiData.data.alerts.alert.length > 0) {
+            const alert = Util_1.default.RemoveDuplicatesByKey(weatherApiData.data.alerts.alert, "headline")[0];
+            _weatherAlert.find(".weather-alert-headline").text(alert.headline.replace(/\(Alert\)/gm, ""));
+            _weatherAlert.find(".weather-alert-desc").text(alert.desc);
+            _weatherAlert.find(".weather-alert-time").text(`bis ${Time_1.default.ConvertIsoToReadableTime(alert.expires)}`);
+            $(".weather-alerts").removeClass("hide");
+        }
+        else
+            $(".weather-alerts").addClass("hide");
     },
     CreateForecastItem() {
         const _forecastDetailItem = _weatherForecastItemTemplate.contents().clone(), _forecastTemperatureValue = _forecastDetailItem.find(".weather-forecast-temperature-value"), _forecastIcon = _forecastDetailItem.find(".weather-forecast-icon"), _forecastTimeValue = _forecastDetailItem.find(".weather-forecast-time-value"), _rainChanceValue = _forecastDetailItem.find(".weather-forecast-rain-chance");

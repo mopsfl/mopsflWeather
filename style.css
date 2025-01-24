@@ -208,7 +208,7 @@ input[type="text"]:not(.browser-default):focus {
 }
 
 .search-box {
-    margin-top: 50px !important;
+    margin-top: 25px !important;
     width: 600px !important;
 }
 
@@ -636,6 +636,56 @@ input[type="text"]:not(.browser-default):focus {
     word-break: break-word;
 }
 
+.weather-alerts {
+    display: grid;
+    justify-content: center;
+}
+
+.weather-alert:not(:last-child) {
+    margin-bottom: 5px;
+}
+
+.weather-alert {
+    border-radius: 3px;
+    padding: 5px 10px 5px 10px;
+    background: #a01b1b;
+    min-width: 350px;
+    display: flex;
+    align-items: center;
+    max-width: 600px;
+}
+
+.weather-alert-content {
+    display: grid;
+    text-align: left;
+    margin-left: 10px;
+    width: 100%;
+    word-break: break-word;
+}
+
+.weather-alert-icon {
+    margin-bottom: auto;
+    margin-top: 10px;
+    font-size: 25px !important;
+}
+
+.weather-alert-headline {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.weather-alert-desc {
+    font-size: 12px;
+}
+
+.weather-alert-time {
+    font-size: 10px;
+    color: #d1d1d1;
+    margin-left: auto;
+    margin-top: 5px;
+    font-style: italic;
+}
+
 @media only screen and (max-width: 700px) {
     .search-box {
         width: 100% !important;
@@ -643,6 +693,10 @@ input[type="text"]:not(.browser-default):focus {
 
     .weather-data {
         width: 95% !important;
+    }
+
+    .weather-alert {
+        width: calc(100vw - 100px);
     }
 
     .title-miscinfo {

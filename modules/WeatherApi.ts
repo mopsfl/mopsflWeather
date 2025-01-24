@@ -28,7 +28,8 @@ const _weatherData = $(".weather-data"),
     _currentTime = $(".weather-data-current-time"),
     _humidityValue = $(".humidity-value"),
     _airpressureValue = $(".airpressure-value"),
-    _uvIndexValue = $(".uvindex-value")
+    _uvIndexValue = $(".uvindex-value"),
+    _weatherAlert = $(".weather-alert")
 
 const _weatherForecastItems = $(".weather-forecast-items"),
     _weatherForecastMiscItems = $(".weather-forecast-misc-items"),
@@ -165,8 +166,19 @@ export default {
 
                     _forecastDetailItem.appendTo(_weatherForecastMiscItems)
                 }
+
             })
         })
+
+        if (weatherApiData.data.alerts.alert.length > 0) {
+            const alert: WeatherApiAlert = Util.RemoveDuplicatesByKey(weatherApiData.data.alerts.alert, "headline")[0]
+
+            _weatherAlert.find(".weather-alert-headline").text(alert.headline.replace(/\(Alert\)/gm, ""))
+            _weatherAlert.find(".weather-alert-desc").text(alert.desc)
+            _weatherAlert.find(".weather-alert-time").text(`bis ${Time.ConvertIsoToReadableTime(alert.expires)}`)
+
+            $(".weather-alerts").removeClass("hide")
+        } else $(".weather-alerts").addClass("hide")
     },
 
     CreateForecastItem() {
