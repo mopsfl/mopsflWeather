@@ -67,6 +67,10 @@ jQuery(async () => {
             if ($(e).hasClass("static-icon")) return
             $(e).attr("src", $(e).attr("src")?.replace(_settings.animated_weather_icons ? "static" : "animated", _settings.animated_weather_icons ? "animated" : "static"))
         })
+
+        if (_settings.weather_alerts === true) {
+            $(".weather-alerts").removeClass("hide")
+        } else $(".weather-alerts").addClass("hide")
     })
 
     $(".mouseScrollEvent").each((i, element) => {
@@ -92,18 +96,25 @@ jQuery(async () => {
         }
     })
 
-    window["WeatherIcons"] = WeatherIcons
-    window["Time"] = Time
-    window["lstorage"] = LocalStorage
-    window["Languages"] = Languages
-    window["CustomEvents"] = CustomEvents
-    _dev && (window["WeatherApi"] = WeatherApi)
-    window["SearchCity"] = SearchCity
-    window["Util"] = Util
-    window["Settings"] = settings
-    window["GeoLocation"] = GeoLocation
-    window["Loading"] = Loading
-    window["Notifications"] = notifications
+    const _settings: SettingsValues = LocalStorage.GetKey(localStorageKey, "settings")
+    if (_settings.weather_alerts === true) {
+        $(".weather-alerts").removeClass("hide")
+    } else $(".weather-alerts").addClass("hide")
+
+    if (_dev) {
+        window["WeatherIcons"] = WeatherIcons
+        window["Time"] = Time
+        window["lstorage"] = LocalStorage
+        window["Languages"] = Languages
+        window["CustomEvents"] = CustomEvents
+        window["WeatherApi"] = WeatherApi
+        window["SearchCity"] = SearchCity
+        window["Util"] = Util
+        window["Settings"] = settings
+        window["GeoLocation"] = GeoLocation
+        window["Loading"] = Loading
+        window["Notifications"] = notifications
+    }
 })
 
 declare global {

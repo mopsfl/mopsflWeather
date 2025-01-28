@@ -51,7 +51,7 @@ class Notifications {
         const titleDiv = Util_1.default.CreateElementWithClass("div", "notification-title");
         const titleText = Util_1.default.CreateElementWithClass("span", "notification-title-text", title);
         const titleIcon = Util_1.default.CreateElementWithClass("span", "material-symbols-outlined", type === "warn" ? "warning" : type);
-        const closeButton = Util_1.default.CreateElementWithClass("button", "notification-close");
+        const closeButton = Util_1.default.CreateElementWithClass("button", "close-button");
         const closeButtonIcon = Util_1.default.CreateElementWithClass("span", "material-symbols-outlined", "close");
         const body = Util_1.default.CreateElementWithClass("div", "notification-body", bodyText);
         if (attrName)

@@ -12,6 +12,7 @@ export default class Settings {
                     ["setting_language"]: "Deutsch - DE",
                     ["animated_weather_icons"]: true,
                     ["high_accuracy_location"]: true,
+                    ["weather_alerts"]: true,
                 }
             }
         },
@@ -126,5 +127,6 @@ export default class Settings {
 export interface SettingsValues {
     setting_language: string,
     animated_weather_icons: boolean,
-    high_accuracy_location: boolean
+    high_accuracy_location: boolean,
+    weather_alerts: boolean
 }

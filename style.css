@@ -572,7 +572,7 @@ input[type="text"]:not(.browser-default):focus {
     animation: notification-in .2s;
 }
 
-.notification-close {
+.close-button {
     background: transparent;
     border: none;
     outline: none;
@@ -583,7 +583,7 @@ input[type="text"]:not(.browser-default):focus {
     z-index: 3;
 }
 
-.notification-close:focus {
+.close-button:focus {
     background-color: transparent !important;
 }
 
@@ -646,6 +646,7 @@ input[type="text"]:not(.browser-default):focus {
 }
 
 .weather-alert {
+    position: relative;
     border-radius: 3px;
     padding: 5px 10px 5px 10px;
     background: #a01b1b;

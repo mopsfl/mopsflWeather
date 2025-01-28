@@ -52,7 +52,7 @@ export default class Notifications {
         const titleDiv = Util.CreateElementWithClass("div", "notification-title");
         const titleText = Util.CreateElementWithClass("span", "notification-title-text", title);
         const titleIcon = Util.CreateElementWithClass("span", "material-symbols-outlined", type === "warn" ? "warning" : type);
-        const closeButton = Util.CreateElementWithClass("button", "notification-close");
+        const closeButton = Util.CreateElementWithClass("button", "close-button");
         const closeButtonIcon = Util.CreateElementWithClass("span", "material-symbols-outlined", "close");
         const body = Util.CreateElementWithClass("div", "notification-body", bodyText);
 

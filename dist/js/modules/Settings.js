@@ -17,6 +17,7 @@ class Settings {
                 ["setting_language"]: "Deutsch - DE",
                 ["animated_weather_icons"]: true,
                 ["high_accuracy_location"]: true,
+                ["weather_alerts"]: true,
             }
         }
     }, settingUpdateEvent) {

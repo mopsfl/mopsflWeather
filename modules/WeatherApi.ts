@@ -177,8 +177,13 @@ export default {
             _weatherAlert.find(".weather-alert-desc").text(alert.desc)
             _weatherAlert.find(".weather-alert-time").text(`bis ${Time.ConvertIsoToReadableTime(alert.expires)}`)
 
-            $(".weather-alerts").removeClass("hide")
-        } else $(".weather-alerts").addClass("hide")
+            $(".weather-alert").removeClass("hide")
+
+            _weatherAlert.find(".close-button").off("click")
+            _weatherAlert.find(".close-button").on("click", () => {
+                _weatherAlert.addClass("hide")
+            })
+        } else $(".weather-alert").addClass("hide")
     },
 
     CreateForecastItem() {

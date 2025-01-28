@@ -166,10 +166,14 @@ exports.default = {
             _weatherAlert.find(".weather-alert-headline").text(alert.headline.replace(/\(Alert\)/gm, ""));
             _weatherAlert.find(".weather-alert-desc").text(alert.desc);
             _weatherAlert.find(".weather-alert-time").text(`bis ${Time_1.default.ConvertIsoToReadableTime(alert.expires)}`);
-            $(".weather-alerts").removeClass("hide");
+            $(".weather-alert").removeClass("hide");
+            _weatherAlert.find(".close-button").off("click");
+            _weatherAlert.find(".close-button").on("click", () => {
+                _weatherAlert.addClass("hide");
+            });
         }
         else
-            $(".weather-alerts").addClass("hide");
+            $(".weather-alert").addClass("hide");
     },
     CreateForecastItem() {
         const _forecastDetailItem = _weatherForecastItemTemplate.contents().clone(), _forecastTemperatureValue = _forecastDetailItem.find(".weather-forecast-temperature-value"), _forecastIcon = _forecastDetailItem.find(".weather-forecast-icon"), _forecastTimeValue = _forecastDetailItem.find(".weather-forecast-time-value"), _rainChanceValue = _forecastDetailItem.find(".weather-forecast-rain-chance");

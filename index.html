@@ -55,6 +55,7 @@
         </header>
         <div class="weather-alerts hide">
             <div class="weather-alert">
+                <button class="close-button"><span class="material-symbols-outlined">close</span></button>
                 <span class="material-symbols-outlined weather-alert-icon">warning</span>
                 <div class="weather-alert-content">
                     <span class="weather-alert-headline">alert_headline</span>
@@ -209,6 +210,13 @@
                     <span class="setting-name tooltipped" data-position="right" data-tooltip="">High Accuracy Location</span>
                     <label>
                         <input type="checkbox" class="filled-in" id="high_accuracy_location" checked="true" />
+                        <span></span>
+                    </label>
+                </div>
+                <div class="setting">
+                    <span class="setting-name tooltipped" data-position="right" data-tooltip="">Weather Alerts</span>
+                    <label>
+                        <input type="checkbox" class="filled-in" id="weather_alerts" checked="true" />
                         <span></span>
                     </label>
                 </div>
