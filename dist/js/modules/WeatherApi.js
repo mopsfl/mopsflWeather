@@ -103,7 +103,9 @@ exports.default = {
         const _openWeatherData = LocalStorage_1.default.GetKey(__1.localStorageKey, "_openWeatherData");
         const _currentHour = new Date().getHours();
         _weatherForecastItems.empty();
+        _weatherForecastMiscItems.empty();
         _weatherForecastItems.get(0).scrollLeft = 0;
+        _weatherForecastMiscItems.get(0).scrollLeft = 0;
         weatherApiData.data?.forecast?.forecastday.forEach((forecastday, index) => {
             forecastday.hour.forEach(hourWeatherData => {
                 const _dataHour = new Date(hourWeatherData.time).getHours();
