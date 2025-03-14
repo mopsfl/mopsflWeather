@@ -8,6 +8,10 @@ export default {
         return str.charAt(0).toUpperCase() + str.slice(1);
     },
 
+    CelsiusToFahrenheit(celsius: number) {
+        return (celsius * 9 / 5) + 32;
+    },
+
     NumberToFloatingPoint(num: string | number) {
         num = num.toString()
 

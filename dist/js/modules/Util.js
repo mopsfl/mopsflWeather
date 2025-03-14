@@ -10,6 +10,9 @@ exports.default = {
     CapitalizeFirstLetter(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
     },
+    CelsiusToFahrenheit(celsius) {
+        return (celsius * 9 / 5) + 32;
+    },
     NumberToFloatingPoint(num) {
         num = num.toString();
         let firstOneIndex = num.indexOf('1');

@@ -13,10 +13,18 @@ export default {
     ["Arabic - AR"]: "ar",
     ["Polish - PL"]: "pl",
 
-    UpdateStrings() {
+    UpdateStrings(language?: string) {
+        let _settings: SettingsValues = LocalStorage.GetKey(localStorageKey, "settings"),
+            _language = language || self[_settings.setting_language] || "en"
+
         $("*[data-stringname]").each((i, e) => {
-            let _settings: SettingsValues = LocalStorage.GetKey(localStorageKey, "settings"),
-                _string = (Strings[self[_settings.setting_language || "en"]] || Strings.de)[$(e).attr("data-stringname") || "en"]
+            if (language === "n/a") {
+                $(e).text("N/A")
+                return
+            }
+
+            let _string = (Strings[_language] || Strings.de)[$(e).attr("data-stringname") || "en"]
+
             if (_string) $(e).text(_string)
         })
     }

@@ -71,9 +71,11 @@ exports.default = {
         const weatherData = await weatherDataResponse.json();
         if (weatherData.code !== 200 && weatherData.internal_error)
             return __1.notifications.error(weatherData.internal_error.code, "%weatherData.message%");
-        const _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), wind = Util_1.default.CalculateWind(weatherData.data.weather.wind);
+        const _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), wind = Util_1.default.CalculateWind(weatherData.data.weather.wind), temperature = _settings.setting_tempunit ===
+            "Celsius" ? `${lodash.round(weatherData.data.weather.temp.cur)}°C` :
+            `${lodash.round(Util_1.default.CelsiusToFahrenheit(weatherData.data.weather.temp.cur))}°F`;
         _cityName.text(`${(!notFromCityList && cityName || weatherData.data.name)}, ${weatherData.data.country}`);
-        _temperatureValue.text(`${lodash.round(weatherData.data.weather.temp.cur)}°C`);
+        _temperatureValue.text(temperature);
         _weatherDescription.html(`${Util_1.default.CapitalizeFirstLetter(weatherData.data.weather.description)} &bull; &ShortUpArrow; ${lodash.round(weatherData.data.weather.temp.max)}°C &bull; &ShortDownArrow; ${lodash.round(weatherData.data.weather.temp.min)}°C`);
         _windSpeedValue.html(`${wind.speed} <span class="smallgray">km/h</span>`);
         _windGustSpeedValue.html(wind.gust ? `${wind.gust} <span class="smallgray">km/h</span>` : "N/A");
@@ -112,13 +114,16 @@ exports.default = {
                 // Hourly Weather Forecast Details (Temperature, ...)
                 if (index === 0 && _dataHour >= _currentHour) {
                     const [_forecastItem, _forecastTemperatureValue, _forecastIcon, _forecastTimeValue, _rainChanceValue] = WeatherApi_1.default.CreateForecastItem();
+                    let temperature = _settings.setting_tempunit ===
+                        "Celsius" ? `${lodash.round(_dataHour === _currentHour ? (_openWeatherData.data.weather.temp.cur || hourWeatherData.temp_c) : hourWeatherData.temp_c)}°C` :
+                        `${lodash.round(Util_1.default.CelsiusToFahrenheit(_dataHour === _currentHour ? (_openWeatherData.data.weather.temp.cur || hourWeatherData.temp_c) : hourWeatherData.temp_c))}°F`;
                     if (_dataHour === _currentHour) {
                         _forecastTimeValue.text(Strings_1.default[Languages_1.default[_settings.setting_language]]?.WEATHER_HOURLY_FORECAST_NOW);
-                        _forecastTemperatureValue.text(`${lodash.round(_openWeatherData.data.weather.temp.cur || hourWeatherData.temp_c)}°C`);
+                        _forecastTemperatureValue.text(temperature);
                         _forecastIcon.attr("src", WeatherIcons_1.default.GetIcon(WeatherIcons_1.default.Icons[_openWeatherData.data.weather.conditionId], _openWeatherData.data.timezoneOffset, _settings.animated_weather_icons));
                     }
                     else {
-                        _forecastTemperatureValue.text(`${lodash.round(hourWeatherData.temp_c)}°C`);
+                        _forecastTemperatureValue.text(temperature);
                         _forecastTimeValue.text(Time_1.default.GetHourString(hourWeatherData.time, _openWeatherData.data.timezoneOffset));
                         _forecastIcon.attr("src", WeatherIcons_1.default.GetIcon(WeatherIcons_1.default.Icons[hourWeatherData.condition.code], _openWeatherData.data.timezoneOffset, _settings.animated_weather_icons, !!hourWeatherData.is_day));
                     }
@@ -131,7 +136,10 @@ exports.default = {
                 }
                 else if (index === 1) {
                     const [_forecastItem, _forecastTemperatureValue, _forecastIcon, _forecastTimeValue, _rainChanceValue] = WeatherApi_1.default.CreateForecastItem();
-                    _forecastTemperatureValue.text(`${lodash.round(hourWeatherData.temp_c)}°C`);
+                    let temperature = _settings.setting_tempunit ===
+                        "Celsius" ? `${lodash.round(hourWeatherData.temp_c)}°C` :
+                        `${lodash.round(Util_1.default.CelsiusToFahrenheit(hourWeatherData.temp_c))}°F`;
+                    _forecastTemperatureValue.text(temperature);
                     _forecastTimeValue.text(Time_1.default.GetHourString(hourWeatherData.time, _openWeatherData.data.timezoneOffset));
                     _forecastIcon.attr("src", WeatherIcons_1.default.GetIcon(WeatherIcons_1.default.Icons[hourWeatherData.condition.code], _openWeatherData.data.timezoneOffset, _settings.animated_weather_icons, !!hourWeatherData.is_day));
                     if (hourWeatherData.chance_of_rain > 0) {

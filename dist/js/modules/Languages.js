@@ -15,9 +15,14 @@ exports.default = {
     ["Japanese - JA"]: "ja",
     ["Arabic - AR"]: "ar",
     ["Polish - PL"]: "pl",
-    UpdateStrings() {
+    UpdateStrings(language) {
+        let _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), _language = language || Languages_1.default[_settings.setting_language] || "en";
         $("*[data-stringname]").each((i, e) => {
-            let _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), _string = (Strings_1.default[Languages_1.default[_settings.setting_language || "en"]] || Strings_1.default.de)[$(e).attr("data-stringname") || "en"];
+            if (language === "n/a") {
+                $(e).text("N/A");
+                return;
+            }
+            let _string = (Strings_1.default[_language] || Strings_1.default.de)[$(e).attr("data-stringname") || "en"];
             if (_string)
                 $(e).text(_string);
         });

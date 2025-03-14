@@ -15,6 +15,7 @@ class Settings {
         default_settings: {
             ["settings"]: {
                 ["setting_language"]: "Deutsch - DE",
+                ["setting_tempunit"]: "Celsius",
                 ["animated_weather_icons"]: true,
                 ["high_accuracy_location"]: true,
                 ["weather_alerts"]: true,
@@ -39,7 +40,7 @@ class Settings {
             LocalStorage_1.default.Set(this.config.storage_key, "settings", this.config.default_settings);
         _settings = LocalStorage_1.default.GetKey(this.config.storage_key, "settings");
         document.querySelectorAll(".setting").forEach(setting => {
-            const input = setting.querySelector("input"), setting_id = $(input).attr("id");
+            const input = setting.querySelector("input"), setting_id = $(input).attr("setting-id");
             if (setting_id) {
                 input.addEventListener("input", (e) => {
                     const [setting_name, setting_id, value] = this.HandleInput(e, setting);
@@ -72,7 +73,7 @@ class Settings {
             }
             else {
                 if (input.classList.contains("select-dropdown")) {
-                    let _dropdown_select = $(input).parent()[0].querySelector("select"), setting_id = _dropdown_select.getAttribute("id"), value = _settings[setting_id];
+                    let _dropdown_select = $(input).parent()[0].querySelector("select"), setting_id = setting.getAttribute("setting-id"), value = _settings[setting_id];
                     if (value === undefined) {
                         value = this.config.default_settings.settings[setting_id];
                         _settings[setting_id] = value;
@@ -93,8 +94,7 @@ class Settings {
         });
     }
     HandleInput(e, setting) {
-        console.log(setting);
-        const name = setting.querySelector(".setting-name"), setting_id = $(setting.querySelector("input")).attr("id") || $(setting).children(".select-wrapper").children("select").attr("id"), input = setting.querySelector("input");
+        const name = setting.querySelector(".setting-name"), setting_id = $(setting.querySelector("input")).attr("setting\-id") || $(setting).attr("setting-id"), input = setting.querySelector("input");
         let new_value;
         if (e.target instanceof HTMLInputElement && e.target.type === "range") {
             const range_text = setting.querySelector(".slider-value"), range_text_value = range_text.attributes.getNamedItem("value-type").value || "";
@@ -106,6 +106,9 @@ class Settings {
         }
         else if (e.target instanceof HTMLInputElement && e.target.type === "text" || "password") {
             new_value = input.value;
+        }
+        else {
+            console.warn("UNKNOWN SETTING TYPE:", e, setting);
         }
         return [name.innerText, setting_id, new_value];
     }

@@ -2,6 +2,7 @@ export default {
     de: {
         WEATHER_INFO_WIND: "Wind",
         WEATHER_INFO_GUST: "Böen",
+        WEATHER_INFO_RAIN: "Regen",
 
         WEATHER_INFO_WIND_DIRECTIONS: ["aus Norden", "aus Nord-Nordosten", "aus Nordosten", "aus Ost-Nordosten", "aus Osten", "aus Ost-Südosten", "aus Südosten", "aus Süd-Südosten", "aus Süden", "aus Süd-Südwesten", "aus Südwesten", "aus West-Südwesten", "aus Westen", "aus West-Nordwesten", "aus Nordwesten", "aus Nord-Nordwesten"],
         WEATHER_INFO_SUNRISE: "Sonnenaufgang",
@@ -26,6 +27,7 @@ export default {
     en: {
         WEATHER_INFO_WIND: "Wind",
         WEATHER_INFO_GUST: "Gusts",
+        WEATHER_INFO_RAIN: "Rain",
 
         WEATHER_INFO_WIND_DIRECTIONS: ["from the North", "from the North-Northeast", "from the Northeast", "from the East-Northeast", "from the East", "from the East-Southeast", "from the Southeast", "from the South-Southeast", "from the South", "from the South-Southwest", "from the Southwest", "from the West-Southwest", "from the West", "from the West-Northwest", "from the Northwest", "from the North-Northwest"],
         WEATHER_INFO_SUNRISE: "Sunrise",

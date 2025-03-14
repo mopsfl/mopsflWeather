@@ -8,6 +8,10 @@
     transition: filter .4s;
 }
 
+html {
+    line-height: normal !important;
+}
+
 ::-webkit-scrollbar {
     width: 20px;
 }
@@ -27,10 +31,7 @@
     background-color: #a8bbbf;
 }
 
-body {
-    background-color: rgb(27, 27, 27);
-    padding-bottom: 20px;
-}
+body {}
 
 main {
     position: relative;
@@ -65,9 +66,23 @@ a:hover {
     margin-top: 10px;
 }
 
+
 .smallgray {
     color: gray !important;
     font-size: 12px !important;
+}
+
+.smalltext {
+    font-size: 11px !important;
+}
+
+.material-tooltip {
+    background: #2e3133 !important;
+    color: white !important;
+}
+
+.material-tooltip>* {
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen-Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif;
 }
 
 .container-header-title {
@@ -147,9 +162,6 @@ a:hover {
     margin-bottom: 5px !important;
 }
 
-.setting>.input-field>input {
-    height: 2.5rem !important;
-}
 
 .setting.input-field>.select-wrapper {
     margin-left: auto !important;
@@ -164,8 +176,11 @@ a:hover {
 }
 
 .setting>.input-field>input {
-    height: 29px !important;
+    height: 2.5rem !important;
     font-size: 15px !important;
+    text-align: left;
+    padding: 0 10px !important;
+    display: flex;
 }
 
 .range-field,
@@ -224,6 +239,7 @@ input[type="text"]:not(.browser-default):focus {
 
 .searchcity_input {
     margin-bottom: 0 !important;
+    padding-left: 0 !important;
 }
 
 .autocomplete-dropdown {
@@ -287,7 +303,7 @@ input[type="text"]:not(.browser-default):focus {
 }
 
 .weather-data {
-    margin-top: 10px !important;
+    margin-top: 20px !important;
     width: 560px !important;
 }
 
@@ -454,6 +470,7 @@ input[type="text"]:not(.browser-default):focus {
 }
 
 .weather-forecast-list {
+    position: relative;
     max-height: 300px !important;
     height: max-content !important;
     gap: 0;
@@ -687,6 +704,34 @@ input[type="text"]:not(.browser-default):focus {
     font-style: italic;
 }
 
+.hourly-details-tabs {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    display: flex;
+    gap: 5px;
+}
+
+.hourly-detail-tab {
+    text-decoration: none !important;
+    font-size: 12px;
+    color: gray;
+    cursor: pointer;
+    padding: 1px 5px !important;
+    background-color: #1e1e1e;
+    border-radius: 3px;
+    transition: background-color .2s;
+    user-select: none;
+}
+
+.tab-selected {
+    outline: solid 1px #3b3b3b !important
+}
+
+.hourly-detail-tab:hover {
+    background-color: #272727;
+}
+
 @media only screen and (max-width: 700px) {
     .search-box {
         width: 100% !important;
@@ -720,6 +765,12 @@ input[type="text"]:not(.browser-default):focus {
 @media only screen and (max-width: 430px) {
     .weather-data-info-icon {
         display: none;
+    }
+}
+
+@media only screen and (max-height: 745px) {
+    .search-box {
+        margin-top: 0 !important;
     }
 }
 
@@ -778,7 +829,6 @@ input[type="text"]:not(.browser-default):focus {
     }
 }
 
-
 @keyframes rotation {
     0% {
         transform: rotate(0deg);
@@ -788,8 +838,6 @@ input[type="text"]:not(.browser-default):focus {
         transform: rotate(360deg);
     }
 }
-
-
 
 @keyframes spinner {
     to {
