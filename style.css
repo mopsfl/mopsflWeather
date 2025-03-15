@@ -492,10 +492,11 @@ input[type="text"]:not(.browser-default):focus {
     padding: 10px;
     border-radius: 4px;
     width: 50%;
-    max-height: 65px;
     flex-wrap: wrap;
     overflow: hidden;
     margin-bottom: auto;
+    max-height: 55px;
+    min-height: 55px;
     transition: max-height .2s;
 }
 
@@ -526,10 +527,6 @@ input[type="text"]:not(.browser-default):focus {
     height: 45px;
     user-select: none;
     margin-left: auto;
-}
-
-.weather-data-info-item>div {
-    margin-top: 5px;
 }
 
 .settings-button-container {
