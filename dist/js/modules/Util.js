@@ -13,6 +13,9 @@ exports.default = {
     CelsiusToFahrenheit(celsius) {
         return (celsius * 9 / 5) + 32;
     },
+    RoundToLowest(number) {
+        return Math.floor(number);
+    },
     NumberToFloatingPoint(num) {
         num = num.toString();
         let firstOneIndex = num.indexOf('1');

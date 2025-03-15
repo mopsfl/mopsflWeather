@@ -12,6 +12,10 @@ export default {
         return (celsius * 9 / 5) + 32;
     },
 
+    RoundToLowest(number: number) {
+        return Math.floor(number)
+    },
+
     NumberToFloatingPoint(num: string | number) {
         num = num.toString()
 

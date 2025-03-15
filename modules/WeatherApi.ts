@@ -73,13 +73,11 @@ export default {
         if (weatherData.code !== 200 && weatherData.internal_error) return notifications.error(weatherData.internal_error.code, "%weatherData.message%")
         const _settings: SettingsValues = LocalStorage.GetKey(localStorageKey, "settings"),
             wind = Util.CalculateWind(weatherData.data.weather.wind),
-            temperature = _settings.setting_tempunit ===
-                "Celsius" ? `${lodash.round(weatherData.data.weather.temp.cur)}°C` :
-                `${lodash.round(Util.CelsiusToFahrenheit(weatherData.data.weather.temp.cur))}°F`
+            temperature = self.FormatTemperature(weatherData.data.weather.temp.cur, _settings)
 
         _cityName.text(`${(!notFromCityList && cityName || weatherData.data.name)}, ${weatherData.data.country}`)
-        _temperatureValue.text(temperature)
-        _weatherDescription.html(`${Util.CapitalizeFirstLetter(weatherData.data.weather.description)} &bull; &ShortUpArrow; ${lodash.round(weatherData.data.weather.temp.max)}°C &bull; &ShortDownArrow; ${lodash.round(weatherData.data.weather.temp.min)}°C`)
+        _temperatureValue.html(`<span class="__tempvalue" data-temperature="${weatherData.data.weather.temp.cur}">${temperature}</span>`)
+        _weatherDescription.html(`${Util.CapitalizeFirstLetter(weatherData.data.weather.description)} &bull; &ShortUpArrow; <span class="__tempvalue smallgray" data-temperature="${weatherData.data.weather.temp.max}">${self.FormatTemperature(weatherData.data.weather.temp.max)}</span> &bull; &ShortDownArrow; <span class="__tempvalue smallgray" data-temperature="${weatherData.data.weather.temp.min}">${self.FormatTemperature(weatherData.data.weather.temp.min)}</span>`)
         _windSpeedValue.html(`${wind.speed} <span class="smallgray">km/h</span>`)
         _windGustSpeedValue.html(wind.gust ? `${wind.gust} <span class="smallgray">km/h</span>` : "N/A")
         _windDirectionDeg.html(Util.GetWindDirection(wind.deg).replace(/\s/, "<br>"))
@@ -94,15 +92,18 @@ export default {
         _airpressureValue.html(`${Util.NumberToFloatingPoint(weatherData.data.weather.pressure)} <span class="smallgray">mbar</span>`)
         _weatherData.removeClass("hide")
 
+        self.UpdatePercentageDisplay("humidity-value", weatherData.data.weather.humidity)
+        self.UpdatePercentageDisplay("airpressure-value", self.AirPressureToPercentage(weatherData.data.weather.pressure))
         LocalStorage.Set(localStorageKey, "_openWeatherData", weatherData)
     },
 
     async UpdateWeatherApiData(weatherDataResponse: Response) {
         if (!weatherDataResponse.ok) return self.HandleFailedRequest(weatherDataResponse)
         const weatherData: WeatherApiData = await weatherDataResponse.json()
-        _uvIndexValue.text(weatherData.data.current.uv)
-        self.UpdateForecastData(weatherData)
+        _uvIndexValue.text(lodash.round(weatherData.data.current.uv))
+        self.UpdatePercentageDisplay("uvindex-value", (weatherData.data.current.uv / 11) * 100)
 
+        self.UpdateForecastData(weatherData)
         LocalStorage.Set(localStorageKey, "_weatherApiData", weatherData)
     },
 
@@ -122,17 +123,17 @@ export default {
 
                 // Hourly Weather Forecast Details (Temperature, ...)
                 if (index === 0 && _dataHour >= _currentHour) {
-                    const [_forecastItem, _forecastTemperatureValue, _forecastIcon, _forecastTimeValue, _rainChanceValue] = self.CreateForecastItem()
-                    let temperature = _settings.setting_tempunit ===
-                        "Celsius" ? `${lodash.round(_dataHour === _currentHour ? (_openWeatherData.data.weather.temp.cur || hourWeatherData.temp_c) : hourWeatherData.temp_c)}°C` :
-                        `${lodash.round(Util.CelsiusToFahrenheit(_dataHour === _currentHour ? (_openWeatherData.data.weather.temp.cur || hourWeatherData.temp_c) : hourWeatherData.temp_c))}°F`
+                    const [_forecastItem, _forecastTemperatureValue, _forecastIcon, _forecastTimeValue, _rainChanceValue] = self.CreateForecastItem(),
+                        temperatureValue = _dataHour === _currentHour ? (_openWeatherData.data.weather.temp.cur || hourWeatherData.temp_c) : hourWeatherData.temp_c
+
+                    let temperature = self.FormatTemperature(temperatureValue, _settings)
 
                     if (_dataHour === _currentHour) {
                         _forecastTimeValue.text(Strings[Languages[_settings.setting_language]]?.WEATHER_HOURLY_FORECAST_NOW)
-                        _forecastTemperatureValue.text(temperature)
+                        _forecastTemperatureValue.html(`<span class="__tempvalue" data-temperature="${temperatureValue}">${temperature}</span>`)
                         _forecastIcon.attr("src", WeatherIcons.GetIcon(WeatherIcons.Icons[_openWeatherData.data.weather.conditionId], _openWeatherData.data.timezoneOffset, _settings.animated_weather_icons))
                     } else {
-                        _forecastTemperatureValue.text(temperature)
+                        _forecastTemperatureValue.html(`<span class="__tempvalue" data-temperature="${temperatureValue}">${temperature}</span>`)
                         _forecastTimeValue.text(Time.GetHourString(hourWeatherData.time, _openWeatherData.data.timezoneOffset))
                         _forecastIcon.attr("src", WeatherIcons.GetIcon(WeatherIcons.Icons[hourWeatherData.condition.code], _openWeatherData.data.timezoneOffset, _settings.animated_weather_icons, !!hourWeatherData.is_day))
                     }
@@ -143,11 +144,9 @@ export default {
                     _forecastItem.appendTo(_weatherForecastItems)
                 } else if (index === 1) {
                     const [_forecastItem, _forecastTemperatureValue, _forecastIcon, _forecastTimeValue, _rainChanceValue] = self.CreateForecastItem()
-                    let temperature = _settings.setting_tempunit ===
-                        "Celsius" ? `${lodash.round(hourWeatherData.temp_c)}°C` :
-                        `${lodash.round(Util.CelsiusToFahrenheit(hourWeatherData.temp_c))}°F`
+                    let temperature = self.FormatTemperature(hourWeatherData.temp_c, _settings)
 
-                    _forecastTemperatureValue.text(temperature)
+                    _forecastTemperatureValue.html(`<span class="__tempvalue" data-temperature="${hourWeatherData.temp_c}">${temperature}</span>`)
                     _forecastTimeValue.text(Time.GetHourString(hourWeatherData.time, _openWeatherData.data.timezoneOffset))
                     _forecastIcon.attr("src", WeatherIcons.GetIcon(WeatherIcons.Icons[hourWeatherData.condition.code], _openWeatherData.data.timezoneOffset, _settings.animated_weather_icons, !!hourWeatherData.is_day))
                     if (hourWeatherData.chance_of_rain > 0) {
@@ -221,6 +220,31 @@ export default {
         if (!isJSON) return notifications.error(`ApiError - ${response.status}`, `${response.statusText}`)
         const internal_error: InternalError = await response.json()
         if (internal_error.internal_error) return notifications.error(`ApiError - ${response.status}`, `${internal_error.internal_error.message?.de || internal_error.internal_error.message}`)
+    },
+
+    FormatTemperature(temperature: number, settings?: SettingsValues) {
+        return (settings?.setting_tempunit || "Celsius") ===
+            "Celsius" ? `${lodash.round(temperature)}°C` :
+            `${lodash.round(Util.CelsiusToFahrenheit(temperature))}°F`
+    },
+
+    UpdatePercentageDisplay(id: string, value: number) {
+        const percentageDisplayElement = $(`#${id}`),
+            percentageValueElement = percentageDisplayElement.find(".percentage")
+        if (!percentageDisplayElement || !percentageValueElement) return
+
+        percentageValueElement.css("height", `${value}%`).css("background-color", percentageValueElement.attr("data-bgcolor"))
+    },
+
+    AirPressureToPercentage(pressure: number) {
+        // no clue if this makes sense displaying "low" and "high" air pressure ;-;
+        const minPressure = 950;
+        const maxPressure = 1060;
+
+        if (pressure < minPressure) pressure = minPressure;
+        if (pressure > maxPressure) pressure = maxPressure;
+
+        return ((pressure - minPressure) / (maxPressure - minPressure)) * 100;
     }
 }
 

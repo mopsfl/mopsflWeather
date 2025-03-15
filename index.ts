@@ -71,6 +71,16 @@ jQuery(async () => {
         if (_settings.weather_alerts === true) {
             $(".weather-alerts").removeClass("hide")
         } else $(".weather-alerts").addClass("hide")
+
+        $(".__tempvalue").each((i, e) => {
+            var el = $(e)
+            const temperature = parseFloat(el.attr("data-temperature")) || 0,
+                temperatureText = _settings.setting_tempunit ===
+                    "Celsius" ? `${lodash.round(temperature)}°C` :
+                    `${lodash.round(Util.CelsiusToFahrenheit(temperature))}°F`
+
+            el.text(temperatureText)
+        })
     })
 
     $(".mouseScrollEvent").each((i, element) => {

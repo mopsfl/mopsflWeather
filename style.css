@@ -31,8 +31,6 @@ html {
     background-color: #a8bbbf;
 }
 
-body {}
-
 main {
     position: relative;
     z-index: 2;
@@ -40,6 +38,10 @@ main {
 
 a:hover {
     text-decoration: underline;
+}
+
+.relative {
+    position: relative;
 }
 
 .blur {
@@ -63,9 +65,36 @@ a:hover {
 }
 
 .container-header {
+    width: 100%;
+    position: absolute;
     margin-top: 10px;
+    z-index: 99;
+    display: flex;
+    pointer-events: none;
 }
 
+.footer-title {
+    position: relative;
+    display: none !important;
+    margin-left: auto;
+}
+
+.footer-title>.title-logo {
+    position: absolute;
+    left: -35px;
+}
+
+.container-footer {
+    display: flex;
+    position: fixed;
+    padding: 10px;
+    bottom: 0;
+    left: 0;
+}
+
+.container-footer>.footer-copyright {
+    font-family: monospace;
+}
 
 .smallgray {
     color: gray !important;
@@ -88,6 +117,8 @@ a:hover {
 .container-header-title {
     display: flex;
     justify-content: left;
+    align-items: center;
+    align-self: center;
 }
 
 .title-miscinfo {
@@ -101,6 +132,12 @@ a:hover {
 .title-name,
 .title-logo {
     user-select: none;
+    font-size: 16px;
+}
+
+.title-logo {
+    width: 40px;
+    height: 40px;
 }
 
 .divider {
@@ -138,7 +175,6 @@ a:hover {
     margin-top: 15px;
 }
 
-
 .settings-grid {
     display: grid;
 }
@@ -147,6 +183,24 @@ a:hover {
     margin-top: 15px;
 }
 
+.percentage-display {
+    right: 15px;
+    position: absolute;
+    width: 15px;
+    height: 50%;
+    border-radius: 1rem;
+    background-color: #313131;
+    overflow: hidden;
+}
+
+.percentage-display>.percentage {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 0%;
+    background-color: white;
+    transition: height 1s;
+}
 
 .input-field.col>label {
     left: 0 !important;
@@ -182,6 +236,21 @@ a:hover {
     padding: 0 10px !important;
     display: flex;
 }
+
+.dropdown-content {
+    height: 84px !important;
+}
+
+.dropdown-content>li {
+    user-select: none;
+    min-height: 15px !important;
+}
+
+.dropdown-content>li>span {
+    padding: 10px 16px !important;
+    user-select: none;
+}
+
 
 .range-field,
 .range-field>input {
@@ -255,11 +324,17 @@ input[type="text"]:not(.browser-default):focus {
     overflow: auto;
 }
 
+
 .dropdown-item {
     width: 100%;
     box-shadow: none !important;
     text-transform: none !important;
     border-radius: 0 !important;
+    background: transparent;
+}
+
+.dropdown-item:hover {
+    background-color: rgb(51, 51, 51) !important;
 }
 
 .dropdown-item>.city-name {
@@ -303,8 +378,9 @@ input[type="text"]:not(.browser-default):focus {
 }
 
 .weather-data {
-    margin-top: 20px !important;
+    margin-top: 45px !important;
     width: 560px !important;
+    padding-bottom: 10px;
 }
 
 .weather-data>.weather-data-city-name {
@@ -406,6 +482,7 @@ input[type="text"]:not(.browser-default):focus {
 }
 
 .weather-data-info-item {
+    position: relative;
     margin-top: 10px;
     gap: 10px;
     align-items: center;
@@ -442,17 +519,26 @@ input[type="text"]:not(.browser-default):focus {
 }
 
 .weather-data-info-icon {
+    position: absolute;
+    right: 5px;
+    top: 10px;
     width: 45px;
     height: 45px;
     user-select: none;
     margin-left: auto;
 }
 
-.settings-button-container {
-    width: 100%;
-    display: flex;
-    justify-content: right;
+.weather-data-info-item>div {
     margin-top: 5px;
+}
+
+.settings-button-container {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    z-index: 99;
 }
 
 .settings-btn {
@@ -762,15 +848,28 @@ input[type="text"]:not(.browser-default):focus {
     }
 }
 
-@media only screen and (max-width: 430px) {
-    .weather-data-info-icon {
-        display: none;
+@media only screen and (max-width: 930px) {
+    .search-box {
+        margin-top: 35px !important;
     }
 }
 
-@media only screen and (max-height: 745px) {
+@media only screen and (max-height: 730px) {
     .search-box {
         margin-top: 0 !important;
+    }
+
+    .container-footer {
+        position: relative;
+        padding: 10px 5px;
+    }
+
+    .container-header {
+        display: none;
+    }
+
+    .footer-title {
+        display: flex !important;
     }
 }
 

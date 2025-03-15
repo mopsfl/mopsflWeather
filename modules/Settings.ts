@@ -12,7 +12,7 @@ export default class Settings {
                     ["setting_language"]: "Deutsch - DE",
                     ["setting_tempunit"]: "Celsius",
                     ["animated_weather_icons"]: true,
-                    ["high_accuracy_location"]: true,
+                    ["high_accuracy_location"]: false,
                     ["weather_alerts"]: true,
                 }
             }
@@ -83,7 +83,7 @@ export default class Settings {
                     }
 
                     input.value = value
-                    _dropdown_select.value = value
+                    //_dropdown_select.value = value
                     _dropdown_select.addEventListener("change", (e) => {
                         const [setting_name, setting_id, value] = this.HandleInput(e, setting)
                         this.UpdateSetting(setting_name, setting_id, value)
