@@ -15,7 +15,7 @@ class Settings {
         storage_key: __1.localStorageKey,
         default_settings: {
             ["settings"]: {
-                ["setting_language"]: Languages_1.default.LanguagesCodes[navigator.language || "en"],
+                ["setting_language"]: Languages_1.default.LanguagesCodes[navigator.language] || Languages_1.default.LanguagesCodes.en,
                 ["setting_tempunit"]: "Celsius",
                 ["animated_weather_icons"]: true,
                 ["high_accuracy_location"]: false,

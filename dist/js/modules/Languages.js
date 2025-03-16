@@ -10,7 +10,12 @@ const Languages_1 = __importDefault(require("./Languages"));
 exports.default = {
     ["Deutsch - DE"]: "de",
     ["English - EN"]: "en",
-    ["LanguagesCodes"]: { "de": "Deutsch - DE", "en": "English - EN" },
+    ["LanguagesCodes"]: {
+        "de": "Deutsch - DE",
+        "de-DE": "Deutsch - DE",
+        "en": "English - EN",
+        "en-EN": "English - EN"
+    },
     UpdateStrings(language) {
         let _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), _language = language || Languages_1.default[_settings.setting_language] || "en";
         $("*[data-stringname]").each((i, e) => {

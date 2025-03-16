@@ -7,7 +7,12 @@ import self from "./Languages"
 export default {
     ["Deutsch - DE"]: "de",
     ["English - EN"]: "en",
-    ["LanguagesCodes"]: { "de": "Deutsch - DE", "en": "English - EN" },
+    ["LanguagesCodes"]: {
+        "de": "Deutsch - DE",
+        "de-DE": "Deutsch - DE",
+        "en": "English - EN",
+        "en-EN": "English - EN"
+    },
 
     UpdateStrings(language?: string) {
         let _settings: SettingsValues = LocalStorage.GetKey(localStorageKey, "settings"),
