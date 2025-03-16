@@ -444,13 +444,11 @@ input[type="text"]:not(.browser-default):focus {
 
 .wind-direction {
     position: absolute;
-    top: 17px;
-    right: 15px;
+    right: 1px;
     gap: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 20px;
     margin-left: auto;
 }
 
