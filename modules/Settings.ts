@@ -34,7 +34,7 @@ export default class Settings {
             LocalStorage.Create(this.config.storage_key, this.config.default_settings)
             CustomEvents.DispatchEvent(window, this.settingUpdateEvent)
         }
-        console.log(Languages.LanguagesCodes[navigator.language || "en"]);
+
         if (!LocalStorage.GetKey(this.config.storage_key, "settings")) LocalStorage.Set(this.config.storage_key, "settings", this.config.default_settings)
         _settings = LocalStorage.GetKey(this.config.storage_key, "settings")
         document.querySelectorAll(".setting").forEach(setting => {

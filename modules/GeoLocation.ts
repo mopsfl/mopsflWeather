@@ -31,6 +31,9 @@ export default {
             case 2:
             case 3:
                 notifications.error("GeolocationPositionError", err.message)
+                WeatherApi.GetOpenWeatherData(undefined, true).then(WeatherApi.UpdateOpenWeatherData)
+                WeatherApi.GetWeatherApiData({ name: "Frankfurt" }).then(WeatherApi.UpdateWeatherApiData)
+                Loading.Toggle(false)
                 break;
             default: break;
         }

@@ -94,7 +94,6 @@ jQuery(async () => {
 
     $(".test-notif-btn").on("click", () => {
         let notifType = Math.floor(Math.random() * 3)
-        console.log(notifType);
         switch (notifType) {
             case 0:
                 notifications.info("Test Info Notification", "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam")

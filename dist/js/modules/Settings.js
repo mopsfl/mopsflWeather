@@ -37,7 +37,6 @@ class Settings {
             LocalStorage_1.default.Create(this.config.storage_key, this.config.default_settings);
             CustomEvents_1.CustomEvents.DispatchEvent(window, this.settingUpdateEvent);
         }
-        console.log(Languages_1.default.LanguagesCodes[navigator.language || "en"]);
         if (!LocalStorage_1.default.GetKey(this.config.storage_key, "settings"))
             LocalStorage_1.default.Set(this.config.storage_key, "settings", this.config.default_settings);
         _settings = LocalStorage_1.default.GetKey(this.config.storage_key, "settings");
