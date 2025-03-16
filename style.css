@@ -2,9 +2,17 @@
  use calc-size for expandable elements when its fully released
 */
 
+:root {
+    --text-color: #f1f1f1;
+    --text-gray: gray;
+    --text-bright-gray: #d1d1d1;
+    --main-background: #313131;
+    --background-darker: #1e1e1e;
+    --background-brigther: #272727;
+}
+
 * {
     scrollbar-width: thin;
-    color: white;
     transition: filter .4s;
 }
 
@@ -34,6 +42,7 @@ html {
 main {
     position: relative;
     z-index: 2;
+    color: var(--text-color);
 }
 
 a:hover {
@@ -97,7 +106,7 @@ a:hover {
 }
 
 .smallgray {
-    color: gray !important;
+    color: var(--text-gray) !important;
     font-size: 12px !important;
 }
 
@@ -107,7 +116,7 @@ a:hover {
 
 .material-tooltip {
     background: #2e3133 !important;
-    color: white !important;
+    color: var(--text-color) !important;
 }
 
 .material-tooltip>* {
@@ -141,7 +150,7 @@ a:hover {
 }
 
 .divider {
-    background: rgb(104, 104, 104) !important;
+    background: #686868 !important;
 }
 
 .w100 {
@@ -150,7 +159,7 @@ a:hover {
 
 .modal,
 .modal-footer {
-    background-color: #1e1e1e !important;
+    background-color: var(--background-darker) !important;
 }
 
 .break {
@@ -189,8 +198,9 @@ a:hover {
     width: 15px;
     height: 50%;
     border-radius: 1rem;
-    background-color: #313131;
+    background-color: var(--main-background);
     overflow: hidden;
+    box-shadow: 0px 0px 1px 1px #181818 inset;
 }
 
 .percentage-display>.percentage {
@@ -200,6 +210,7 @@ a:hover {
     height: 0%;
     background-color: white;
     transition: height 1s;
+    box-shadow: 0px 0px 3px 1px #000000c4 inset;
 }
 
 .input-field.col>label {
@@ -266,16 +277,8 @@ a:hover {
 }
 
 .seperator {
-    background-color: #3b3b3b;
+    background-color: var(--background-brigther);
     height: 1px;
-}
-
-.setting-info {
-    font-size: 17px !important;
-    margin-left: 5px;
-    background-color: #333333;
-    border-radius: 1em;
-    padding: 1px;
 }
 
 input[type="text"]:not(.browser-default) {
@@ -427,7 +430,7 @@ input[type="text"]:not(.browser-default):focus {
 
 .weather-description {
     font-size: 12px;
-    color: gray;
+    color: var(--text-gray);
     text-wrap: nowrap;
     margin-top: 5px;
 }
@@ -460,7 +463,7 @@ input[type="text"]:not(.browser-default):focus {
 }
 
 .wind-directiondeg {
-    color: gray;
+    color: var(--text-gray);
     font-size: 12px;
     text-align: right;
 }
@@ -513,7 +516,7 @@ input[type="text"]:not(.browser-default):focus {
 
 .weather-data-info-item-name {
     margin: 0;
-    color: gray;
+    color: var(--text-gray);
     font-size: 12px;
     user-select: none;
     margin-bottom: auto;
@@ -522,7 +525,7 @@ input[type="text"]:not(.browser-default):focus {
 .weather-data-info-icon {
     position: absolute;
     right: 5px;
-    top: 10px;
+    top: 5px;
     width: 45px;
     height: 45px;
     user-select: none;
@@ -661,7 +664,7 @@ input[type="text"]:not(.browser-default):focus {
     position: relative;
     padding: 10px;
     border-radius: 2px;
-    background-color: #313131;
+    background-color: var(--main-background);
     width: 100%;
     max-height: 6.5em;
     user-select: none;
@@ -781,7 +784,7 @@ input[type="text"]:not(.browser-default):focus {
 
 .weather-alert-time {
     font-size: 10px;
-    color: #d1d1d1;
+    color: var(--text-bright-gray);
     margin-left: auto;
     margin-top: 5px;
     font-style: italic;
@@ -798,10 +801,10 @@ input[type="text"]:not(.browser-default):focus {
 .hourly-detail-tab {
     text-decoration: none !important;
     font-size: 12px;
-    color: gray;
+    color: var(--text-gray);
     cursor: pointer;
     padding: 1px 5px !important;
-    background-color: #1e1e1e;
+    background-color: var(--background-darker);
     border-radius: 3px;
     transition: background-color .2s;
     user-select: none;
@@ -812,7 +815,7 @@ input[type="text"]:not(.browser-default):focus {
 }
 
 .hourly-detail-tab:hover {
-    background-color: #272727;
+    background-color: var(--background-brigther);
 }
 
 @media only screen and (max-width: 700px) {

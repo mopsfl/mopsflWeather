@@ -46,23 +46,11 @@
             <span class="title-name">mopsfl<b>Weather</b></span>
         </div>
     </header>
-    <div class="settings-button-container">
+    <div class="settings-button-container tooltipped" data-stringname="TOOLTIP_SETTINGS" data-position="left">
         <button class="btn btn-floating waves-effect waves-light settings-btn transparent" id="#settingsmodal"><span class="material-symbols-outlined">settings</span></button>
     </div>
 
     <main class="container">
-        <!--<header class="container-header">
-            <div class="container-header-title">
-                <img class="title-logo static-icon" src="./images/svg/static/day.svg" alt="daysun_icon">
-                <h5 class="title-name"><u>mopsfl</u><b>Weather</b></h5>
-                <span class="align_mright title-miscinfo">
-                    <span>by mopsfl <span style="user-select: none;">&bull;</span> 1.0.0</span><br>
-                    <span>using <a target="_blank" href="https://openweathermap.org/api">OpenWeather</a> & <a target="_blank" href="https://www.weatherapi.com">WeatherAPI</a> & <a target="_blank" href="https://www.amcharts.com/free-animated-svg-weather-icons/">amcharts</a></span>
-                </span>
-            </div>
-            <div class="divider"></div>
-            <div class="settings-button-container"><button class="btn btn-floating waves-effect waves-light settings-btn transparent" id="#settingsmodal"><span class="material-symbols-outlined">settings</span></button></div>
-        </header>-->
         <div class="weather-alerts hide">
             <div class="weather-alert hide">
                 <button class="close-button"><span class="material-symbols-outlined">close</span></button>
@@ -77,7 +65,7 @@
         <div class="search-box container center">
             <div class="search-city-input-field input-field">
                 <div class="search-box-container">
-                    <input type="text" id="searchcity_input" class="searchcity_input" placeholder="Search city" value="">
+                    <input type="text" id="searchcity_input" class="searchcity_input" data-stringname="PLACEHOLDER_SEARCH_CITY" placeholder="Search city" value="">
                     <!--<div class="loading-spinner search-box-loading-spinner hide">
                         <div class="cube1"></div>
                         <div class="cube2"></div>
@@ -99,12 +87,12 @@
                 <div class="main-info-right">
                     <span class="main-info-temperature">
                         <img class="main-info-weather-icon" src="" alt="main-info-weather-icon">
-                        <span class="temperature-value">N/A</span>
+                        <span class="temperature-value tooltipped" data-stringname="TOOLTIP_CURRENT_TEMPERATURE" data-position="right">N/A</span>
                     </span>
                     <span class="weather-description">N/A</span>
                 </div>
                 <div class="main-info-left">
-                    <p class="weather-data-current-time">00:00</p>
+                    <p class="weather-data-current-time tooltipped" data-stringname="TOOLTIP_CURRENT_TIME" data-position="right">00:00</p>
                     <span class="weather-data-city-name">N/A, N/A</span>
                 </div>
             </div>
@@ -223,7 +211,7 @@
             <h4>Settings</h4>
             <div class="settings-grid">
                 <div class="setting input-field col s12 " setting-id="setting_language">
-                    <span class="setting-name tooltipped" data-position="right" data-tooltip="Select your preferred language for the site.">Language</span>
+                    <span class="setting-name tooltipped" data-stringname="TOOLTIP_SETTING_LANGUAGE" data-position="right">Language</span>
                     <select>
                         <option value="0" selected>Deutsch - DE</option>
                         <option value="1">English - EN</option>
@@ -231,7 +219,7 @@
                     <label>Materialize Select</label>
                 </div>
                 <div class="setting input-field col s12" setting-id="setting_tempunit">
-                    <span class="setting-name tooltipped" data-position="right" data-tooltip="Set the unit for displaying temperature.">Temperature Unit</span>
+                    <span class="setting-name tooltipped" data-stringname="TOOLTIP_SETTING_TEMPERATURE_UNIT" data-position="right">Temperature Unit</span>
                     <select>
                         <option value="0" selected>Celsius</option>
                         <option value="1">Fahrenheit</option>
@@ -239,21 +227,21 @@
                     <label>Materialize Select</label>
                 </div>
                 <div class="setting">
-                    <span class="setting-name tooltipped" data-position="right" data-tooltip="Enables animated weather icons.">Animated Weather Icons</span>
+                    <span class="setting-name tooltipped" data-stringname="TOOLTIP_SETTING_ANIAMTED_ICONS" data-position="right">Animated Weather Icons</span>
                     <label>
                         <input type="checkbox" class="filled-in waves-effect waves-light" setting-id="animated_weather_icons" checked="true" />
                         <span></span>
                     </label>
                 </div>
                 <div class="setting">
-                    <span class="setting-name tooltipped" data-position="right" data-tooltip="Enables precise geo-location for better accuracy.">High Accuracy Location</span>
+                    <span class="setting-name tooltipped" data-stringname="TOOLTIP_HIGH_ACCURACY_LOCATION" data-position="right">High Accuracy Location</span>
                     <label>
                         <input type="checkbox" class="filled-in" setting-id="high_accuracy_location" checked="true" />
                         <span></span>
                     </label>
                 </div>
                 <div class="setting">
-                    <span class="setting-name tooltipped" data-position="right" data-tooltip="Toggle warnings for severe weather conditions.">Weather Alerts</span>
+                    <span class="setting-name tooltipped" data-stringname="TOOLTIP_WEATHER_ALERTS" data-position="right" data-tooltip="Toggle warnings for severe weather conditions.">Weather Alerts</span>
                     <label>
                         <input type="checkbox" class="filled-in" setting-id="weather_alerts" checked="true" />
                         <span></span>

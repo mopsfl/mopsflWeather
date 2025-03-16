@@ -1,3 +1,5 @@
+// TODO: remake this cuz it got very messy ;-;
+
 import { _dev, languageStrings, localStorageKey, notifications } from ".."
 import Time from "./Time";
 import self from "./WeatherApi"
@@ -77,7 +79,9 @@ export default {
 
         _cityName.text(`${(!notFromCityList && cityName || weatherData.data.name)}, ${weatherData.data.country}`)
         _temperatureValue.html(`<span class="__tempvalue" data-temperature="${weatherData.data.weather.temp.cur}">${temperature}</span>`)
-        _weatherDescription.html(`${Util.CapitalizeFirstLetter(weatherData.data.weather.description)} &bull; &ShortUpArrow; <span class="__tempvalue smallgray" data-temperature="${weatherData.data.weather.temp.max}">${self.FormatTemperature(weatherData.data.weather.temp.max)}</span> &bull; &ShortDownArrow; <span class="__tempvalue smallgray" data-temperature="${weatherData.data.weather.temp.min}">${self.FormatTemperature(weatherData.data.weather.temp.min)}</span>`)
+        _weatherDescription.html(`${Util.CapitalizeFirstLetter(weatherData.data.weather.description)} &bull; &ShortUpArrow;
+            <span class="__tempvalue smallgray tooltipped" data-stringname="TOOLTIP_HIGHEST_TEMPERATURE" data-temperature="${weatherData.data.weather.temp.max}">${self.FormatTemperature(weatherData.data.weather.temp.max)}</span> &bull; &ShortDownArrow;
+            <span class="__tempvalue smallgray tooltipped" data-stringname="TOOLTIP_LOWEST_TEMPERATURE" data-temperature="${weatherData.data.weather.temp.min}">${self.FormatTemperature(weatherData.data.weather.temp.min)}</span>`)
         _windSpeedValue.html(`${wind.speed} <span class="smallgray">km/h</span>`)
         _windGustSpeedValue.html(wind.gust ? `${wind.gust} <span class="smallgray">km/h</span>` : "N/A")
         _windDirectionDeg.html(Util.GetWindDirection(wind.deg).replace(/\s/, "<br>"))
@@ -95,12 +99,18 @@ export default {
         self.UpdatePercentageDisplay("humidity-value", weatherData.data.weather.humidity)
         self.UpdatePercentageDisplay("airpressure-value", self.AirPressureToPercentage(weatherData.data.weather.pressure))
         LocalStorage.Set(localStorageKey, "_openWeatherData", weatherData)
+        M.Tooltip.init(_weatherDescription.find(".tooltipped"))
+        Languages.UpdateStrings()
     },
 
     async UpdateWeatherApiData(weatherDataResponse: Response) {
         if (!weatherDataResponse.ok) return self.HandleFailedRequest(weatherDataResponse)
-        const weatherData: WeatherApiData = await weatherDataResponse.json()
-        _uvIndexValue.text(lodash.round(weatherData.data.current.uv))
+        const weatherData: WeatherApiData = await weatherDataResponse.json(),
+            _settings: SettingsValues = LocalStorage.GetKey(localStorageKey, "settings")
+
+        const [uvIndexLevel, keyIndex] = self.GetUVIndexLevel(weatherData.data.current.uv, _settings)
+
+        _uvIndexValue.html(`${lodash.round(weatherData.data.current.uv)} <span class="smallgray" data-stringname="WEATHER_INFO_UVINDEX_LEVELS" data-stringindex="${keyIndex}">${uvIndexLevel}</span>`)
         self.UpdatePercentageDisplay("uvindex-value", (weatherData.data.current.uv / 11) * 100)
 
         self.UpdateForecastData(weatherData)
@@ -245,6 +255,18 @@ export default {
         if (pressure > maxPressure) pressure = maxPressure;
 
         return ((pressure - minPressure) / (maxPressure - minPressure)) * 100;
+    },
+
+    GetUVIndexLevel(uvindex: number, settings?: SettingsValues) {
+        const language: "de" | "en" = Languages[settings?.setting_language] || "de",
+            levels = Strings[language].WEATHER_INFO_UVINDEX_LEVELS
+
+        if (uvindex <= 2) return [levels[2], 2];
+        if (uvindex <= 5) return [levels[5], 5];
+        if (uvindex <= 7) return [levels[7], 7];
+        if (uvindex <= 10) return [levels[10], 10];
+
+        return [levels[11], 11];
     }
 }
 

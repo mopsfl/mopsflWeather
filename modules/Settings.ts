@@ -1,5 +1,6 @@
 import { localStorageKey } from "..";
 import { CustomEvents } from "./CustomEvents";
+import Languages from "./Languages";
 import LocalStorage from "./LocalStorage";
 
 export default class Settings {
@@ -9,7 +10,7 @@ export default class Settings {
             storage_key: localStorageKey,
             default_settings: {
                 ["settings"]: {
-                    ["setting_language"]: "Deutsch - DE",
+                    ["setting_language"]: Languages.LanguagesCodes[navigator.language || "en"],
                     ["setting_tempunit"]: "Celsius",
                     ["animated_weather_icons"]: true,
                     ["high_accuracy_location"]: false,
@@ -33,7 +34,7 @@ export default class Settings {
             LocalStorage.Create(this.config.storage_key, this.config.default_settings)
             CustomEvents.DispatchEvent(window, this.settingUpdateEvent)
         }
-
+        console.log(Languages.LanguagesCodes[navigator.language || "en"]);
         if (!LocalStorage.GetKey(this.config.storage_key, "settings")) LocalStorage.Set(this.config.storage_key, "settings", this.config.default_settings)
         _settings = LocalStorage.GetKey(this.config.storage_key, "settings")
         document.querySelectorAll(".setting").forEach(setting => {

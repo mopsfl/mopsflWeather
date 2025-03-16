@@ -74,7 +74,9 @@ exports.default = {
         const _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings"), wind = Util_1.default.CalculateWind(weatherData.data.weather.wind), temperature = WeatherApi_1.default.FormatTemperature(weatherData.data.weather.temp.cur, _settings);
         _cityName.text(`${(!notFromCityList && cityName || weatherData.data.name)}, ${weatherData.data.country}`);
         _temperatureValue.html(`<span class="__tempvalue" data-temperature="${weatherData.data.weather.temp.cur}">${temperature}</span>`);
-        _weatherDescription.html(`${Util_1.default.CapitalizeFirstLetter(weatherData.data.weather.description)} &bull; &ShortUpArrow; <span class="__tempvalue smallgray" data-temperature="${weatherData.data.weather.temp.max}">${WeatherApi_1.default.FormatTemperature(weatherData.data.weather.temp.max)}</span> &bull; &ShortDownArrow; <span class="__tempvalue smallgray" data-temperature="${weatherData.data.weather.temp.min}">${WeatherApi_1.default.FormatTemperature(weatherData.data.weather.temp.min)}</span>`);
+        _weatherDescription.html(`${Util_1.default.CapitalizeFirstLetter(weatherData.data.weather.description)} &bull; &ShortUpArrow;
+            <span class="__tempvalue smallgray tooltipped" data-stringname="TOOLTIP_HIGHEST_TEMPERATURE" data-temperature="${weatherData.data.weather.temp.max}">${WeatherApi_1.default.FormatTemperature(weatherData.data.weather.temp.max)}</span> &bull; &ShortDownArrow;
+            <span class="__tempvalue smallgray tooltipped" data-stringname="TOOLTIP_LOWEST_TEMPERATURE" data-temperature="${weatherData.data.weather.temp.min}">${WeatherApi_1.default.FormatTemperature(weatherData.data.weather.temp.min)}</span>`);
         _windSpeedValue.html(`${wind.speed} <span class="smallgray">km/h</span>`);
         _windGustSpeedValue.html(wind.gust ? `${wind.gust} <span class="smallgray">km/h</span>` : "N/A");
         _windDirectionDeg.html(Util_1.default.GetWindDirection(wind.deg).replace(/\s/, "<br>"));
@@ -91,12 +93,15 @@ exports.default = {
         WeatherApi_1.default.UpdatePercentageDisplay("humidity-value", weatherData.data.weather.humidity);
         WeatherApi_1.default.UpdatePercentageDisplay("airpressure-value", WeatherApi_1.default.AirPressureToPercentage(weatherData.data.weather.pressure));
         LocalStorage_1.default.Set(__1.localStorageKey, "_openWeatherData", weatherData);
+        M.Tooltip.init(_weatherDescription.find(".tooltipped"));
+        Languages_1.default.UpdateStrings();
     },
     async UpdateWeatherApiData(weatherDataResponse) {
         if (!weatherDataResponse.ok)
             return WeatherApi_1.default.HandleFailedRequest(weatherDataResponse);
-        const weatherData = await weatherDataResponse.json();
-        _uvIndexValue.text(lodash.round(weatherData.data.current.uv));
+        const weatherData = await weatherDataResponse.json(), _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings");
+        const [uvIndexLevel, keyIndex] = WeatherApi_1.default.GetUVIndexLevel(weatherData.data.current.uv, _settings);
+        _uvIndexValue.html(`${lodash.round(weatherData.data.current.uv)} <span class="smallgray" data-stringname="WEATHER_INFO_UVINDEX_LEVELS" data-stringindex="${keyIndex}">${uvIndexLevel}</span>`);
         WeatherApi_1.default.UpdatePercentageDisplay("uvindex-value", (weatherData.data.current.uv / 11) * 100);
         WeatherApi_1.default.UpdateForecastData(weatherData);
         LocalStorage_1.default.Set(__1.localStorageKey, "_weatherApiData", weatherData);
@@ -218,5 +223,17 @@ exports.default = {
         if (pressure > maxPressure)
             pressure = maxPressure;
         return ((pressure - minPressure) / (maxPressure - minPressure)) * 100;
+    },
+    GetUVIndexLevel(uvindex, settings) {
+        const language = Languages_1.default[settings?.setting_language] || "de", levels = Strings_1.default[language].WEATHER_INFO_UVINDEX_LEVELS;
+        if (uvindex <= 2)
+            return [levels[2], 2];
+        if (uvindex <= 5)
+            return [levels[5], 5];
+        if (uvindex <= 7)
+            return [levels[7], 7];
+        if (uvindex <= 10)
+            return [levels[10], 10];
+        return [levels[11], 11];
     }
 };

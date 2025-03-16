@@ -1,3 +1,6 @@
+// TODO: combine currentweather and forecast api call for quicker fetching
+//       dont use min max temp from api. just get the lowest from the forecast data (cuz the max min from api is nonsense)
+
 import jQuery from "jquery";
 import SearchCity, { _searchBoxLoadingSpinner } from "./modules/SearchCity";
 import Strings from "./modules/Strings";
@@ -29,7 +32,6 @@ jQuery(async () => {
 
     settings.init()
     SearchCity.InitInput(SearchCityInput)
-    Languages.UpdateStrings()
 
     $(".expandclick").each((i, e) => {
         $(e).on("click", () => {

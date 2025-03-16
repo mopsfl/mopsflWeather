@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("..");
 const CustomEvents_1 = require("./CustomEvents");
+const Languages_1 = __importDefault(require("./Languages"));
 const LocalStorage_1 = __importDefault(require("./LocalStorage"));
 class Settings {
     config;
@@ -14,7 +15,7 @@ class Settings {
         storage_key: __1.localStorageKey,
         default_settings: {
             ["settings"]: {
-                ["setting_language"]: "Deutsch - DE",
+                ["setting_language"]: Languages_1.default.LanguagesCodes[navigator.language || "en"],
                 ["setting_tempunit"]: "Celsius",
                 ["animated_weather_icons"]: true,
                 ["high_accuracy_location"]: false,
@@ -36,6 +37,7 @@ class Settings {
             LocalStorage_1.default.Create(this.config.storage_key, this.config.default_settings);
             CustomEvents_1.CustomEvents.DispatchEvent(window, this.settingUpdateEvent);
         }
+        console.log(Languages_1.default.LanguagesCodes[navigator.language || "en"]);
         if (!LocalStorage_1.default.GetKey(this.config.storage_key, "settings"))
             LocalStorage_1.default.Set(this.config.storage_key, "settings", this.config.default_settings);
         _settings = LocalStorage_1.default.GetKey(this.config.storage_key, "settings");
