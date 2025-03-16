@@ -18,6 +18,7 @@
 
 html {
     line-height: normal !important;
+    overflow-x: hidden;
 }
 
 ::-webkit-scrollbar {
@@ -210,6 +211,8 @@ a:hover {
     height: 0%;
     background-color: white;
     transition: height 1s;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
     box-shadow: 0px 0px 3px 1px #000000c4 inset;
 }
 
@@ -288,6 +291,10 @@ input[type="text"]:not(.browser-default) {
 input[type="text"]:not(.browser-default):focus {
     box-shadow: 0 0px 0 0 !important;
     border-bottom: 1px solid #555555 !important;
+}
+
+.searchcity_input:focus {
+    padding-top: 20px !important;
 }
 
 .material-symbols-outlined {
@@ -436,6 +443,9 @@ input[type="text"]:not(.browser-default):focus {
 }
 
 .wind-direction {
+    position: absolute;
+    top: 17px;
+    right: 15px;
     gap: 5px;
     display: flex;
     justify-content: center;
@@ -520,6 +530,7 @@ input[type="text"]:not(.browser-default):focus {
     font-size: 12px;
     user-select: none;
     margin-bottom: auto;
+    word-break: break-all;
 }
 
 .weather-data-info-icon {
@@ -549,6 +560,10 @@ input[type="text"]:not(.browser-default):focus {
     align-content: center;
     display: flex !important;
     box-shadow: none !important;
+}
+
+.settings-btn>span {
+    color: var(--text-color)
 }
 
 .test-setting-item {
@@ -816,6 +831,16 @@ input[type="text"]:not(.browser-default):focus {
 
 .hourly-detail-tab:hover {
     background-color: var(--background-brigther);
+}
+
+@media only screen and (max-width: 460px) {
+    .misc-weather-info {
+        display: flow-root;
+    }
+
+    .misc-weather-info>.weather-data-info-item {
+        width: 100%;
+    }
 }
 
 @media only screen and (max-width: 700px) {

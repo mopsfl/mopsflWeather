@@ -79,9 +79,7 @@ export default {
 
         _cityName.text(`${(!notFromCityList && cityName || weatherData.data.name)}, ${weatherData.data.country}`)
         _temperatureValue.html(`<span class="__tempvalue" data-temperature="${weatherData.data.weather.temp.cur}">${temperature}</span>`)
-        _weatherDescription.html(`${Util.CapitalizeFirstLetter(weatherData.data.weather.description)} &bull; &ShortUpArrow;
-            <span class="__tempvalue smallgray tooltipped" data-stringname="TOOLTIP_HIGHEST_TEMPERATURE" data-temperature="${weatherData.data.weather.temp.max}">${self.FormatTemperature(weatherData.data.weather.temp.max)}</span> &bull; &ShortDownArrow;
-            <span class="__tempvalue smallgray tooltipped" data-stringname="TOOLTIP_LOWEST_TEMPERATURE" data-temperature="${weatherData.data.weather.temp.min}">${self.FormatTemperature(weatherData.data.weather.temp.min)}</span>`)
+        _weatherDescription.html(`${Util.CapitalizeFirstLetter(weatherData.data.weather.description)}`)
         _windSpeedValue.html(`${wind.speed} <span class="smallgray">km/h</span>`)
         _windGustSpeedValue.html(wind.gust ? `${wind.gust} <span class="smallgray">km/h</span>` : "N/A")
         _windDirectionDeg.html(Util.GetWindDirection(wind.deg).replace(/\s/, "<br>"))
@@ -99,8 +97,6 @@ export default {
         self.UpdatePercentageDisplay("humidity-value", weatherData.data.weather.humidity)
         self.UpdatePercentageDisplay("airpressure-value", self.AirPressureToPercentage(weatherData.data.weather.pressure))
         LocalStorage.Set(localStorageKey, "_openWeatherData", weatherData)
-        M.Tooltip.init(_weatherDescription.find(".tooltipped"))
-        Languages.UpdateStrings()
     },
 
     async UpdateWeatherApiData(weatherDataResponse: Response) {
@@ -109,11 +105,17 @@ export default {
             _settings: SettingsValues = LocalStorage.GetKey(localStorageKey, "settings")
 
         const [uvIndexLevel, keyIndex] = self.GetUVIndexLevel(weatherData.data.current.uv, _settings)
+        const dayWeatherData = weatherData?.data?.forecast.forecastday[1].day
 
         _uvIndexValue.html(`${lodash.round(weatherData.data.current.uv)} <span class="smallgray" data-stringname="WEATHER_INFO_UVINDEX_LEVELS" data-stringindex="${keyIndex}">${uvIndexLevel}</span>`)
-        self.UpdatePercentageDisplay("uvindex-value", (weatherData.data.current.uv / 11) * 100)
+        _weatherDescription.append(` &bull; &ShortUpArrow;
+            <span class="__tempvalue smallgray tooltipped" data-stringname="TOOLTIP_HIGHEST_TEMPERATURE" data-temperature="${dayWeatherData.maxtemp_c}">${self.FormatTemperature(dayWeatherData.maxtemp_c)}</span> &bull; &ShortDownArrow;
+            <span class="__tempvalue smallgray tooltipped" data-stringname="TOOLTIP_LOWEST_TEMPERATURE" data-temperature="${dayWeatherData.mintemp_c}">${self.FormatTemperature(dayWeatherData.mintemp_c)}</span>`)
 
+        self.UpdatePercentageDisplay("uvindex-value", (weatherData.data.current.uv / 11) * 100)
         self.UpdateForecastData(weatherData)
+        Languages.UpdateStrings()
+        M.Tooltip.init(_weatherDescription.find(".tooltipped"))
         LocalStorage.Set(localStorageKey, "_weatherApiData", weatherData)
     },
 
@@ -345,23 +347,7 @@ export interface WeatherApiData {
             forecastday: Array<{
                 date: string,
                 date_epoch: number,
-                hour: Array<{
-                    time_epoch: number,
-                    time: string,
-                    temp_c: number,
-                    temp_f: number,
-                    wind_mph: number,
-                    wind_kph: number,
-                    gust_mph: number,
-                    gust_kph: number,
-                    wind_degree: number,
-                    uv: number,
-                    chance_of_rain: number,
-                    condition: { text: string, code: number, icon: number },
-                    cloud: number,
-                    humidity: number,
-                    is_day: number,
-                }>,
+                hour: Array<ForcecastHour>,
                 day: {
                     maxtemp_c: number
                     maxtemp_f: number
@@ -386,6 +372,24 @@ export interface WeatherApiData {
         },
         alerts: { alert: Array<WeatherApiAlert> }
     }
+}
+
+export interface ForcecastHour {
+    time_epoch: number,
+    time: string,
+    temp_c: number,
+    temp_f: number,
+    wind_mph: number,
+    wind_kph: number,
+    gust_mph: number,
+    gust_kph: number,
+    wind_degree: number,
+    uv: number,
+    chance_of_rain: number,
+    condition: { text: string, code: number, icon: number },
+    cloud: number,
+    humidity: number,
+    is_day: number,
 }
 
 export interface WeatherApiAlert {
