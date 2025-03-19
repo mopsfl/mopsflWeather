@@ -1,5 +1,6 @@
 "use strict";
 // TODO: remake this cuz it got very messy ;-;
+//       including a rework of the backend with MUCH better error handling. current one is prob the worst ever lol
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -203,8 +204,12 @@ exports.default = {
         if (!isJSON)
             return __1.notifications.error(`ApiError - ${response.status}`, `${response.statusText}`);
         const internal_error = await response.json();
-        if (internal_error.internal_error)
+        if (internal_error.internal_error) {
             return __1.notifications.error(`ApiError - ${response.status}`, `${internal_error.internal_error.message?.de || internal_error.internal_error.message}`);
+        }
+        else {
+            __1.notifications.error(`ApiError - ${internal_error.code || response.status}`, `${internal_error.message || internal_error.data?.error?.message || "unknown internal error"}`);
+        }
     },
     FormatTemperature(temperature, settings) {
         return (settings?.setting_tempunit || "Celsius") ===

@@ -1,7 +1,8 @@
 export default {
     Toggle(state = false) {
         $(".loading-spinner").each((i, e) => {
-            state === true ? $(e).removeClass("hide") : $(e).addClass("hide")
+            const element = $(e)
+            state === true ? element.removeClass("hide") : element.addClass("hide")
         })
         state === true ?
             $(".weather-data").addClass("blur") :

@@ -102,7 +102,7 @@ a:hover {
     left: 0;
 }
 
-.container-footer>.footer-copyright {
+.footer-copyright {
     font-family: monospace;
 }
 
@@ -113,6 +113,13 @@ a:hover {
 
 .smalltext {
     font-size: 11px !important;
+}
+
+.centerabs {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .material-tooltip {
@@ -191,6 +198,12 @@ a:hover {
 
 .settings-grid>.seperator {
     margin-top: 15px;
+}
+
+.modal-footer-creds {
+    position: absolute;
+    bottom: 5px;
+    text-align: left;
 }
 
 .percentage-display {
@@ -314,6 +327,7 @@ input[type="text"]:not(.browser-default):focus {
     transform: scale(80%);
     position: absolute;
     left: calc(100% - 40px) !important;
+    top: 55%;
 }
 
 .searchcity_input {
@@ -363,23 +377,6 @@ input[type="text"]:not(.browser-default):focus {
     user-select: none;
     pointer-events: none;
     z-index: 100;
-}
-
-.loading-spinner>.cube1,
-.loading-spinner>.cube2 {
-    background-color: #47474788;
-    width: 13px;
-    height: 13px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    -webkit-animation: sk-cubemove 1.8s infinite ease-in-out;
-    animation: sk-cubemove 1.8s infinite ease-in-out;
-}
-
-.loading-spinner>.cube2 {
-    -webkit-animation-delay: -0.9s;
-    animation-delay: -0.9s;
 }
 
 #toast-container {
@@ -444,7 +441,7 @@ input[type="text"]:not(.browser-default):focus {
 
 .wind-direction {
     position: absolute;
-    right: 1px;
+    right: 10px;
     gap: 5px;
     display: flex;
     justify-content: center;
@@ -968,6 +965,7 @@ input[type="text"]:not(.browser-default):focus {
 }
 
 .loading-spinner:before {
+    z-index: 999;
     content: '';
     box-sizing: border-box;
     position: absolute;

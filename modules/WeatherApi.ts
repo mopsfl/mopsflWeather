@@ -1,4 +1,5 @@
 // TODO: remake this cuz it got very messy ;-;
+//       including a rework of the backend with MUCH better error handling. current one is prob the worst ever lol
 
 import { _dev, languageStrings, localStorageKey, notifications } from ".."
 import Time from "./Time";
@@ -231,7 +232,11 @@ export default {
         const isJSON = response.headers.get("content-type").includes("application/json")
         if (!isJSON) return notifications.error(`ApiError - ${response.status}`, `${response.statusText}`)
         const internal_error: InternalError = await response.json()
-        if (internal_error.internal_error) return notifications.error(`ApiError - ${response.status}`, `${internal_error.internal_error.message?.de || internal_error.internal_error.message}`)
+        if (internal_error.internal_error) {
+            return notifications.error(`ApiError - ${response.status}`, `${internal_error.internal_error.message?.de || internal_error.internal_error.message}`)
+        } else {
+            notifications.error(`ApiError - ${internal_error.code || response.status}`, `${internal_error.message || internal_error.data?.error?.message || "unknown internal error"}`)
+        }
     },
 
     FormatTemperature(temperature: number, settings?: SettingsValues) {
@@ -417,6 +422,7 @@ export interface InternalError {
             en: string
         }
     },
+    data?: { error?: { message: string, code: number } },
     message: string
 }
 

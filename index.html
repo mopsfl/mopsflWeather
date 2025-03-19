@@ -50,6 +50,7 @@
         <button class="btn btn-floating waves-effect waves-light settings-btn transparent" id="#settingsmodal"><span class="material-symbols-outlined">settings</span></button>
     </div>
 
+    <div class="loading-spinner centerabs"></div>
     <main class="container">
         <div class="weather-alerts hide">
             <div class="weather-alert hide">
@@ -66,10 +67,6 @@
             <div class="search-city-input-field input-field">
                 <div class="search-box-container">
                     <input type="text" id="searchcity_input" class="searchcity_input" data-stringname="PLACEHOLDER_SEARCH_CITY" placeholder="Search city" value="">
-                    <!--<div class="loading-spinner search-box-loading-spinner hide">
-                        <div class="cube1"></div>
-                        <div class="cube2"></div>
-                    </div>-->
                     <div class="loading-spinner search-box-loading-spinner hide"></div>
                 </div>
                 <div class="autocomplete-dropdown hide">
@@ -82,7 +79,6 @@
             </div>
         </div>
         <div class="weather-data container left-align">
-            <div class="loading-spinner hide"></div>
             <div class="main-info">
                 <div class="main-info-right">
                     <span class="main-info-temperature">
@@ -250,6 +246,12 @@
             </div>
         </div>
         <div class="modal-footer">
+            <div class="modal-footer-creds">
+                <span class="smallgray">using <a target="_blank" href="https://openweathermap.org/api" class="tooltipped" data-tooltip="Weather Data Provider" data-position="top">OpenWeather</a> &
+                    <a target="_blank" href="https://www.weatherapi.com" class="tooltipped" data-tooltip="Weather Data Provider" data-position="top">WeatherAPI</a> &
+                    <a target="_blank" href="https://www.amcharts.com/free-animated-svg-weather-icons/" class="tooltipped" data-tooltip="Weather Icons" data-position="top">amcharts</a></span><br>
+                <span class="smallgray footer-copyright">&copy; 2025 mopsfl</span>
+            </div>
             <button class="waves-effect waves-light btn-flat green-text test-notif-btn">Test Notification</button>
             <button href="#!" class="waves-light waves-effect btn-flat red-text tooltipped" id="resetdefault" data-position="top" data-tooltip="Resets all settings to default.">Reset to Default</button>
             <button href="#!" class="modal-close waves-light waves-effect btn-flat white-text" id="close">Close</button>
