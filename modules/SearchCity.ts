@@ -63,6 +63,7 @@ export default {
             inputElement.val("")
             Loading.Toggle(false)
         })
+
         await WeatherApi.GetWeatherApiData({ lat: city.lat, lon: city.lng, name: city.name }).then(WeatherApi.UpdateWeatherApiData).catch(err => {
             Loading.Toggle(false)
         })

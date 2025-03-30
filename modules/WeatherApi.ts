@@ -108,6 +108,7 @@ export default {
         const [uvIndexLevel, keyIndex] = self.GetUVIndexLevel(weatherData.data.current.uv, _settings)
         const dayWeatherData = weatherData?.data?.forecast.forecastday[1].day
 
+        _weatherDescription.html()
         _uvIndexValue.html(`${lodash.round(weatherData.data.current.uv)} <span class="smallgray" data-stringname="WEATHER_INFO_UVINDEX_LEVELS" data-stringindex="${keyIndex}">${uvIndexLevel}</span>`)
         _weatherDescription.append(` &bull; &ShortUpArrow;
             <span class="__tempvalue smallgray tooltipped" data-stringname="TOOLTIP_HIGHEST_TEMPERATURE" data-temperature="${dayWeatherData.maxtemp_c}">${self.FormatTemperature(dayWeatherData.maxtemp_c)}</span> &bull; &ShortDownArrow;

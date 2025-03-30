@@ -100,6 +100,7 @@ exports.default = {
         const weatherData = await weatherDataResponse.json(), _settings = LocalStorage_1.default.GetKey(__1.localStorageKey, "settings");
         const [uvIndexLevel, keyIndex] = WeatherApi_1.default.GetUVIndexLevel(weatherData.data.current.uv, _settings);
         const dayWeatherData = weatherData?.data?.forecast.forecastday[1].day;
+        _weatherDescription.html();
         _uvIndexValue.html(`${lodash.round(weatherData.data.current.uv)} <span class="smallgray" data-stringname="WEATHER_INFO_UVINDEX_LEVELS" data-stringindex="${keyIndex}">${uvIndexLevel}</span>`);
         _weatherDescription.append(` &bull; &ShortUpArrow;
             <span class="__tempvalue smallgray tooltipped" data-stringname="TOOLTIP_HIGHEST_TEMPERATURE" data-temperature="${dayWeatherData.maxtemp_c}">${WeatherApi_1.default.FormatTemperature(dayWeatherData.maxtemp_c)}</span> &bull; &ShortDownArrow;
