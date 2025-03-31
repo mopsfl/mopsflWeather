@@ -1,8 +1,7 @@
 node_modules
 package-lock.json
-package.json
-tsconfig.json
 /.vscode
 favicon.ico
 /archive
 esbuild.config.js
+/dist/js/modules
