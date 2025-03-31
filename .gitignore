@@ -4,3 +4,5 @@ package.json
 tsconfig.json
 /.vscode
 favicon.ico
+/archive
+esbuild.config.js

@@ -30,9 +30,7 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6C5HDV7KFB"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag() {
-            dataLayer.push(arguments);
-        }
+        function gtag() { dataLayer.push(arguments) }
 
         gtag('js', new Date());
         gtag('config', 'G-6C5HDV7KFB');
@@ -40,17 +38,11 @@
 </head>
 
 <body>
-    <header class="container-header">
-        <div class="container-header-title">
-            <img class="title-logo static-icon" src="./images/svg/static/day.svg" alt="daysun_icon">
-            <span class="title-name">mopsfl<b>Weather</b></span>
-        </div>
-    </header>
     <div class="settings-button-container tooltipped" data-stringname="TOOLTIP_SETTINGS" data-position="left">
         <button class="btn btn-floating waves-effect waves-light settings-btn transparent" id="#settingsmodal"><span class="material-symbols-outlined">settings</span></button>
     </div>
 
-    <div class="loading-spinner centerabs"></div>
+    <div class="loading-spinner weather-data-loading-spinner centerabs"></div>
     <main class="container">
         <div class="weather-alerts hide">
             <div class="weather-alert hide">
@@ -66,23 +58,24 @@
         <div class="search-box container center">
             <div class="search-city-input-field input-field">
                 <div class="search-box-container">
-                    <input type="text" id="searchcity_input" class="searchcity_input" data-stringname="PLACEHOLDER_SEARCH_CITY" placeholder="Search city" value="">
-                    <div class="loading-spinner search-box-loading-spinner hide"></div>
+                    <input type="text" id="searchcity-input" class="searchcity-input" data-stringname="PLACEHOLDER_SEARCH_CITY" placeholder="Search city" value="" autocomplete="off">
+                    <div class="loading-spinner hide search-box-loading-spinner"></div>
                 </div>
                 <div class="autocomplete-dropdown hide">
-                    <template class="dropdown-item-template">
-                        <button class="dropdown-item btn waves-effect waves-light">
-                            <span class="city-name">N/A</span><span class="city-iso">N/A</span>
-                        </button>
-                    </template>
                 </div>
+                <template class="dropdown-item-template">
+                    <button class="dropdown-item btn waves-effect waves-light">
+                        <img class="country-flag" src="">
+                        <span class="city-name">N/A</span><span class="city-iso">N/A</span>
+                    </button>
+                </template>
             </div>
         </div>
         <div class="weather-data container left-align">
             <div class="main-info">
                 <div class="main-info-right">
                     <span class="main-info-temperature">
-                        <img class="main-info-weather-icon" src="" alt="main-info-weather-icon">
+                        <img class="main-info-weather-icon" src="" alt="icon">
                         <span class="temperature-value tooltipped" data-stringname="TOOLTIP_CURRENT_TEMPERATURE" data-position="right">N/A</span>
                     </span>
                     <span class="weather-description">N/A</span>
@@ -100,7 +93,7 @@
                         <div class="weather-forecast-item">
                             <span class="weather-forecast-temperature-value">N/A</span>
                             <span class="weather-forecast-rain-chance">N/A</span>
-                            <img class="weather-forecast-icon" src="" alt="N/A">
+                            <img class="weather-forecast-icon tooltipped" data-tooltip="" data-position="bottom" src="" alt="N/A">
                             <span class="weather-forecast-time-value">N/A</span>
                         </div>
                     </template>
@@ -126,7 +119,7 @@
                         <p class="weather-data-info-item-name" data-stringname="WEATHER_INFO_SUNRISE">Sonnenaufgang</p>
                         <p class="sunrise-value weather-data-info-item-value">00:00</p>
                     </div>
-                    <img class="weather-data-info-icon static-icon" src="./images/svg/icons/sunrise.svg" alt="windicon">
+                    <img class="weather-data-info-icon" src="./images/svg/animated/sunrise.svg" alt="windicon">
                     <div class="break"></div>
                     <div>
                         <p class="weather-data-info-item-name sunrise-in-value">in N/A Stunden</p>
@@ -137,7 +130,7 @@
                         <p class="weather-data-info-item-name" data-stringname="WEATHER_INFO_SUNSET">Sonnenuntergang</p>
                         <p class="sunset-value weather-data-info-item-value">00:00</p>
                     </div>
-                    <img class="weather-data-info-icon gray-filter static-icon" src="./images/svg/icons/sunset.svg" alt="windicon">
+                    <img class="weather-data-info-icon gray-filter" src="./images/svg/animated/sunset.svg" alt="windicon">
                     <div class="break"></div>
                     <div>
                         <p class="weather-data-info-item-name sunset-in-value">in N/A Stunden</p>
@@ -181,20 +174,21 @@
                     <a class="hourly-detail-tab waves-effect waves-light" data-stringname="WEATHER_INFO_UVINDEX">UV-Index</a>
                 </div>
                 <div class="break"></div>
+                <span class="smallgray center" style="width: 100%;">currently unavailable!</span>
                 <div class="weather-forecast-misc-items mouseScrollEvent">
-                    <template class="weather-forecast-misc-item-template">
-                        <div class="weather-forecast-misc-item">
-                            <span class="weather-forecast-misc-windspeed-value">N/A</span>
-                            <span class="weather-forecast-misc-wind-direction-icon material-symbols-outlined">navigation</span>
-                            <span class="weather-forecast-misc-time-value">N/A</span>
-                        </div>
-                    </template>
                 </div>
+                <template class="weather-forecast-misc-item-template">
+                    <div class="weather-forecast-misc-item">
+                        <span class="weather-forecast-misc-windspeed-value">N/A</span>
+                        <span class="weather-forecast-misc-wind-direction-icon material-symbols-outlined">navigation</span>
+                        <span class="weather-forecast-misc-time-value">N/A</span>
+                    </div>
+                </template>
             </div>
             <footer class="container-footer">
                 <span class="smallgray footer-copyright">&copy; 2025 mopsfl</span>
                 <div class="container-header-title footer-title">
-                    <img class="title-logo static-icon" src="./images/svg/static/day.svg" alt="daysun_icon">
+                    <img class="title-logo static-icon" src="./images/svg/static/clear-day.svg" alt="daysun_icon">
                     <span class="title-name">mopsfl<b>Weather</b></span>
                 </div>
             </footer>
@@ -237,7 +231,7 @@
                     </label>
                 </div>
                 <div class="setting">
-                    <span class="setting-name tooltipped" data-stringname="TOOLTIP_WEATHER_ALERTS" data-position="right" data-tooltip="Toggle warnings for severe weather conditions.">Weather Alerts</span>
+                    <span class="setting-name tooltipped" data-stringname="TOOLTIP_WEATHER_ALERTS" data-position="right" data-tooltip="">Weather Alerts</span>
                     <label>
                         <input type="checkbox" class="filled-in" setting-id="weather_alerts" checked="true" />
                         <span></span>
@@ -248,11 +242,10 @@
         <div class="modal-footer">
             <div class="modal-footer-creds">
                 <span class="smallgray">using <a target="_blank" href="https://openweathermap.org/api" class="tooltipped" data-tooltip="Weather Data Provider" data-position="top">OpenWeather</a> &
-                    <a target="_blank" href="https://www.weatherapi.com" class="tooltipped" data-tooltip="Weather Data Provider" data-position="top">WeatherAPI</a> &
-                    <a target="_blank" href="https://www.amcharts.com/free-animated-svg-weather-icons/" class="tooltipped" data-tooltip="Weather Icons" data-position="top">amcharts</a></span><br>
+                    <a target="_blank" href="https://weatherapi.com" class="tooltipped" data-tooltip="Weather Data Provider" data-position="top">WeatherAPI</a> &
+                    <a target="_blank" href="https://bas.dev/work/meteocons" class="tooltipped" data-tooltip="Weather Icons" data-position="top">meteocons</a></span><br>
                 <span class="smallgray footer-copyright">&copy; 2025 mopsfl</span>
             </div>
-            <button class="waves-effect waves-light btn-flat green-text test-notif-btn">Test Notification</button>
             <button href="#!" class="waves-light waves-effect btn-flat red-text tooltipped" id="resetdefault" data-position="top" data-tooltip="Resets all settings to default.">Reset to Default</button>
             <button href="#!" class="modal-close waves-light waves-effect btn-flat white-text" id="close">Close</button>
         </div>

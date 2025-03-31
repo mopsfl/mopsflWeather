@@ -11,5 +11,5 @@
       }
     },
     "compileOnSave": true,
-    "exclude": ["node_modules","materialize-css"]
+    "exclude": ["node_modules","materialize-css","archive"]
 }

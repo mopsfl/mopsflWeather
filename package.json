@@ -6,12 +6,13 @@
     "@types/pako": "^2.0.3",
     "bower": "^1.8.14",
     "esbuild": "^0.18.12",
+    "glob": "^11.0.1",
     "rimraf": "^5.0.1",
     "typescript": "^5.1.6"
   },
   "scripts": {
     "bundle": "esbuild ./dist/js/index.js style.css --bundle --minify --platform=browser --outdir=./dist --format=esm --allow-overwrite --splitting --entry-names=[ext]/[name]",
-    "bundledev": "esbuild index.ts style.css --bundle --platform=browser --outdir=./dist --format=esm --allow-overwrite --splitting --entry-names=[ext]/[name] --watch",
+    "bundledev": "node esbuild.config.js --dev --watch",
     "build": "rimraf dist && npx tsc && npm run bundle",
     "dev": "rimraf dist && npm run bundledev"
   },
