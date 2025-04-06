@@ -72,17 +72,17 @@
             </div>
         </div>
         <div class="weather-data container left-align">
-            <div class="main-info">
+            <div class="main-info weather-data-info-item w100">
                 <div class="main-info-right">
+                    <span class="weather-data-current-time tooltipped" data-stringname="TOOLTIP_CURRENT_TIME" data-position="right">00:00</span>
+                    <span class="weather-data-city-name">N/A, N/A</span>
+                </div>
+                <div class="main-info-left">
                     <span class="main-info-temperature">
                         <img class="main-info-weather-icon" src="" alt="icon" width="40px" height="40px">
                         <span class="temperature-value tooltipped" data-stringname="TOOLTIP_CURRENT_TEMPERATURE" data-position="right">N/A</span>
                     </span>
                     <span class="weather-description">N/A</span>
-                </div>
-                <div class="main-info-left">
-                    <p class="weather-data-current-time tooltipped" data-stringname="TOOLTIP_CURRENT_TIME" data-position="right">00:00</p>
-                    <span class="weather-data-city-name">N/A, N/A</span>
                 </div>
             </div>
             <div class="weather-data-info-item w100 weather-forecast-list">
@@ -94,7 +94,7 @@
                             <span class="weather-forecast-temperature-value">N/A</span>
                             <span class="weather-forecast-rain-chance">N/A</span>
                             <img class="weather-forecast-icon tooltipped" data-tooltip="" data-position="bottom" src="" alt="N/A" loading="lazy">
-                            <span class="weather-forecast-time-value">N/A</span>
+                            <span class="weather-forecast-time-value smallgray">N/A</span>
                         </div>
                     </template>
                 </div>
@@ -169,9 +169,9 @@
             <div class="weather-data-info-item w100 weather-forecast-list weather-misc-forecast">
                 <p class="weather-data-info-item-name weather-forecast-list-header" data-stringname="WEATHER_HOURLY_DETAILS">Stündliche Details</p>
                 <div class="hourly-details-tabs">
-                    <a class="hourly-detail-tab tab-selected waves-effect waves-light" data-stringname="WEATHER_INFO_WIND">Wind</a>
-                    <a class="hourly-detail-tab waves-effect waves-light" data-stringname="WEATHER_INFO_RAIN">Regen</a>
-                    <a class="hourly-detail-tab waves-effect waves-light" data-stringname="WEATHER_INFO_UVINDEX">UV-Index</a>
+                    <span class="hourly-detail-tab tab-selected waves-effect waves-light" data-stringname="WEATHER_INFO_WIND">Wind</span>
+                    <span class="hourly-detail-tab waves-effect waves-light" data-stringname="WEATHER_INFO_RAIN">Regen</span>
+                    <span class="hourly-detail-tab waves-effect waves-light" data-stringname="WEATHER_INFO_UVINDEX">UV-Index</span>
                 </div>
                 <div class="break"></div>
                 <span class="smallgray center" style="width: 100%;">currently unavailable!</span>
@@ -203,8 +203,9 @@
                 <div class="setting input-field col s12" setting-id="setting_language">
                     <span class="setting-name tooltipped" data-stringname="TOOLTIP_SETTING_LANGUAGE SETTING_LANGUAGE" data-position="right">Language</span>
                     <select>
-                        <option value="0" selected>Deutsch - DE</option>
-                        <option value="1">English - EN</option>
+                        <option value="0" selected>System</option>
+                        <option value="1">Deutsch</option>
+                        <option value="2">English</option>
                     </select>
                     <label>Materialize Select</label>
                 </div>
@@ -244,17 +245,22 @@
                         <span></span>
                     </label>
                 </div>
+
+                <div class="settings-footer-credits">
+                    <span class="smallgray" data-stringname="POWERED_BY">This app is powered by:</span><br>
+                    <a target="_blank" href="https://openweathermap.org/api" class="tooltipped smalltext" data-tooltip="Weather Data Provider" data-position="top">openweathermap.org</a>,
+                    <a target="_blank" href="https://weatherapi.com" class="tooltipped smalltext" data-tooltip="Weather Data Provider" data-position="top">weatherapi.com</a>,
+                    <a target="_blank" href="https://bas.dev/work/meteocons" class="tooltipped smalltext" data-tooltip="Weather Icons" data-position="top">bas.dev</a>,
+                    <a target="_blank" href="https://materializeweb.com/" class="tooltipped smalltext" data-tooltip="Material Design" data-position="top">materializeweb.com</a>
+                </div>
             </div>
         </div>
         <div class="modal-footer">
             <div class="modal-footer-creds">
-                <span class="smallgray">using <a target="_blank" href="https://openweathermap.org/api" class="tooltipped" data-tooltip="Weather Data Provider" data-position="top">OpenWeather</a> &
-                    <a target="_blank" href="https://weatherapi.com" class="tooltipped" data-tooltip="Weather Data Provider" data-position="top">WeatherAPI</a> &
-                    <a target="_blank" href="https://bas.dev/work/meteocons" class="tooltipped" data-tooltip="Weather Icons" data-position="top">meteocons</a></span><br>
                 <span class="smallgray footer-copyright">&copy; 2025 mopsfl</span>
             </div>
-            <button href="#!" class="waves-light waves-effect btn-flat red-text tooltipped" id="resetdefault" data-position="top" data-tooltip="Resets all settings to default.">Reset to Default</button>
-            <button href="#!" class="modal-close waves-light waves-effect btn-flat white-text" id="close">Close</button>
+            <button href="#!" class="waves-light waves-effect btn-flat red-text tooltipped" id="resetdefault" data-stringname="RESET_SETTINGS TOOLTIP_RESET_SETTINGS" data-position="top" data-tooltip="">Reset to Default</button>
+            <button href="#!" class="modal-close waves-light waves-effect btn-flat white-text" data-stringname="CLOSE_BUTTON" id="close">Close</button>
         </div>
     </div>
 

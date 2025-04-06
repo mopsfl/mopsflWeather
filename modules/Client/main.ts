@@ -26,7 +26,6 @@ export class Client {
         M.AutoInit()
         const SettingsModal = M.Modal.getInstance(App.elements.Misc.SETTINGS_MODAL.get(0))
 
-        Strings.Update()
         SearchCity.init(App.elements.Misc.SEARCH_CITY_INPUT)
 
         App.elements.Containers.WEATHER_DATA.addClass("blur")
@@ -58,7 +57,9 @@ export class Client {
 
         CustomEvents.AddEventListener(window, "setting_language", () => {
             Strings.Update()
-            App.client.language = Strings.LanguagesCodes[App.settings.GetSettings().setting_language]
+
+            const language = App.settings.GetSettings().setting_language
+            this.language = Strings.LanguagesCodes[language !== "System" ? language : Strings.LanguagesCodes[navigator.language]]
         }); CustomEvents.AddEventListener(window, "setting_tempunit", () => {
             Page.UpdateTemperatureValues()
         }); CustomEvents.AddEventListener(window, "animated_weather_icons", () => {
@@ -80,9 +81,12 @@ export class Client {
             }, { passive: false });
         });
 
-        this.language = Strings.LanguagesCodes[App.settings.GetSettings().setting_language]
-        console.warn(`client initialized! (took ${new Date().getTime() - this._initTime}ms)`)
+        const language = App.settings.GetSettings().setting_language
+        this.language = Strings.LanguagesCodes[language !== "System" ? language : Strings.LanguagesCodes[navigator.language]]
 
+        Strings.Update()
+
+        console.warn(`client initialized! (took ${new Date().getTime() - this._initTime}ms)`)
         return this;
     }
 

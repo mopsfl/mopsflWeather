@@ -31,9 +31,13 @@ export default {
         App.elements.Values.SUNRISE_IN_VALUE.text(Time.TimeUntil(weatherData.meta.sunrise, weatherData.meta.timezoneOffset, true))
         App.elements.Values.SUNSET_IN_VALUE.text(Time.TimeUntil(weatherData.meta.sunset, weatherData.meta.timezoneOffset, true))
         App.elements.Values.WEATHER_DESCRIPTION.html(`
-            ${Util.CapitalizeFirstLetter(weatherData.current.desc)}
-            ${self.CreateWeatherDescriptionElement(weatherData.forecast[1].day.maxtemp_c, weatherData.forecast[1].day.mintemp_c)}
+            <span>${Util.CapitalizeFirstLetter(weatherData.current.desc)}</span>
+            ${self.CreateWeatherDescriptionElement(weatherData.forecast[0].day.maxtemp_c, weatherData.forecast[0].day.mintemp_c)}
         `)
+
+        self.UpdatePercentageDisplay("humidity-value", weatherData.current.humidity)
+        self.UpdatePercentageDisplay("uvindex-value", (weatherData.current.uvi / 11) * 100)
+        self.UpdatePercentageDisplay("airpressure-value", self.AirPressureToPercentage(weatherData.current.pressure))
 
         App.elements.Containers.WEATHER_DATA.removeClass("blur")
         self.DisplayForecastData(weatherData.forecast, weatherData)
@@ -71,7 +75,6 @@ export default {
                     _icon.attr("data-tooltip", Util.CapitalizeFirstLetter(hourData.condition.text))
                     _tempValue.html(self.CreateTemperatureElement(temperatureValue, formattedTemperature));
                     _rainChance.html(self.CreateRainChanceElement(hourData.chance_of_rain));
-
                     _forecastItem.appendTo(FORECAST_ITEMS);
                 }
             });
@@ -90,6 +93,24 @@ export default {
             const element = $(e)
             element.text(self.FormatTemperature(parseFloat(element.attr("data-temperature")) || 0))
         })
+    },
+
+    UpdatePercentageDisplay(id: string, value: number) {
+        const percentageDisplayElement = $(`#${id}`),
+            percentageValueElement = percentageDisplayElement.find(".percentage")
+        if (!percentageDisplayElement || !percentageValueElement) return
+
+        percentageValueElement.css("height", `${value}%`).css("background-color", percentageValueElement.attr("data-bgcolor"))
+    },
+
+    AirPressureToPercentage(pressure: number) {
+        const minPressure = 950;
+        const maxPressure = 1060;
+
+        if (pressure < minPressure) pressure = minPressure;
+        if (pressure > maxPressure) pressure = maxPressure;
+
+        return ((pressure - minPressure) / (maxPressure - minPressure)) * 100;
     },
 
     GetUVIndexLevel(uvindex: number) {
@@ -114,7 +135,7 @@ export default {
             _forecastTimeValue = _forecastDetailItem.find(".weather-forecast-time-value"),
             _rainChanceValue = _forecastDetailItem.find(".weather-forecast-rain-chance")
 
-        M.Tooltip.init(_forecastIcon)
+        console.log(M.Tooltip.init(_forecastIcon));
         return [_forecastDetailItem, _forecastTemperatureValue, _forecastIcon, _forecastTimeValue, _rainChanceValue]
     },
 
@@ -133,10 +154,10 @@ export default {
     },
 
     CreateWeatherDescriptionElement(maxTemp: number, minTemp: number) {
-        return `&bull; &ShortUpArrow;
+        return `<span class="bull">&bull; </span><span class="left-align">&ShortUpArrow;
         <span class="__tempvalue smallgray tooltipped" data-stringname="TOOLTIP_HIGHEST_TEMPERATURE" data-temperature="${maxTemp}">${self.FormatTemperature(maxTemp)}</span>
         &bull; &ShortDownArrow;
-        <span class="__tempvalue smallgray tooltipped" data-stringname="TOOLTIP_LOWEST_TEMPERATURE" data-temperature="${minTemp}">${self.FormatTemperature(minTemp)}</span>`
+        <span class="__tempvalue smallgray tooltipped" data-stringname="TOOLTIP_LOWEST_TEMPERATURE" data-temperature="${minTemp}">${self.FormatTemperature(minTemp)}</span></span>`
     },
 
     CreateWeatherIcon(conditionId: number, timezoneOffset: number, isDay: boolean) {

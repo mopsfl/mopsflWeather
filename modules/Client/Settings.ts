@@ -9,7 +9,7 @@ export default class Settings {
             settingUpdateEventName: "onSettingUpdate",
             settings_key: "settings",
             default_settings: {
-                ["setting_language"]: Strings.LanguagesCodes[navigator.language] || Strings.LanguagesCodes.en,
+                ["setting_language"]: "System",
                 ["setting_tempunit"]: "Celsius",
                 ["animated_weather_icons"]: true,
                 ["high_accuracy_location"]: false,
@@ -31,6 +31,11 @@ export default class Settings {
         if (reset) {
             App.storage.DeleteKey(this.config.settings_key)
             App.storage.Set(this.config.settings_key, this.config.default_settings)
+
+            this.events.forEach(event => {
+                CustomEvents.DispatchEvent(window, event)
+            })
+
             console.log("Reseted settings to default", this.config.default_settings);
         }
 
@@ -93,8 +98,16 @@ export default class Settings {
                         console.warn(`[Settings]: added missing setting > ${setting_id}`);
                     }
 
-                    input.value = value
-                    //_dropdown_select.value = value
+                    var controlInput = App.elements.GetElement(`#${input.getAttribute("aria-controls")}`)
+                    if (controlInput) {
+                        var item = controlInput.find("[aria-selected='true']")
+                        item.attr("aria-selected", "false").removeClass("selected")
+
+                        input.value = !reset ? item.text() : value
+                    } else {
+                        input.value = value
+                    }
+
                     _dropdown_select.addEventListener("change", (e) => {
                         const [setting_name, setting_id, value] = this.HandleInput(e, setting)
                         this.UpdateSetting(setting_name, setting_id, value)

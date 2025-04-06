@@ -4,12 +4,12 @@ import self from "./Strings"
 
 export default {
     LanguagesCodes: {
-        "de": "Deutsch - DE",
-        "de-DE": "Deutsch - DE",
-        "en": "English - EN",
-        "en-EN": "English - EN",
-        "Deutsch - DE": "de",
-        "English - EN": "en",
+        "de": "Deutsch",
+        "de-DE": "Deutsch",
+        "en": "English",
+        "en-EN": "English",
+        "Deutsch": "de",
+        "English": "en",
     },
 
     Languages: {
@@ -62,6 +62,12 @@ export default {
             MISSING_LOCATION_PERMISSION: "Sie haben die <b>Standortberechtigung</b> für diese Website blockiert oder deaktiviert. Bitte aktivieren Sie sie in Ihren Einstellungen, um diese Funktion zu nutzen!",
 
             PLACEHOLDER_SEARCH_CITY: "Nach Standort suchen",
+
+            RESET_SETTINGS: "Auf Standard zurücksetzen",
+            TOOLTIP_RESET_SETTINGS: "Setzen Sie alle Einstellungen auf ihre Standardwerte zurück.",
+
+            CLOSE_BUTTON: "Schließen",
+            POWERED_BY: "Diese App wird unterstützt von:"
         },
 
         en: {
@@ -112,7 +118,13 @@ export default {
 
             MISSING_LOCATION_PERMISSION: "You have blocked or disabled the location permission for this website. Please enable them in your settings to use this feature!",
 
-            PLACEHOLDER_SEARCH_CITY: "Search city"
+            PLACEHOLDER_SEARCH_CITY: "Search city",
+
+            RESET_SETTINGS: "Reset to Default",
+            TOOLTIP_RESET_SETTINGS: "Restore all settings to their default values.",
+
+            CLOSE_BUTTON: "Close",
+            POWERED_BY: "This app is powered by:"
         },
     },
 
@@ -126,8 +138,9 @@ export default {
     },
 
     Update(lang?: Language) {
-        const settings = App.settings.GetSettings()
-        lang = lang || self.LanguagesCodes[settings.setting_language] || "en"
+        const settings = App.settings.GetSettings(),
+            language = settings.setting_language
+        lang = lang || self.LanguagesCodes[language !== "System" ? language : self.LanguagesCodes[navigator.language]]
 
         $("*[data-stringname]").each((i, e) => {
             const element = $(e)

@@ -37,11 +37,9 @@ export class WeatherApi {
 
     async LoadWeatherData(args: WeatherRequestArguments, useDefault?: boolean) {
         if (!args && !useDefault) throw new Error("missing <WeatherRequestArguments>")
-        const requestQuery = !useDefault ? this.CreateRequestQuery(args) : ""
+        const requestQuery = !useDefault ? this.CreateRequestQuery(args) : `?lang=${App.client.language}`
 
-        await fetch(this.API_URL + this.Endpoints.GET_WEATHER_DATA + requestQuery, {
-            headers: { lang: Strings.LanguagesCodes[App.settings.GetSettings().setting_language] }
-        }).then(async res => {
+        await fetch(this.API_URL + this.Endpoints.GET_WEATHER_DATA + requestQuery).then(async res => {
             if (!res.ok) return this.HandleRequestError(res)
             const response: ParsedWeatherData = await res.json()
             Page.DisplayWeatherData(response, args)
@@ -54,7 +52,7 @@ export class WeatherApi {
     }
 
     CreateRequestQuery(args: WeatherRequestArguments) {
-        return `?${(args.lat && args.lng) ? `lat=${args.lat}&lon=${args.lng}&lang=${App.client.language}` : `name=${encodeURIComponent(args.name)}&lang=${App.client.language}`}`
+        return `?${(args.lat && args.lng) ? `lat=${args.lat}&lon=${args.lng}&lang=${App.client.language || navigator.language || "en"}` : `name=${encodeURIComponent(args.name)}&lang=${App.client.language}`}`
     }
 
     HandleRequestError(res?: Response) {
