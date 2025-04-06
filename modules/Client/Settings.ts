@@ -14,6 +14,7 @@ export default class Settings {
                 ["animated_weather_icons"]: true,
                 ["high_accuracy_location"]: false,
                 ["weather_alerts"]: true,
+                ["remember_location"]: true,
             }
         },
         public settingUpdateEvent?: CustomEvent,
@@ -145,5 +146,6 @@ export interface SettingsValues {
     setting_tempunit: "Celsius" | "Fahrenheit",
     animated_weather_icons: boolean,
     high_accuracy_location: boolean,
-    weather_alerts: boolean
+    weather_alerts: boolean,
+    remember_location: boolean
 }

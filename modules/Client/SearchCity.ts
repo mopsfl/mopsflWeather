@@ -14,7 +14,7 @@ export default {
             Loading.Toggle(App.elements.Misc.SEARCH_BOX_LOADING, true);
 
             clearTimeout(_typingTimer);
-            _typingTimer = setTimeout(async () => await self.OnSearchInput(inputValue, inputElement), 350);
+            _typingTimer = setTimeout(async () => await self.OnSearchInput(inputValue), 350);
         });
 
         inputElement.on("focusout", (e) => {
@@ -26,15 +26,14 @@ export default {
         });
     },
 
-    async OnSearchInput(value: any, inputElement: Element) {
+    async OnSearchInput(value: any) {
         if (value.toString().length <= 2) return self.ToggleAutocompleteDropdown(false)
 
         const AutocompleteDropdown = App.elements.Misc.AUTOCOMPLETE_DROPDOWN,
-            DropdownItem = App.elements.Templates.DROPDOWN_ITEM.contents();
+            DropdownItem = App.elements.Templates.DROPDOWN_ITEM.contents()
 
         self.ToggleAutocompleteDropdown(true);
         App.elements.Misc.AUTOCOMPLETE_DROPDOWN.empty();
-
 
         await App.api.SearchCity(value).then(cities => {
             cities = self.RemoveDuplicateCities(cities)
@@ -59,7 +58,7 @@ export default {
             clonedDropdownItem.appendTo(AutocompleteDropdown)
             clonedDropdownItem.on("click", async () => {
                 self.ToggleAutocompleteDropdown(false);
-                await App.api.LoadWeatherData({ name: value })
+                await App.api.LoadWeatherData({ name: value, unknownName: true })
 
                 App.elements.Misc.SEARCH_CITY_INPUT.val("")
             });
@@ -85,7 +84,6 @@ export default {
         return cities.filter(city => {
             const key = `${city.name}-${city.country}`;
             if (seen.has(key)) {
-                console.log(key, " duplicate removed");
                 return false;
             }
             seen.add(key);

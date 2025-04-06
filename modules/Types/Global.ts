@@ -1,6 +1,6 @@
 import { WeatherApi } from "../API/WeatherApi";
 import { Elements } from "../Client/Elements";
-import { Client } from "../Client/main";
+import { Client } from "../Client/Main";
 import Settings from "../Client/Settings";
 import { LocalStorage } from "../Misc/LocalStorage";
 import Notifications from "../Misc/Notifications";

@@ -40,6 +40,7 @@ export class Elements {
     Misc = {
         AUTOCOMPLETE_DROPDOWN: this.GetElement(".autocomplete-dropdown"),
         SEARCH_CITY_INPUT: this.GetElement(".searchcity-input"),
+        LOAD_CURRENT_LOCATION: this.GetElement("#load_current_location"),
 
         SEARCH_BOX_LOADING: this.GetElement(".search-box-loading-spinner"),
         WEATHER_DATA_LOADING: this.GetElement(".weather-data-loading-spinner"),

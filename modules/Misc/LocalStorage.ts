@@ -40,6 +40,7 @@ export class LocalStorage {
                 return false;
             }
             const storedData = Util.UncompressData(storedDataRaw);
+            storedData.lastUpdated = new Date().getTime()
             storedData[name] = value;
             localStorage.setItem(this.key, Util.CompressData(storedData));
             return true;
@@ -57,6 +58,7 @@ export class LocalStorage {
                 return false;
             }
             const storedData = Util.UncompressData(storedDataRaw);
+            storedData.lastUpdated = new Date().getTime()
 
             if (!storedData[name]) {
                 console.warn(`no entry found at index '${name}' in '${this.key}'`);
@@ -79,7 +81,10 @@ export class LocalStorage {
                 console.warn(`Invalid localStorage key '${this.key}'`);
                 return null;
             }
+
             const storedData = Util.UncompressData(storedDataRaw);
+            storedData.lastUpdated = new Date().getTime()
+
             return storedData[index] ?? null;
         } catch (error) {
             console.error(error);
@@ -95,7 +100,9 @@ export class LocalStorage {
                 return null;
             }
             const storedData = Util.UncompressData(storedDataRaw);
+            storedData.lastUpdated = new Date().getTime()
             storedData[key] = undefined
+
             localStorage.setItem(this.key, Util.CompressData(storedData));
 
             return

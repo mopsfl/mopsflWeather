@@ -28,16 +28,16 @@ export default class Notifications {
         }, false)
     }
 
-    public info(title: string | number, text: string) {
-        return this.new({ title: title.toString(), bodyText: text, backgroundColor: this.NotificationTypes.info.backgroundColor, type: "info" })
+    public info(title: string | number, text: string, html?: boolean) {
+        return this.new({ title: title.toString(), bodyText: text, backgroundColor: this.NotificationTypes.info.backgroundColor, type: "info", html })
     }
 
-    public warn(title: string | number, text: string) {
-        return this.new({ title: title.toString(), bodyText: text, backgroundColor: this.NotificationTypes.warn.backgroundColor, type: "warn" })
+    public warn(title: string | number, text: string, html?: boolean) {
+        return this.new({ title: title.toString(), bodyText: text, backgroundColor: this.NotificationTypes.warn.backgroundColor, type: "warn", html })
     }
 
-    public error(title: string | number, text: string) {
-        return this.new({ title: title.toString(), bodyText: text, backgroundColor: this.NotificationTypes.error.backgroundColor, type: "error" })
+    public error(title: string | number, text: string, html?: boolean) {
+        return this.new({ title: title.toString(), bodyText: text, backgroundColor: this.NotificationTypes.error.backgroundColor, type: "error", html })
     }
 
     private CreateNotificationDiv(args: NotificationArguments) {
@@ -54,7 +54,7 @@ export default class Notifications {
         const titleIcon = Util.CreateElementWithClass("span", "material-symbols-outlined", type === "warn" ? "warning" : type);
         const closeButton = Util.CreateElementWithClass("button", "close-button");
         const closeButtonIcon = Util.CreateElementWithClass("span", "material-symbols-outlined", "close");
-        const body = Util.CreateElementWithClass("div", "notification-body", bodyText);
+        const body = Util.CreateElementWithClass("div", "notification-body", bodyText, args.html);
 
         if (attrName) div.setAttribute("notification-type", attrName);
 
@@ -77,6 +77,7 @@ export interface NotificationArguments {
     type: string,
     duration?: number,
     backgroundColor?: string,
+    html?: boolean
 }
 
 interface NotificationType {

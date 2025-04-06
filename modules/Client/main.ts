@@ -4,11 +4,14 @@ import { App } from "../Types/Global";
 import Page from "./Page";
 import SearchCity from "./SearchCity";
 import Strings from "./Strings";
+import { WeatherRequestArguments } from "../Types/Weather";
+import Loading from "./Loading";
 
 export class Client {
     public language: string
     private _initialized = false
     private _initTime: number
+    private _lastLocationLoad: number
 
     constructor() {
         this._initTime = new Date().getTime()
@@ -45,26 +48,17 @@ export class Client {
             })
         })
 
-        // Weather Data Init
+        // Load Current Location Button
 
-        GeoLocation.GetLocation().then(location => {
-            App.api.LoadWeatherData({
-                lat: location.coords.latitude,
-                lng: location.coords.longitude
-            })
-        }).catch((err: GeolocationPositionError) => {
-            App.api.LoadWeatherData(undefined, true)
-
-            if (err.code !== 1) {
-                console.error(err)
-                App.notifications.error("GeoLocation Error", err.message)
-            }
+        App.elements.Misc.LOAD_CURRENT_LOCATION.on("click", () => {
+            this.LoadCurrentLocation()
         })
 
         // Settings Callbacks
 
         CustomEvents.AddEventListener(window, "setting_language", () => {
             Strings.Update()
+            App.client.language = Strings.LanguagesCodes[App.settings.GetSettings().setting_language]
         }); CustomEvents.AddEventListener(window, "setting_tempunit", () => {
             Page.UpdateTemperatureValues()
         }); CustomEvents.AddEventListener(window, "animated_weather_icons", () => {
@@ -84,10 +78,46 @@ export class Client {
                 e.preventDefault();
                 element.scrollLeft += e.deltaY * 0.2
             }, { passive: false });
-        })
+        });
 
         this.language = Strings.LanguagesCodes[App.settings.GetSettings().setting_language]
         console.warn(`client initialized! (took ${new Date().getTime() - this._initTime}ms)`)
+
         return this;
+    }
+
+    LoadInitWeatherData() {
+        const lastCity: WeatherRequestArguments = App.storage.GetKey("lastcity"),
+            settings = App.settings.GetSettings()
+
+        if ((lastCity && ((lastCity.lat && lastCity.lng) || lastCity.name)) && settings.remember_location) {
+            App.api.LoadWeatherData(lastCity)
+        } else {
+            this.LoadCurrentLocation(true)
+        }
+    }
+
+    async LoadCurrentLocation(loadDefaultOnFail?: boolean) {
+        if (this._lastLocationLoad && (new Date().getTime() - this._lastLocationLoad) < 1000) return;
+        this._lastLocationLoad = new Date().getTime()
+
+        App.elements.Containers.WEATHER_DATA.addClass("blur")
+        Loading.Toggle(App.elements.Misc.WEATHER_DATA_LOADING, true)
+
+        GeoLocation.GetLocation().then(async location => {
+            await App.api.LoadWeatherData({
+                lat: location.coords.latitude,
+                lng: location.coords.longitude
+            })
+        }).catch(async (err: GeolocationPositionError) => {
+            if (loadDefaultOnFail) await App.api.LoadWeatherData(undefined, true)
+            if (err.code !== 1) {
+                console.error(err)
+                App.notifications.error("GeoLocation Error", err.message)
+            } else {
+                this._lastLocationLoad = 0
+                if (err.code === 1) App.notifications.warn("GeoLocation Error", Strings.GetString("MISSING_LOCATION_PERMISSION"), true)
+            }
+        })
     }
 }

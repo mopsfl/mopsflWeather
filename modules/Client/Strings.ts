@@ -42,13 +42,24 @@ export default {
             TOOLTIP_CURRENT_TEMPERATURE: "Aktuelle Temperatur",
             TOOLTIP_HIGHEST_TEMPERATURE: "Höchste Temperatur",
             TOOLTIP_LOWEST_TEMPERATURE: "Niedrigste Temperatur",
-            TOOLTIP_CURRENT_TIME: "Aktuelle Uhrzeit",
+            TOOLTIP_CURRENT_TIME: "Ortszeit",
             TOOLTIP_SETTINGS: "Einstellungen",
             TOOLTIP_SETTING_LANGUAGE: "Wählen Sie Ihre Sprache für die Website aus.",
-            TOOLTIP_SETTING_TEMPERATURE_UNIT: "In welcher Temperatureinheit die Temperatur eingezeigt werden soll.",
+            TOOLTIP_SETTING_TEMPERATURE_UNIT: "In welcher Temperatureinheit die Temperatur angezeigt werden soll.",
             TOOLTIP_SETTING_ANIAMTED_ICONS: "Animierte Wettersymbole anzeigen.",
             TOOLTIP_HIGH_ACCURACY_LOCATION: "Ermöglicht eine präzise Geolokalisierung für höhere Standort Genauigkeit.",
             TOOLTIP_WEATHER_ALERTS: "Warnungen vor schweren Unwetterbedingungen.",
+            TOOLTIP_REMEMBER_LOCATION: "Speichert Ihren zuletzt gesuchten Standort.",
+            TOOLTIP_CURRENT_LOCATION: "Aktuellen Standort verwenden",
+
+            SETTING_LANGUAGE: "Sprache",
+            SETTING_TEMPERATURE_UNIT: "Temperatureinheit",
+            SETTING_ANIMATED_ICONS: "Animierte Wettersymbole",
+            SETTING_HIGH_ACCURACY_LOCATION: "Hohe Standortgenauigkeit",
+            SETTING_WEATHER_ALERTS: "Wetterwarnungen",
+            SETTING_REMEMBER_LOCATION: "Standort merken",
+
+            MISSING_LOCATION_PERMISSION: "Sie haben die <b>Standortberechtigung</b> für diese Website blockiert oder deaktiviert. Bitte aktivieren Sie sie in Ihren Einstellungen, um diese Funktion zu nutzen!",
 
             PLACEHOLDER_SEARCH_CITY: "Nach Standort suchen",
         },
@@ -82,13 +93,24 @@ export default {
             TOOLTIP_CURRENT_TEMPERATURE: "Current Temperature",
             TOOLTIP_HIGHEST_TEMPERATURE: "Highest Temperatur",
             TOOLTIP_LOWEST_TEMPERATURE: "Lowest Temperatur",
-            TOOLTIP_CURRENT_TIME: "Current Time",
+            TOOLTIP_CURRENT_TIME: "Local Time",
             TOOLTIP_SETTINGS: "Settings",
             TOOLTIP_SETTING_LANGUAGE: "Select your preferred language for the site.",
             TOOLTIP_SETTING_TEMPERATURE_UNIT: "Set the unit for displaying temperature.",
             TOOLTIP_SETTING_ANIAMTED_ICONS: "Show animated weather icons.",
             TOOLTIP_HIGH_ACCURACY_LOCATION: "Enables precise geo-location for better location accuracy.",
             TOOLTIP_WEATHER_ALERTS: "Warnings for severe weather conditions.",
+            TOOLTIP_REMEMBER_LOCATION: "Saves your last searched location.",
+            TOOLTIP_CURRENT_LOCATION: "Use current location",
+
+            SETTING_LANGUAGE: "Language",
+            SETTING_TEMPERATURE_UNIT: "Temperature Unit",
+            SETTING_ANIMATED_ICONS: "Animated Weather Icons",
+            SETTING_HIGH_ACCURACY_LOCATION: "High Accuracy Location",
+            SETTING_WEATHER_ALERTS: "Weather Alerts",
+            SETTING_REMEMBER_LOCATION: "Remember Location",
+
+            MISSING_LOCATION_PERMISSION: "You have blocked or disabled the location permission for this website. Please enable them in your settings to use this feature!",
 
             PLACEHOLDER_SEARCH_CITY: "Search city"
         },
@@ -99,6 +121,10 @@ export default {
         return string.replace("%VALUE%", value)
     },
 
+    GetString(id: string) {
+        return self.Languages[App.client.language][id]
+    },
+
     Update(lang?: Language) {
         const settings = App.settings.GetSettings()
         lang = lang || self.LanguagesCodes[settings.setting_language] || "en"
@@ -106,25 +132,37 @@ export default {
         $("*[data-stringname]").each((i, e) => {
             const element = $(e)
 
-            let stringName = element.attr("data-stringname"),
-                _string = (self.Languages[lang] || self.Languages.en)[stringName || "en"]
-            if (!_string) {
-                element.text(`${lang}_${stringName}`)
-            } else if (typeof _string == "string") {
-                if (stringName.startsWith("TOOLTIP")) {
-                    element.attr("data-tooltip", _string)
-                } else if (stringName.startsWith("PLACEHOLDER")) {
-                    element.attr("placeholder", _string)
-                } else element.text(_string)
-            } else if (typeof _string == "object") {
-                var keyIndex = parseInt(element.attr("data-stringindex"))
+            let stringIds = element.attr("data-stringname").split(" "),
+                stringId = ""
 
-                if (keyIndex) {
-                    element.text(_string[keyIndex])
-                } else element.text(`${lang}_${stringName}`)
+            if (stringIds.length > 1) {
+                stringIds.forEach(id => {
+                    self.SetString(element, id, self.Languages[lang][id], lang)
+                })
             } else {
-                element.text(`${lang}_${stringName}`)
+                stringId = stringIds[0]
+                self.SetString(element, stringId, self.Languages[lang][stringId], lang)
             }
         })
+    },
+
+    SetString(element: JQuery<HTMLElement>, id: string, str: string, lang: string) {
+        if (!str) {
+            element.text(`${lang}_${id}`)
+        } else if (typeof str == "string") {
+            if (id.startsWith("TOOLTIP")) {
+                element.attr("data-tooltip", str)
+            } else if (id.startsWith("PLACEHOLDER")) {
+                element.attr("placeholder", str)
+            } else element.text(str)
+        } else if (typeof str == "object") {
+            var keyIndex = parseInt(element.attr("data-stringindex"))
+
+            if (keyIndex) {
+                element.text(str[keyIndex])
+            } else element.text(`${lang}_${id}`)
+        } else {
+            element.text(`${lang}_${id}`)
+        }
     }
 }

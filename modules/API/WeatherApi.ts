@@ -1,7 +1,8 @@
+import Loading from "../Client/Loading"
 import Page from "../Client/Page"
 import Strings from "../Client/Strings"
 import { App } from "../Types/Global"
-import { ApiRequestError, CitySearchResult, WeatherRequestArguments } from "../Types/Weather"
+import { ApiRequestError, CitySearchResult, ParsedWeatherData, WeatherDataResponse, WeatherRequestArguments } from "../Types/Weather"
 
 export class WeatherApi {
     private NoCacheHeaders: Headers
@@ -42,7 +43,10 @@ export class WeatherApi {
             headers: { lang: Strings.LanguagesCodes[App.settings.GetSettings().setting_language] }
         }).then(async res => {
             if (!res.ok) return this.HandleRequestError(res)
-            Page.DisplayWeatherData(await res.json())
+            const response: ParsedWeatherData = await res.json()
+            Page.DisplayWeatherData(response, args)
+
+            App.storage.Set("lastcity", args || { lat: response.meta.lat, lng: response.meta.lon })
         }).catch(err => {
             console.error(err)
             App.notifications.error("Weather Api Error", this.ErrorMessages.CHECK_DEV_CONSOLE)
@@ -50,7 +54,7 @@ export class WeatherApi {
     }
 
     CreateRequestQuery(args: WeatherRequestArguments) {
-        return `?${(args.lat && args.lng) ? `lat=${args.lat}&lon=${args.lng}` : `name=${encodeURIComponent(args.name)}`}`
+        return `?${(args.lat && args.lng) ? `lat=${args.lat}&lon=${args.lng}&lang=${App.client.language}` : `name=${encodeURIComponent(args.name)}&lang=${App.client.language}`}`
     }
 
     HandleRequestError(res?: Response) {

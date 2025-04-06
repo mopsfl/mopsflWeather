@@ -23,6 +23,7 @@
   "author": "mopsfl",
   "license": "ISC",
   "dependencies": {
+    "chart.js": "^4.4.8",
     "pako": "^2.1.0"
   }
 }

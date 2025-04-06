@@ -16,6 +16,7 @@ export type WeatherRequestArguments = {
     lng?: string | number,
     lat?: string | number,
     name?: string,
+    unknownName?: boolean,
 }
 
 export type AstronomicalData = {
@@ -91,4 +92,28 @@ export type ForcecastHourData = {
 export type WeatherDataResponse = {
     current: CurrentWeatherData,
     forecast: ForecastData
-} 
+}
+
+export type ParsedWeatherData = {
+    current?: {
+        temp: [number, number, number], // current, max, min
+        wind: [number, number, number], // degrees, gust, speed
+        pressure: number,
+        humidity: number,
+        uvi: number,
+        id: number,
+        desc: string,
+    },
+
+    forecast?: ForecastData,
+
+    meta?: {
+        name: string,
+        country: string,
+        lat: number,
+        lon: number,
+        timezoneOffset: number,
+        sunrise: number,
+        sunset: number,
+    }
+}

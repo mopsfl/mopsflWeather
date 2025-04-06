@@ -42,10 +42,15 @@ export default {
         return JSON.parse(pako.inflate(new Uint8Array(atob(decodeURIComponent(data)).split('').map(c => c.charCodeAt(0))), { to: 'string' }));
     },
 
-    CreateElementWithClass(tag: string, className: string, innerText?: string) {
+    CreateElementWithClass(tag: string, className: string, innerText?: string, html?: boolean) {
         const element = document.createElement(tag);
         element.classList.add(className);
-        if (innerText) element.innerText = innerText;
+
+        if (innerText) {
+            if (!html) {
+                element.innerText = innerText;
+            } else element.innerHTML = innerText;
+        }
         return element;
     },
 
