@@ -12,9 +12,10 @@ import Strings from "./Strings";
 export default {
     DisplayWeatherData(weatherData: ParsedWeatherData, requestArguments?: WeatherRequestArguments) {
         const wind = Util.CalculateWind(self.ParseWindData(weatherData.current.wind)),
-            temperature = self.FormatTemperature(weatherData.current.temp[0])
+            temperature = self.FormatTemperature(weatherData.current.temp[0]),
+            city = !requestArguments?.unknownName ? (requestArguments?.name || weatherData.meta.name) : weatherData.meta.name
 
-        App.elements.Values.CITY_NAME.text(`${!requestArguments?.unknownName ? requestArguments?.name : weatherData.meta.name}, ${weatherData.meta.country}`)
+        App.elements.Values.CITY_NAME.text(`${city}, ${weatherData.meta.country}`)
         App.elements.Values.TEMPERATURE_VALUE.html(self.CreateTemperatureElement(weatherData.current.temp[0], temperature))
         App.elements.Values.CURRENT_TIME.text(Time.GetCurrentTimeWithTimezone(weatherData.meta.timezoneOffset, 0))
         App.elements.Values.WIND_DIRECTION_DEG.text(self.GetWindDirection(weatherData.current.wind[0]))
