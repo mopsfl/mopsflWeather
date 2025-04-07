@@ -104,10 +104,6 @@ a:hover {
     padding: 10px 5px;
 }
 
-.footer-copyright {
-    font-family: monospace;
-}
-
 .smallgray {
     color: var(--text-gray) !important;
     font-size: 12px !important;
@@ -196,9 +192,26 @@ a:hover {
 }
 
 .modal-footer-creds {
+    height: 100%;
+    padding-top: 15px;
     position: absolute;
     bottom: 5px;
     text-align: left;
+    display: grid;
+    font-family: monospace;
+}
+
+.modal-footer-creds>span {
+    height: min-content;
+}
+
+.project-version {
+    top: 0;
+    margin-bottom: auto;
+}
+
+.copyright-text {
+    bottom: 0;
 }
 
 .settings-footer-credits {
@@ -904,7 +917,6 @@ input[type="text"]:not(.browser-default):focus {
 
 @media only screen and (max-width: 550px) {
     .main-info {
-        display: grid;
         justify-content: center;
     }
 
@@ -913,15 +925,17 @@ input[type="text"]:not(.browser-default):focus {
     }
 
     .main-info-right {
+        margin-left: 0;
         text-align: center;
     }
 
     .main-info-left {
+        width: 100%;
         text-align: center;
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 15%;
+        gap: 10vw;
     }
 
     .main-info-temperature {
@@ -931,7 +945,7 @@ input[type="text"]:not(.browser-default):focus {
 
     .main-info-temperature::after {
         content: '';
-        right: -20%;
+        right: -5vw;
         position: absolute;
         background: var(--background-brigther);
         height: 100%;
@@ -944,6 +958,10 @@ input[type="text"]:not(.browser-default):focus {
 
     .weather-description>.bull {
         display: none;
+    }
+
+    .weather-data-current-time {
+        font-size: 15px;
     }
 }
 
