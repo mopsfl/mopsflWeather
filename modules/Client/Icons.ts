@@ -119,7 +119,7 @@ export default {
         1222: "snow.svg",
         1225: "snow.svg",
         1227: "extreme-rain.svg",
-        1240: "rain.svg",
+        1240: "partly-cloudy-day-rain.svg",
         1243: "rain.svg",
         1246: "rain.svg",
         1249: "rain.svg",

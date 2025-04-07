@@ -10,6 +10,8 @@ import { SettingsValues } from "./Settings";
 import Strings from "./Strings";
 
 export default {
+    _forecastTooltips: [] as Array<M.Tooltip[]>,
+
     DisplayWeatherData(weatherData: ParsedWeatherData, requestArguments?: WeatherRequestArguments) {
         const wind = Util.CalculateWind(self.ParseWindData(weatherData.current.wind)),
             temperature = self.FormatTemperature(weatherData.current.temp[0]),
@@ -49,6 +51,10 @@ export default {
     DisplayForecastData(forecastData: ForecastData, weatherData: ParsedWeatherData) {
         const currentHour = new Date().getHours();
         const { FORECAST_ITEMS, FORECAST_MISC_ITEMS } = App.elements.Forecast;
+
+        self._forecastTooltips.forEach(tooltip => {
+            tooltip[0]?.destroy()
+        }); self._forecastTooltips = []
 
         FORECAST_ITEMS.empty();
         FORECAST_MISC_ITEMS.empty();
@@ -135,7 +141,7 @@ export default {
             _forecastTimeValue = _forecastDetailItem.find(".weather-forecast-time-value"),
             _rainChanceValue = _forecastDetailItem.find(".weather-forecast-rain-chance")
 
-        console.log(M.Tooltip.init(_forecastIcon));
+        self._forecastTooltips.push(M.Tooltip.init(_forecastIcon))
         return [_forecastDetailItem, _forecastTemperatureValue, _forecastIcon, _forecastTimeValue, _rainChanceValue]
     },
 

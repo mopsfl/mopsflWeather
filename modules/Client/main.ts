@@ -115,6 +115,7 @@ export class Client {
             })
         }).catch(async (err: GeolocationPositionError) => {
             if (loadDefaultOnFail) await App.api.LoadWeatherData(undefined, true)
+
             if (err.code !== 1) {
                 console.error(err)
                 App.notifications.error("GeoLocation Error", err.message)
@@ -122,6 +123,9 @@ export class Client {
                 this._lastLocationLoad = 0
                 if (err.code === 1) App.notifications.warn("GeoLocation Error", Strings.GetString("MISSING_LOCATION_PERMISSION"), true)
             }
+
+            App.elements.Containers.WEATHER_DATA.removeClass("blur")
+            Loading.Toggle(App.elements.Misc.WEATHER_DATA_LOADING, false)
         })
     }
 }

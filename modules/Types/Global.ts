@@ -12,7 +12,7 @@ interface AppModules {
     notifications?: Notifications,
     settings?: Settings,
     isDev?: boolean,
-    elements?: Elements
+    elements?: Elements,
 }
 
 export const App: AppModules = {};
