@@ -42,7 +42,10 @@ export default {
         self.UpdatePercentageDisplay("airpressure-value", self.AirPressureToPercentage(weatherData.current.pressure))
 
         App.elements.Containers.WEATHER_DATA.removeClass("blur")
+
         self.DisplayForecastData(weatherData.forecast, weatherData)
+        self.DisplayHourDetails(weatherData.forecast, weatherData)
+
         Loading.Toggle(App.elements.Misc.WEATHER_DATA_LOADING, false)
         M.Tooltip.init(App.elements.Values.WEATHER_DESCRIPTION.find(".tooltipped"))
         Strings.Update()
@@ -50,16 +53,14 @@ export default {
 
     DisplayForecastData(forecastData: ForecastData, weatherData: ParsedWeatherData) {
         const currentHour = new Date().getHours();
-        const { FORECAST_ITEMS, FORECAST_MISC_ITEMS } = App.elements.Forecast;
+        const { FORECAST_ITEMS } = App.elements.Forecast;
 
         self._forecastTooltips.forEach(tooltip => {
             tooltip[0]?.destroy()
         }); self._forecastTooltips = []
 
         FORECAST_ITEMS.empty();
-        FORECAST_MISC_ITEMS.empty();
         FORECAST_ITEMS.get(0).scrollLeft = 0;
-        FORECAST_MISC_ITEMS.get(0).scrollLeft = 0;
 
         forecastData.forEach((forecast, index) => {
             forecast.hour.forEach(hourData => {
@@ -69,13 +70,13 @@ export default {
                 const formattedTemperature = self.FormatTemperature(temperatureValue);
 
                 if ((index === 0 && dataHourTime >= currentHour) || (index === 1 && dataHourTime < 24)) {
-                    const [_forecastItem, _tempValue, _icon, _timeValue, _rainChance] = self.CreateForecastItem();
+                    const [_forecastItem, _tempValue, _icon, _timeValue, _rainChance] = self.CreateForecastItem(App.elements.Templates.FORECAST_ITEM);
 
                     _timeValue.text(isCurrentHour && index === 0 ? "Jetzt" : Time.GetHourString(hourData.time, weatherData.meta.timezoneOffset));
                     _icon.attr("src", self.CreateWeatherIcon(
                         isCurrentHour && index === 0 ? weatherData.current.id : hourData.condition.code,
                         weatherData.meta.timezoneOffset,
-                        !!hourData.is_day
+                        hourData.is_day === 1
                     ));
 
                     _icon.attr("data-tooltip", Util.CapitalizeFirstLetter(hourData.condition.text))
@@ -85,6 +86,32 @@ export default {
                 }
             });
         });
+    },
+
+    DisplayHourDetails(forecastData: ForecastData, weatherData: ParsedWeatherData) {
+        const currentHour = new Date().getHours();
+        const { FORECAST_MISC_ITEMS } = App.elements.Forecast;
+
+        FORECAST_MISC_ITEMS.empty();
+        FORECAST_MISC_ITEMS.get(0).scrollLeft = 0;
+
+        forecastData.forEach((forecast, index) => {
+            forecast.hour.forEach(hourData => {
+                const dataHourTime = new Date(hourData.time).getHours();
+                const isCurrentHour = dataHourTime === currentHour;
+
+                if ((index === 0 && dataHourTime >= currentHour) || (index === 1 && dataHourTime < 24)) {
+                    const [_forecastItem, _valueElement, _icon, _timeValue, _rainChance] = self.CreateForecastItem(App.elements.Templates.MISC_FORECAST_ITEM)
+
+                    _timeValue.text(isCurrentHour && index === 0 ? "Jetzt" : Time.GetHourString(hourData.time, weatherData.meta.timezoneOffset));
+                    _icon.css("transform", `rotate(${hourData.wind_degree + (hourData.wind_degree > 180 ? -180 : 180)}deg)`)
+                    _icon.attr("data-tooltip", self.GetWindDirection(hourData.wind_degree))
+                    _valueElement.html(`${isCurrentHour ? Util.CalculateWind(self.ParseWindData(weatherData.current.wind)).speed : Math.round(hourData.wind_kph)}<br><span class="smallgray smalltext2">km/h</span>`)
+
+                    _forecastItem.appendTo(FORECAST_MISC_ITEMS);
+                }
+            })
+        })
     },
 
     FormatTemperature(temperature: number) {
@@ -134,9 +161,9 @@ export default {
         return Strings.Languages[App.client.language].WEATHER_INFO_WIND_DIRECTIONS[Math.round(degrees % 360 / 22.5) % 16];
     },
 
-    CreateForecastItem() {
-        const _forecastDetailItem = App.elements.Templates.FORECAST_ITEM.contents().clone(),
-            _forecastTemperatureValue = _forecastDetailItem.find(".weather-forecast-temperature-value"),
+    CreateForecastItem(item_template: JQuery<HTMLElement>) {
+        const _forecastDetailItem = item_template.contents().clone(),
+            _forecastTemperatureValue = _forecastDetailItem.find(".weather-forecast-value"),
             _forecastIcon = _forecastDetailItem.find(".weather-forecast-icon"),
             _forecastTimeValue = _forecastDetailItem.find(".weather-forecast-time-value"),
             _rainChanceValue = _forecastDetailItem.find(".weather-forecast-rain-chance")

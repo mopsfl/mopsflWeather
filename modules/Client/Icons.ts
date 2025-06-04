@@ -3,7 +3,7 @@ import { App } from "../Types/Global";
 export default {
     GetIcon(name: string, timezone?: number, isDay?: boolean) {
         const settings = App.settings.GetSettings(),
-            hours = new Date(new Date().getTime() + (timezone !== undefined ? timezone : 0) * 1000).getUTCHours(),
+            hours = new Date(new Date().getTime() + (timezone ?? 0) * 1000).getHours(),
             isDayTime = isDay !== undefined ? isDay : (hours > 6 && hours < 20);
 
         if (["clear-day.svg"].includes(name) && !isDayTime) {

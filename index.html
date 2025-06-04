@@ -91,7 +91,7 @@
                 <div class="weather-forecast-items mouseScrollEvent">
                     <template class="weather-forecast-item-template">
                         <div class="weather-forecast-item">
-                            <span class="weather-forecast-temperature-value">N/A</span>
+                            <span class="weather-forecast-value">N/A</span>
                             <span class="weather-forecast-rain-chance">N/A</span>
                             <img class="weather-forecast-icon tooltipped" data-tooltip="" data-position="bottom" src="" alt="N/A" loading="lazy">
                             <span class="weather-forecast-time-value smallgray">N/A</span>
@@ -170,18 +170,17 @@
                 <p class="weather-data-info-item-name weather-forecast-list-header" data-stringname="WEATHER_HOURLY_DETAILS">Stündliche Details</p>
                 <div class="hourly-details-tabs">
                     <span class="hourly-detail-tab tab-selected waves-effect waves-light" data-stringname="WEATHER_INFO_WIND">Wind</span>
-                    <span class="hourly-detail-tab waves-effect waves-light" data-stringname="WEATHER_INFO_RAIN">Regen</span>
+                    <span class="hourly-detail-tab waves-effect waves-light" data-stringname="WEATHER_INFO_RAIN">Niederschlag</span>
                     <span class="hourly-detail-tab waves-effect waves-light" data-stringname="WEATHER_INFO_UVINDEX">UV-Index</span>
                 </div>
                 <div class="break"></div>
-                <span class="smallgray center" style="width: 100%;">currently unavailable!</span>
                 <div class="weather-forecast-misc-items mouseScrollEvent">
                 </div>
                 <template class="weather-forecast-misc-item-template">
-                    <div class="weather-forecast-misc-item">
-                        <span class="weather-forecast-misc-windspeed-value">N/A</span>
-                        <span class="weather-forecast-misc-wind-direction-icon material-symbols-outlined">navigation</span>
-                        <span class="weather-forecast-misc-time-value">N/A</span>
+                    <div class="weather-forecast-item">
+                        <span class="weather-forecast-value">...</span>
+                        <span class="weather-forecast-wind-direction-icon weather-forecast-icon material-symbols-outlined">navigation</span>
+                        <span class="weather-forecast-time-value smallgray">...</span>
                     </div>
                 </template>
             </div>
@@ -256,7 +255,7 @@
         </div>
         <div class="modal-footer">
             <div class="modal-footer-creds">
-                <span class="smallgray project-version">v2.1.82</span>
+                <span class="smallgray project-version">v2.1.85</span>
                 <span class="smallgray copyright-text">&copy; 2025 mopsfl</span>
             </div>
             <button href="#!" class="waves-light waves-effect btn-flat red-text tooltipped" id="resetdefault" data-stringname="RESET_SETTINGS TOOLTIP_RESET_SETTINGS" data-position="top" data-tooltip="">Reset to Default</button>

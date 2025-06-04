@@ -16,7 +16,7 @@ export default {
         de: {
             WEATHER_INFO_WIND: "Wind",
             WEATHER_INFO_GUST: "Böen",
-            WEATHER_INFO_RAIN: "Regen",
+            WEATHER_INFO_RAIN: "Niederschlag",
 
             WEATHER_INFO_WIND_DIRECTIONS: ["aus Norden", "aus Nord-Nordosten", "aus Nordosten", "aus Ost-Nordosten", "aus Osten", "aus Ost-Südosten", "aus Südosten", "aus Süd-Südosten", "aus Süden", "aus Süd-Südwesten", "aus Südwesten", "aus West-Südwesten", "aus Westen", "aus West-Nordwesten", "aus Nordwesten", "aus Nord-Nordwesten"],
             WEATHER_INFO_UVINDEX_LEVELS: { [2]: "Niedrig", [5]: "Mäßig", [7]: "Hoch", [10]: "Sehr Hoch", [11]: "Extrem" },

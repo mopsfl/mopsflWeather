@@ -91,6 +91,7 @@ a:hover {
     display: flex !important;
     position: relative;
     margin-left: auto;
+    align-items: center;
 }
 
 .footer-title>.title-logo {
@@ -111,6 +112,10 @@ a:hover {
 
 .smalltext {
     font-size: 12px !important;
+}
+
+.smalltext2 {
+    font-size: 10px !important;
 }
 
 .centerabs {
@@ -490,6 +495,7 @@ input[type="text"]:not(.browser-default):focus {
 
 .wind-direction-icon {
     transition: transform 1s, scale .2s;
+    transition-delay: 100ms;
 }
 
 .weather-data-info-wind {
@@ -534,6 +540,8 @@ input[type="text"]:not(.browser-default):focus {
 .weather-data-current-time {
     margin-bottom: 5px;
     font-size: 12px;
+    width: min-content;
+    margin-left: auto;
 }
 
 .weather-data-info-item {
@@ -631,8 +639,20 @@ input[type="text"]:not(.browser-default):focus {
     -ms-overflow-style: none;
 }
 
+.weather-forecast-wind-direction-icon {
+    margin-top: 5px;
+    height: 25px !important;
+}
+
 .weather-forecast-misc-items {
-    gap: 17px
+    gap: 7px
+}
+
+.weather-forecast-misc-items>.weather-forecast-item>.weather-forecast-value {
+    margin-bottom: 5px;
+    padding-top: 5px;
+    white-space: nowrap;
+    line-height: 10px;
 }
 
 .weather-forecast-rain-chance,
@@ -650,8 +670,7 @@ input[type="text"]:not(.browser-default):focus {
     display: none;
 }
 
-.weather-forecast-item,
-.weather-forecast-misc-item {
+.weather-forecast-item {
     display: grid;
     justify-content: center;
     align-content: center;
@@ -659,22 +678,10 @@ input[type="text"]:not(.browser-default):focus {
     height: 100%;
 }
 
-.weather-forecast-temperature-value,
+.weather-forecast-value,
 .weather-forecast-time-value {
     font-size: 12px;
     font-weight: bold;
-}
-
-.weather-forecast-misc-windspeed-value {
-    font-size: 12px;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.weather-forecast-misc-windspeed-value {
-    display: flex;
-    white-space: nowrap;
-    align-items: baseline;
 }
 
 .unitText {
@@ -682,7 +689,7 @@ input[type="text"]:not(.browser-default):focus {
     margin-left: 2px;
 }
 
-.weather-forecast-misc-time-value {
+.weather-forecast-time-value {
     margin-top: 5px;
     font-size: 12px;
 }
@@ -862,7 +869,7 @@ input[type="text"]:not(.browser-default):focus {
     cursor: pointer;
     padding: 1px 5px !important;
     background-color: var(--background-darker);
-    border-radius: 3px;
+    border-radius: 2px;
     transition: background-color .2s;
     user-select: none;
 }
@@ -947,7 +954,7 @@ input[type="text"]:not(.browser-default):focus {
         content: '';
         right: -5vw;
         position: absolute;
-        background: var(--background-brigther);
+        background: var(--main-background);
         height: 100%;
         width: 1px;
     }
@@ -962,6 +969,8 @@ input[type="text"]:not(.browser-default):focus {
 
     .weather-data-current-time {
         font-size: 15px;
+        margin-left: 0;
+        width: 100%;
     }
 }
 
