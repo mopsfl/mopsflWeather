@@ -347,7 +347,11 @@ input[type="text"]:not(.browser-default):focus {
 .searchcity-input {
     height: 45px !important;
     padding-top: 0 !important;
-    padding-left: 35px !important;
+    background: #161616 !important;
+    border-radius: 10em !important;
+    border-bottom: none !important;
+    padding-left: 40px !important;
+    padding-bottom: 2px;
 }
 
 .current_location {
@@ -357,6 +361,8 @@ input[type="text"]:not(.browser-default):focus {
     box-shadow: none !important;
     width: 35px !important;
     height: 35px !important;
+    margin-left: 5px;
+    margin-bottom: 1px;
 }
 
 .search-box-container>.loading-spinner {
