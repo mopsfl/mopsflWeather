@@ -72,10 +72,12 @@ export default {
             App.elements.Misc.AUTOCOMPLETE_DROPDOWN.removeClass("hide");
             App.elements.Containers.WEATHER_DATA.addClass("blur");
             App.elements.Misc.SEARCH_BOX_LOADING.addClass("hide");
+            App.elements.Misc.SEARCH_CITY_INPUT.addClass("focused")
         } else {
             App.elements.Misc.AUTOCOMPLETE_DROPDOWN.empty();
             App.elements.Misc.AUTOCOMPLETE_DROPDOWN.addClass("hide");
             App.elements.Misc.SEARCH_BOX_LOADING.addClass("hide");
+            App.elements.Misc.SEARCH_CITY_INPUT.removeClass("focused")
         }
     },
 

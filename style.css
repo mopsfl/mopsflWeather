@@ -348,10 +348,21 @@ input[type="text"]:not(.browser-default):focus {
     height: 45px !important;
     padding-top: 0 !important;
     background: #161616 !important;
-    border-radius: 10em !important;
+    border-radius: 22px !important;
     border-bottom: none !important;
     padding-left: 40px !important;
     padding-bottom: 2px;
+}
+
+.searchcity-input.focused {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-top-left-radius: 22px !important;
+    border-top-right-radius: 22px !important;
+}
+
+input[type="text"].searchcity-input:not(.browser-default) {
+    border-bottom: none !important;
 }
 
 .current_location {
@@ -377,11 +388,11 @@ input[type="text"]:not(.browser-default):focus {
     position: fixed;
     width: 600px;
     z-index: 2;
-    background-color: rgb(32, 32, 32);
+    background-color: #161616;
     padding-top: 5px;
     padding-bottom: 5px;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
     max-height: 300px;
     overflow: auto;
 }
