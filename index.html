@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="./static/materialize.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
     <script src="./static/materialize.min.js"></script>
     <script src="./bower_components/jquery/dist/jquery.min.js"></script>
     <script type="module" src="./dist/js/index.js" defer></script>
@@ -74,7 +74,7 @@
         <div class="weather-data container left-align">
             <div class="main-info weather-data-info-item w100">
                 <div class="main-info-right">
-                    <span class="weather-data-current-time tooltipped" data-stringname="TOOLTIP_CURRENT_TIME" data-position="top">00:00</span>
+                    <span class="weather-data-current-time tooltipped smallgray" data-stringname="TOOLTIP_CURRENT_TIME" data-position="top">00:00</span>
                     <span class="weather-data-city-name">N/A, N/A</span>
                 </div>
                 <div class="main-info-left">
@@ -131,7 +131,7 @@
                         <p class="sunset-value weather-data-info-item-value">00:00</p>
                     </div>
                     <img class="weather-data-info-icon gray-filter" src="./images/svg/animated/sunset.svg" alt="windicon">
-                    <div class="break"></div>
+                    <div class="break"></div none;>
                     <div>
                         <p class="weather-data-info-item-name sunset-in-value">in N/A Stunden</p>
                     </div>
@@ -141,6 +141,7 @@
                 <div class="weather-data-info-item relative waves-effect waves-light">
                     <div class="percentage-display" id="humidity-value">
                         <div class="percentage" data-bgcolor="#0087ff"></div>
+                        <!--<span class="icon material-symbols-outlined">humidity_high</span>-->
                     </div>
                     <div>
                         <p class="weather-data-info-item-name" data-stringname="WEATHER_INFO_HUMIDITY">Luftfeuchtigkeit</p>
@@ -169,9 +170,9 @@
             <div class="weather-data-info-item w100 weather-forecast-list weather-misc-forecast">
                 <p class="weather-data-info-item-name weather-forecast-list-header" data-stringname="WEATHER_HOURLY_DETAILS">Stündliche Details</p>
                 <div class="hourly-details-tabs">
-                    <span class="hourly-detail-tab tab-selected waves-effect waves-light" data-stringname="WEATHER_INFO_WIND">Wind</span>
-                    <span class="hourly-detail-tab waves-effect waves-light" data-stringname="WEATHER_INFO_RAIN">Niederschlag</span>
-                    <span class="hourly-detail-tab waves-effect waves-light" data-stringname="WEATHER_INFO_UVINDEX">UV-Index</span>
+                    <span class="hourly-detail-tab tab-selected waves-effect waves-light clickable" data-stringname="WEATHER_INFO_WIND">Wind</span>
+                    <span class="hourly-detail-tab waves-effect waves-light clickable" data-stringname="WEATHER_INFO_RAIN">Niederschlag</span>
+                    <span class="hourly-detail-tab waves-effect waves-light clickable" data-stringname="WEATHER_INFO_UVINDEX">UV-Index</span>
                 </div>
                 <div class="break"></div>
                 <div class="weather-forecast-misc-items mouseScrollEvent">
