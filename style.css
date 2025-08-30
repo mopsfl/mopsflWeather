@@ -394,8 +394,8 @@ input[type="text"].select-dropdown:not(.browser-default):focus {
 
 
 .autocomplete-dropdown {
-    position: fixed;
-    width: 600px;
+    position: absolute;
+    width: 100%;
     z-index: 2;
     background-color: #161616;
     padding-top: 5px;
@@ -920,17 +920,17 @@ input[type="text"].select-dropdown:not(.browser-default):focus {
 }
 
 @media only screen and (max-width: 700px) {
-
     .search-box {
         margin-top: 15px !important;
     }
 
-    .settings-button-container {
-        top: 22px;
+    .search-city-input-field {
+        margin-right: 30px !important;
+
     }
 
-    .searchcity-input {
-        margin-right: 30px;
+    .settings-button-container {
+        top: 22px;
     }
 
     .search-box {
@@ -948,10 +948,6 @@ input[type="text"].select-dropdown:not(.browser-default):focus {
 
     .title-miscinfo {
         font-size: 10px;
-    }
-
-    .autocomplete-dropdown {
-        width: 90%;
     }
 
     .notifications {
