@@ -49,9 +49,7 @@ export class Client {
 
         // Load Current Location Button
 
-        App.elements.Misc.LOAD_CURRENT_LOCATION.on("click", () => {
-            this.LoadCurrentLocation()
-        })
+        App.elements.Misc.LOAD_CURRENT_LOCATION.on("click", () => { this.LoadCurrentLocation() })
 
         // Settings Callbacks
 
@@ -102,30 +100,32 @@ export class Client {
     }
 
     async LoadCurrentLocation(loadDefaultOnFail?: boolean) {
+        let location: any = null,
+            settings = App.settings.GetSettings()
+
         if (this._lastLocationLoad && (new Date().getTime() - this._lastLocationLoad) < 1000) return;
         this._lastLocationLoad = new Date().getTime()
 
         App.elements.Containers.WEATHER_DATA.addClass("blur")
         Loading.Toggle(App.elements.Misc.WEATHER_DATA_LOADING, true)
 
-        GeoLocation.GetLocation().then(async location => {
-            await App.api.LoadWeatherData({
-                lat: location.coords.latitude,
-                lng: location.coords.longitude
+        if (settings.high_accuracy_location === false) {
+            location = await GeoLocation.GetLocation().then(l => { return { lat: l.coords.latitude, lng: l.coords.longitude } }).catch(async (err: GeolocationPositionError) => {
+                if (loadDefaultOnFail) await App.api.LoadWeatherData(undefined, true)
+
+                if (err.code !== 1) {
+                    console.error(err)
+                    App.notifications.error("GeoLocation Error", err.message)
+                } else {
+                    this._lastLocationLoad = 0
+                    if (err.code === 1) App.notifications.warn("GeoLocation Error", Strings.GetString("MISSING_LOCATION_PERMISSION"), true)
+                }
+
+                App.elements.Containers.WEATHER_DATA.removeClass("blur")
+                Loading.Toggle(App.elements.Misc.WEATHER_DATA_LOADING, false)
             })
-        }).catch(async (err: GeolocationPositionError) => {
-            if (loadDefaultOnFail) await App.api.LoadWeatherData(undefined, true)
+        }
 
-            if (err.code !== 1) {
-                console.error(err)
-                App.notifications.error("GeoLocation Error", err.message)
-            } else {
-                this._lastLocationLoad = 0
-                if (err.code === 1) App.notifications.warn("GeoLocation Error", Strings.GetString("MISSING_LOCATION_PERMISSION"), true)
-            }
-
-            App.elements.Containers.WEATHER_DATA.removeClass("blur")
-            Loading.Toggle(App.elements.Misc.WEATHER_DATA_LOADING, false)
-        })
+        await App.api.LoadWeatherData(location)
     }
 }
