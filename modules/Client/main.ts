@@ -6,6 +6,7 @@ import SearchCity from "./SearchCity";
 import Strings from "./Strings";
 import { WeatherRequestArguments } from "../Types/Weather";
 import Loading from "./Loading";
+import $ from "jquery"
 
 export class Client {
     public language: string

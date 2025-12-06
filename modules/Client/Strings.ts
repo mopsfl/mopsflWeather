@@ -1,6 +1,6 @@
 import { App } from "../Types/Global"
 import { Language } from "../Types/Language"
-import self from "./Strings"
+import $ from "jquery"
 
 export default {
     LanguagesCodes: {
@@ -134,13 +134,13 @@ export default {
     },
 
     GetString(id: string) {
-        return self.Languages[App.client.language][id]
+        return this.Languages[App.client.language][id]
     },
 
     Update(lang?: Language) {
         const settings = App.settings.GetSettings(),
             language = settings.setting_language
-        lang = lang || self.LanguagesCodes[language !== "System" ? language : self.LanguagesCodes[navigator.language]]
+        lang = lang || this.LanguagesCodes[language !== "System" ? language : this.LanguagesCodes[navigator.language]]
 
         $("*[data-stringname]").each((i, e) => {
             const element = $(e)
@@ -150,11 +150,11 @@ export default {
 
             if (stringIds.length > 1) {
                 stringIds.forEach(id => {
-                    self.SetString(element, id, self.Languages[lang][id], lang)
+                    this.SetString(element, id, this.Languages[lang][id], lang)
                 })
             } else {
                 stringId = stringIds[0]
-                self.SetString(element, stringId, self.Languages[lang][stringId], lang)
+                this.SetString(element, stringId, this.Languages[lang][stringId], lang)
             }
         })
     },

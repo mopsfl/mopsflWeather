@@ -2,11 +2,11 @@ import { Element } from "../Types/Element";
 import { App } from "../Types/Global";
 import { CitySearchResult } from "../Types/Weather";
 import Loading from "./Loading";
-import self from "./SearchCity"
+import $ from "jquery"
 
 export default {
     init(inputElement: Element) {
-        var _typingTimer: NodeJS.Timeout
+        var _typingTimer: number
         if (Object.keys($._data(inputElement[0], "events") || {})?.length > 0) return console.warn("<SearchCity.ts> already initialized!");
 
         inputElement.on("propertychange input", () => {
@@ -14,29 +14,29 @@ export default {
             Loading.Toggle(App.elements.Misc.SEARCH_BOX_LOADING, true);
 
             clearTimeout(_typingTimer);
-            _typingTimer = setTimeout(async () => await self.OnSearchInput(inputValue), 350);
+            _typingTimer = setTimeout(async () => await this.OnSearchInput(inputValue), 350);
         });
 
         inputElement.on("focusout", (e) => {
             if ($(e.relatedTarget).parent().get(0) === App.elements.Misc.AUTOCOMPLETE_DROPDOWN.get(0)) return
 
             Loading.Toggle(App.elements.Misc.SEARCH_BOX_LOADING, false);
-            self.ToggleAutocompleteDropdown(false);
+            this.ToggleAutocompleteDropdown(false);
             App.elements.Containers.WEATHER_DATA.removeClass("blur");
         });
     },
 
     async OnSearchInput(value: any) {
-        if (value.toString().length <= 2) return self.ToggleAutocompleteDropdown(false)
+        if (value.toString().length <= 2) return this.ToggleAutocompleteDropdown(false)
 
         const AutocompleteDropdown = App.elements.Misc.AUTOCOMPLETE_DROPDOWN,
             DropdownItem = App.elements.Templates.DROPDOWN_ITEM.contents()
 
-        self.ToggleAutocompleteDropdown(true);
+        this.ToggleAutocompleteDropdown(true);
         App.elements.Misc.AUTOCOMPLETE_DROPDOWN.empty();
 
         await App.api.SearchCity(value).then(cities => {
-            cities = self.RemoveDuplicateCities(cities)
+            cities = this.RemoveDuplicateCities(cities)
             cities.forEach(city => {
                 const clonedDropdownItem = DropdownItem.clone();
                 clonedDropdownItem.find(".city-name").text(city.name);
@@ -45,7 +45,7 @@ export default {
                 clonedDropdownItem.appendTo(AutocompleteDropdown);
 
                 clonedDropdownItem.on("click", async () => {
-                    self.ToggleAutocompleteDropdown(false);
+                    this.ToggleAutocompleteDropdown(false);
                     await App.api.LoadWeatherData(city)
 
                     App.elements.Misc.SEARCH_CITY_INPUT.val("")
@@ -57,7 +57,7 @@ export default {
             clonedDropdownItem.find(".city-iso").text("")
             clonedDropdownItem.appendTo(AutocompleteDropdown)
             clonedDropdownItem.on("click", async () => {
-                self.ToggleAutocompleteDropdown(false);
+                this.ToggleAutocompleteDropdown(false);
                 await App.api.LoadWeatherData({ name: value, unknownName: true })
 
                 App.elements.Misc.SEARCH_CITY_INPUT.val("")

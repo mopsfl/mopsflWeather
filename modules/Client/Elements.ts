@@ -1,4 +1,4 @@
-import { App } from "../Types/Global";
+import $ from "jquery"
 
 export class Elements {
     Containers = {

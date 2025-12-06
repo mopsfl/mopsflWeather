@@ -89,7 +89,7 @@ export default {
         1006: "partly-cloudy-day.svg",
         1009: "cloudy.svg",
         1030: "cloudy.svg",
-        1063: "partly-cloudy-day.svg",
+        1063: "partly-cloudy-day-rain.svg",
         1066: "snow.svg",
         1069: "snow.svg",
         1082: "snow.svg",

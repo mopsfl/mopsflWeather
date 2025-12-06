@@ -1,6 +1,6 @@
 import { App } from "../Types/Global";
-import Strings from "./Strings";
 import { CustomEvents } from "../Misc/CustomEvents";
+import $ from "jquery"
 
 export default class Settings {
     constructor(
@@ -25,7 +25,6 @@ export default class Settings {
     }
 
     init(reset?: boolean) {
-        //this.settingUpdateEvent = CustomEvents.CreateEvent(this.config.settingUpdateEventName)
         let _settings: any
 
         if (reset) {
