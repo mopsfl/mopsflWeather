@@ -19,101 +19,68 @@ export type WeatherRequestArguments = {
     unknownName?: boolean,
 }
 
-export type AstronomicalData = {
-    sunrise: Date;
-    sunriseRaw: number;
-    sunset: Date;
-    sunsetRaw: number;
-}
-
 export interface WindData {
     speed: number, deg: number, gust: number,
 }
 
-export type OpenWeatherApiData = {
-    temp: { cur: number, max: number, min: number };
-    feelsLike: { cur: number };
-    pressure: number;
-    humidity: number;
-    dewPoint: number | undefined;
-    clouds: number;
-    uvi: number | undefined;
-    visibility: number;
-    wind: WindData;
-    rain: number;
-    snow: number;
-    conditionId: number;
-    main: string;
-    description: string;
-    icon: { url: string; raw: string; };
+export type ForecastHourlyData = {
+    time: string
+    precipitation: number
+    rain: number
+    temperature: number
+    weather_code: number
+    wind_speed: number
+    wind_direction: number
+    uv_index: number
+    uv_index_clear_sky: number
+    is_day: number
+}
+
+export type ForecastDailyData = {
+    time: number
+    temperature_max: number
+    temperature_min: number
+    sunrise: number
+    sunset: number
+    uv_index_max: number
+    rain_sum: number
+    showers_sum: number
+    snowfall_sum: number
+    precipitation_sum: number
+    precipitation_hours: number
+    precipitation_probability_max: number
+    wind_speed_max: number
+    wind_gusts_max: number
+    wind_direction_dominant: number
 }
 
 export type CurrentWeatherData = {
-    lat: number,
-    lon: number,
-    dt: Date,
-    dtRaw: number,
-    name: string,
-    country: string,
-    uvi: number,
-    timezoneOffset: number,
-
-    astronomical: AstronomicalData,
-    weather: OpenWeatherApiData
-}
-
-export type ForecastData = ForecastDay[]
-
-export type ForecastDay = {
-    date: string,
-    date_epoch: number,
-    hour: ForcecastHourData[],
-    day: { maxtemp_c: number, mintemp_c: number }
-}
-
-export type ForcecastHourData = {
-    time_epoch: number,
     time: string,
-    temp_c: number,
-    temp_f: number,
-    wind_mph: number,
-    wind_kph: number,
-    gust_mph: number,
-    gust_kph: number,
-    wind_degree: number,
-    uv: number,
-    chance_of_rain: number,
-    condition: { text: string, code: number, icon: number },
-    cloud: number,
-    humidity: number,
-    is_day: number,
+    temperature: number
+    humidity: number
+    is_day: number
+    precipitation: number
+    rain: number
+    weather_code: number
+    surface_pressure: number
+    pressure_msl: number
+    wind_speed: number
+    wind_direction: number
+    wind_gusts: number
 }
 
-export type WeatherDataResponse = {
+export type WeatherData = {
     current: CurrentWeatherData,
-    forecast: ForecastData
-}
+    hourly: ForecastHourlyData[],
+    daily: ForecastDailyData[],
 
-export type ParsedWeatherData = {
-    current?: {
-        temp: [number, number, number], // current, max, min
-        wind: [number, number, number], // degrees, gust, speed
-        pressure: number,
-        humidity: number,
-        uvi: number,
-        id: number,
-        desc: string,
-    },
-
-    forecast?: ForecastData,
-
-    meta?: {
-        name: string,
+    meta: {
+        city: string,
         country: string,
+        country_code: string,
         lat: number,
         lon: number,
-        timezoneOffset: number,
-        sunrise: number,
-        sunset: number,
+        utcOffset: number,
+        timezone: number
     }
 }

@@ -7,7 +7,7 @@ import $ from "jquery"
 export default {
     init(inputElement: Element) {
         var _typingTimer: number
-        if (Object.keys($._data(inputElement[0], "events") || {})?.length > 0) return console.warn("<SearchCity.ts> already initialized!");
+        if (Object.keys($.data(inputElement[0], "events") || {})?.length > 0) return console.warn("<SearchCity.ts> already initialized!");
 
         inputElement.on("propertychange input", () => {
             const inputValue = inputElement.val().toString();

@@ -1,121 +1,115 @@
 import Time from "../Misc/Time";
 import Util from "../Misc/Util";
 import { App } from "../Types/Global";
-import { ForecastData, ParsedWeatherData, WeatherRequestArguments, WindData } from "../Types/Weather";
+import { ForecastHourlyData, WeatherData, WeatherRequestArguments, WindData } from "../Types/Weather";
 import Icons from "./Icons";
 import Loading from "./Loading";
 import Strings from "./Strings";
 import $ from "jquery"
+import M from "materialize-css"
 
 export default {
     _forecastTooltips: [] as Array<M.Tooltip[]>,
 
-    DisplayWeatherData(weatherData: ParsedWeatherData, requestArguments?: WeatherRequestArguments) {
-        const wind = Util.CalculateWind(this.ParseWindData(weatherData.current.wind)),
-            temperature = this.FormatTemperature(weatherData.current.temp[0]),
-            city = !requestArguments?.unknownName ? (requestArguments?.name || weatherData.meta.name) : weatherData.meta.name
+    DisplayWeatherData(weatherData: WeatherData, requestArguments?: WeatherRequestArguments) {
+        const city = weatherData.meta.city ?? (!requestArguments?.unknownName ? (requestArguments?.name) : "N/A")
 
-        App.elements.Values.CITY_NAME.text(`${city}, ${weatherData.meta.country}`)
-        App.elements.Values.TEMPERATURE_VALUE.html(this.CreateTemperatureElement(weatherData.current.temp[0], temperature))
-        App.elements.Values.CURRENT_TIME.text(Time.GetCurrentTimeWithTimezone(weatherData.meta.timezoneOffset, 0))
-        App.elements.Values.WIND_DIRECTION_DEG.text(this.GetWindDirection(weatherData.current.wind[0]))
-        App.elements.Values.WIND_SPEED_VALUE.html(`${wind.speed} <span class="smallgray">km/h</span>`)
-        App.elements.Values.WIND_GUST_SPEED_VALUE.html(`${wind.gust} <span class="smallgray">km/h</span>`)
-        App.elements.Values.WIND_DIRECTION_ICON.css("transform", `rotate(${wind.deg + (wind.deg > 180 ? -180 : 180)}deg)`)
-        App.elements.Values.SUNRISE_VALUE.text(Time.UnixTimestampToDateString(weatherData.meta.sunrise, weatherData.meta.timezoneOffset))
-        App.elements.Values.SUNSET_VALUE.text(Time.UnixTimestampToDateString(weatherData.meta.sunset, weatherData.meta.timezoneOffset))
-        App.elements.Values.UV_INDEX_VALUE.html(this.CreateUVIndexElement(weatherData.current.uvi))
-        App.elements.Values.HUMIDITY_VALUE.html(`${weatherData.current.humidity} <span class="smallgray">%</span>`)
-        App.elements.Values.AIRPRESSURE_VALUE.html(`${Util.NumberToFloatingPoint(weatherData.current.pressure)} <span class="smallgray">mbar</span>`)
-        App.elements.Values.WEATHER_ICON.attr("src", Icons.GetIcon(Icons.Icons[weatherData.current.id], weatherData.meta.timezoneOffset))
-        App.elements.Values.SUNRISE_IN_VALUE.text(Time.TimeUntil(weatherData.meta.sunrise, weatherData.meta.timezoneOffset, true))
-        App.elements.Values.SUNSET_IN_VALUE.text(Time.TimeUntil(weatherData.meta.sunset, weatherData.meta.timezoneOffset, true))
-        App.elements.Values.WEATHER_DESCRIPTION.html(`
-            <span>${Util.CapitalizeFirstLetter(weatherData.current.desc)}</span>
-            ${this.CreateWeatherDescriptionElement(weatherData.forecast[0].day.maxtemp_c, weatherData.forecast[0].day.mintemp_c)}
-        `)
+        const currentHour = new Date(new Date().getTime() + weatherData.meta.utcOffset * 1000).getUTCHours()
+
+        const windSpeed = Math.round(weatherData.current.wind_speed),
+            gustSpeed = Math.round(weatherData.current.wind_gusts),
+            windDirection = weatherData.current.wind_direction
+
+        const currentHourData = weatherData.hourly.slice(currentHour, currentHour + 1)[0]
+
+        App.elements.Values.CITY_NAME.text(`${city}, ${weatherData.meta.country_code.toUpperCase()}`)
+        App.elements.Values.TEMPERATURE_VALUE.html(this.CreateTemperatureElement(weatherData.current.temperature, this.FormatTemperature(weatherData.current.temperature)))
+        App.elements.Values.CURRENT_TIME.text(Time.ParseTimeWithUtcOffset(undefined, weatherData.meta.utcOffset))
+        App.elements.Values.WIND_DIRECTION_DEG.text(this.GetWindDirection(windDirection))
+        App.elements.Values.WIND_SPEED_VALUE.html(`${windSpeed} <span class="smallgray">km/h</span>`)
+        App.elements.Values.WIND_GUST_SPEED_VALUE.html(`${gustSpeed} <span class="smallgray">km/h</span>`)
+        App.elements.Values.WIND_DIRECTION_ICON.css("transform", `rotate(${windDirection + (windDirection > 180 ? -180 : 180)}deg)`)
+        App.elements.Values.SUNRISE_VALUE.text(Time.UnixTimestampToDateString(weatherData.daily[0].sunrise))
+        App.elements.Values.SUNSET_VALUE.text(Time.UnixTimestampToDateString(weatherData.daily[0].sunset))
+        App.elements.Values.UV_INDEX_VALUE.html(this.CreateUVIndexElement(currentHourData.uv_index))
+        App.elements.Values.HUMIDITY_VALUE.html(`${Math.round(weatherData.current.humidity)} <span class="smallgray">%</span>`)
+        App.elements.Values.AIRPRESSURE_VALUE.html(`${Util.NumberToFloatingPoint(Math.round(weatherData.current.surface_pressure))} <span class="smallgray">mbar</span>`)
+        App.elements.Values.WEATHER_ICON.attr("src", Icons.GetIcon(Icons.Icons[weatherData.current.weather_code], weatherData.meta.utcOffset, weatherData.current.is_day === 1))
+
+        App.elements.Values.SUNRISE_IN_VALUE.text(Time.TimeUntil(new Date(weatherData.daily[0].sunrise).getTime(), weatherData.meta.utcOffset))
+        App.elements.Values.SUNSET_IN_VALUE.text(Time.TimeUntil(new Date(weatherData.daily[0].sunset).getTime(), weatherData.meta.utcOffset))
+
+        App.elements.Values.WEATHER_DESCRIPTION.html(`<span data-stringname="WEATHER_DESCRIPTIONS" data-weather-code="${weatherData.current.weather_code}">
+            <span>${Strings.GetString("WEATHER_DESCRIPTIONS")[weatherData.current.weather_code]}</span></span>
+            ${this.CreateWeatherDescriptionElement(weatherData.daily[0].temperature_max, weatherData.daily[0].temperature_min)}
+        </span>`)
 
         this.UpdatePercentageDisplay("humidity-value", weatherData.current.humidity)
-        this.UpdatePercentageDisplay("uvindex-value", (weatherData.current.uvi / 11) * 100)
-        this.UpdatePercentageDisplay("airpressure-value", this.AirPressureToPercentage(weatherData.current.pressure))
+        this.UpdatePercentageDisplay("uvindex-value", (currentHourData.uv_index / 11) * 100)
+        this.UpdatePercentageDisplay("airpressure-value", this.AirPressureToPercentage(weatherData.current.surface_pressure))
 
         App.elements.Containers.WEATHER_DATA.removeClass("blur")
 
-        this.DisplayForecastData(weatherData.forecast, weatherData)
-        this.DisplayHourDetails(weatherData.forecast, weatherData)
+        this.DisplayForecastData(weatherData.hourly, weatherData)
+        this.DisplayHourDetails(weatherData.hourly, weatherData)
 
         Loading.Toggle(App.elements.Misc.WEATHER_DATA_LOADING, false)
         M.Tooltip.init(App.elements.Values.WEATHER_DESCRIPTION.find(".tooltipped"))
         Strings.Update()
     },
 
-    DisplayForecastData(forecastData: ForecastData, weatherData: ParsedWeatherData) {
-        const currentHour = new Date().getHours();
-        const { FORECAST_ITEMS } = App.elements.Forecast;
+    DisplayForecastData(forecastData: ForecastHourlyData[], weatherData: WeatherData) {
+        const currentHour = new Date(new Date().getTime() + weatherData.meta.utcOffset * 1000).getUTCHours()
+        const { FORECAST_ITEMS } = App.elements.Forecast
 
-        this._forecastTooltips.forEach(tooltip => {
+        this._forecastTooltips.forEach((tooltip: M.Tooltip[]) => {
             tooltip[0]?.destroy()
         }); this._forecastTooltips = []
 
-        FORECAST_ITEMS.empty();
-        FORECAST_ITEMS.get(0).scrollLeft = 0;
+        FORECAST_ITEMS.empty()
+        FORECAST_ITEMS.get(0).scrollLeft = 0
 
-        forecastData.forEach((forecast, index) => {
-            forecast.hour.forEach(hourData => {
-                const dataHourTime = new Date(hourData.time).getHours();
-                const isCurrentHour = dataHourTime === currentHour;
-                const temperatureValue = isCurrentHour ? (weatherData.current.temp[0] || hourData.temp_c) : hourData.temp_c;
-                const formattedTemperature = this.FormatTemperature(temperatureValue);
+        forecastData.slice(currentHour, currentHour + 25).forEach((hourData, index) => {
+            const dataTime = new Date(hourData.time)
+            const isCurrentHour = dataTime.getUTCHours() === currentHour
+            const [_forecastItem, _tempValue, _icon, _timeValue, _rainChance] = this.CreateForecastItem(App.elements.Templates.FORECAST_ITEM)
 
-                if ((index === 0 && dataHourTime >= currentHour) || (index === 1 && dataHourTime < 24)) {
-                    const [_forecastItem, _tempValue, _icon, _timeValue, _rainChance] = this.CreateForecastItem(App.elements.Templates.FORECAST_ITEM);
+            _timeValue.text(isCurrentHour && index === 0 ? "Jetzt" : Time.ParseTimeWithUtcOffset(hourData.time, weatherData.meta.utcOffset))
+            _tempValue.html(this.CreateTemperatureElement(hourData.temperature, this.FormatTemperature(hourData.temperature)))
+            _rainChance.html(this.CreateRainChanceElement(Math.round(hourData.precipitation / 10) * 10))
 
-                    _timeValue.text(isCurrentHour && index === 0 ? "Jetzt" : Time.GetHourString(hourData.time, weatherData.meta.timezoneOffset));
-                    _icon.attr("src", this.CreateWeatherIcon(
-                        isCurrentHour && index === 0 ? weatherData.current.id : hourData.condition.code,
-                        weatherData.meta.timezoneOffset,
-                        hourData.is_day === 1
-                    ));
+            _icon.attr("data-tooltip", Strings.GetString("WEATHER_DESCRIPTIONS")[hourData.weather_code])
+            _icon.attr("src", this.CreateWeatherIcon(hourData.weather_code, weatherData.meta.utcOffset, hourData.is_day === 1))
 
-                    _icon.attr("data-tooltip", Util.CapitalizeFirstLetter(isCurrentHour && index === 0 ? weatherData.current.desc : hourData.condition.text))
-                    _tempValue.html(this.CreateTemperatureElement(temperatureValue, formattedTemperature));
-                    _rainChance.html(this.CreateRainChanceElement(hourData.chance_of_rain));
-                    _forecastItem.appendTo(FORECAST_ITEMS);
-                }
-            });
-        });
+            _forecastItem.appendTo(FORECAST_ITEMS)
+        })
     },
 
-    DisplayHourDetails(forecastData: ForecastData, weatherData: ParsedWeatherData) {
-        const currentHour = new Date().getHours();
-        const { FORECAST_MISC_ITEMS } = App.elements.Forecast;
+    DisplayHourDetails(forecastData: ForecastHourlyData[], weatherData: WeatherData) {
+        const currentHour = new Date(new Date().getTime() + weatherData.meta.utcOffset * 1000).getUTCHours()
+        const { FORECAST_MISC_ITEMS } = App.elements.Forecast
 
-        FORECAST_MISC_ITEMS.empty();
-        FORECAST_MISC_ITEMS.get(0).scrollLeft = 0;
+        FORECAST_MISC_ITEMS.empty()
+        FORECAST_MISC_ITEMS.get(0).scrollLeft = 0
 
-        forecastData.forEach((forecast, index) => {
-            forecast.hour.forEach(hourData => {
-                const dataHourTime = new Date(hourData.time).getHours();
-                const isCurrentHour = dataHourTime === currentHour;
+        forecastData.slice(currentHour, currentHour + 25).forEach((hourData, index) => {
+            const dataTime = new Date(hourData.time)
+            const isCurrentHour = dataTime.getUTCHours() === currentHour
+            const [_forecastItem, _valueElement, _icon, _timeValue, _rainChance] = this.CreateForecastItem(App.elements.Templates.MISC_FORECAST_ITEM)
 
-                if ((index === 0 && dataHourTime >= currentHour) || (index === 1 && dataHourTime < 24)) {
-                    const [_forecastItem, _valueElement, _icon, _timeValue, _rainChance] = this.CreateForecastItem(App.elements.Templates.MISC_FORECAST_ITEM)
+            _timeValue.text(isCurrentHour && index === 0 ? "Jetzt" : Time.ParseTimeWithUtcOffset(hourData.time, weatherData.meta.utcOffset))
+            _icon.css("transform", `rotate(${hourData.wind_direction + (hourData.wind_direction > 180 ? -180 : 180)}deg)`)
+            _icon.attr("data-tooltip", this.GetWindDirection(hourData.wind_direction))
+            _valueElement.html(`${Math.round(hourData.wind_speed)}<br><span class="smallgray smalltext2">km/h</span>`)
 
-                    _timeValue.text(isCurrentHour && index === 0 ? "Jetzt" : Time.GetHourString(hourData.time, weatherData.meta.timezoneOffset));
-                    _icon.css("transform", `rotate(${hourData.wind_degree + (hourData.wind_degree > 180 ? -180 : 180)}deg)`)
-                    _icon.attr("data-tooltip", this.GetWindDirection(hourData.wind_degree))
-                    _valueElement.html(`${isCurrentHour ? Util.CalculateWind(this.ParseWindData(weatherData.current.wind)).speed : Math.round(hourData.wind_kph)}<br><span class="smallgray smalltext2">km/h</span>`)
-
-                    _forecastItem.appendTo(FORECAST_MISC_ITEMS);
-                }
-            })
+            _forecastItem.appendTo(FORECAST_MISC_ITEMS)
         })
     },
 
     FormatTemperature(temperature: number) {
         const settings = App.settings.GetSettings()
         return (settings.setting_tempunit || "Celsius") ===
-            "Celsius" ? `${Math.round(temperature)}°C` :
+            "Celsius" ? `${Math.floor(temperature)}°C` :
             `${Math.round(Util.CelsiusToFahrenheit(temperature))}°F`
     },
 
@@ -193,13 +187,5 @@ export default {
 
     CreateWeatherIcon(conditionId: number, timezoneOffset: number, isDay: boolean) {
         return Icons.GetIcon(Icons.Icons[conditionId], timezoneOffset, isDay)
-    },
-
-    ParseWindData(wind: number[]): WindData {
-        return {
-            deg: wind[0],
-            gust: wind[1],
-            speed: wind[2]
-        }
     },
 }

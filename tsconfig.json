@@ -5,7 +5,8 @@
       "moduleResolution": "NodeNext",
       "outDir": "./dist/js",
       "esModuleInterop": true,
+      "strict": false,
     },
     "compileOnSave": true,
-    "exclude": ["node_modules","materialize-css","archive"]
+    "exclude": ["node_modules","materialize-css","archive"],
 }

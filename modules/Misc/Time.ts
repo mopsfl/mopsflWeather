@@ -47,9 +47,9 @@ export default {
         return `${hours}:${minutes}`;
     },
 
-    UnixTimestampToDateString(unixTimestamp: number, timezone = 0, full?: boolean) {
-        const date = new Date((unixTimestamp + timezone) * 1000);
-        const year = date.getUTCFullYear();
+    UnixTimestampToDateString(unixTimestamp: number, full?: boolean) {
+        const date = new Date(unixTimestamp);
+        const year = date.getFullYear();
         const month = ('0' + (date.getUTCMonth() + 1)).slice(-2);
         const day = ('0' + date.getUTCDate()).slice(-2);
         const hours = ('0' + date.getUTCHours()).slice(-2);
@@ -59,8 +59,11 @@ export default {
         return full ? `${year}-${month}-${day} ${hours}:${minutes}:${seconds}` : `${hours}:${minutes}`;
     },
 
-    GetCurrentTimeWithTimezone(timezone = 0, type = 0) {
-        const date = new Date((new Date().getTime() + (timezone * 1000)));
+    ParseTimeWithUtcOffset(time?: any, utcOffset = 0, type = 0) {
+        const date = new Date(
+            time ? new Date(time).getTime() : new Date().getTime() + utcOffset * 1000
+        )
+
         const year = date.getUTCFullYear();
         const month = ('0' + (date.getUTCMonth() + 1)).slice(-2);
         const day = ('0' + date.getUTCDate()).slice(-2);
@@ -70,14 +73,16 @@ export default {
 
         switch (type) {
             case 0:
-                return `${hours}:${minutes}`
+                return `${hours}:${minutes}`;
+
             case 1:
-                return `${hours}:${minutes}:${seconds}`
+                return `${hours}:${minutes}:${seconds}`;
+
             case 2:
-                return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+                return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
             default:
-                return `${hours}:${minutes}`
-                break;
+                return `${hours}:${minutes}`;
         }
     },
 
@@ -94,8 +99,8 @@ export default {
         return `${hours}:${minutes} ${day}/${month}/${year}`;
     },
 
-    TimeUntil(timestamp: number, timezone = 0, toUnix?: boolean) {
-        const difference = (toUnix ? timestamp * 1000 : timestamp) - new Date().getTime() + timezone,
+    TimeUntil(timestamp: number, utcOffset = 0) {
+        const difference = timestamp - (new Date().getTime() + utcOffset * 1000),
             absDifference = Math.abs(difference),
             hours = Math.floor(absDifference / (1000 * 60 * 60)),
             minutes = Math.floor((absDifference % (1000 * 60 * 60)) / (1000 * 60)),

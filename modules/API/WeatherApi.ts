@@ -2,7 +2,7 @@ import Loading from "../Client/Loading"
 import Page from "../Client/Page"
 import Strings from "../Client/Strings"
 import { App } from "../Types/Global"
-import { ApiRequestError, CitySearchResult, ParsedWeatherData, WeatherDataResponse, WeatherRequestArguments } from "../Types/Weather"
+import { ApiRequestError, CitySearchResult, WeatherData, WeatherRequestArguments } from "../Types/Weather"
 
 export class WeatherApi {
     private NoCacheHeaders: Headers
@@ -14,8 +14,8 @@ export class WeatherApi {
     }
 
     private Endpoints = {
-        SEARCH_CITY: "data/searchcity?name=",
-        GET_WEATHER_DATA: "data/get"
+        SEARCH_CITY: "searchcity?name=",
+        GET_WEATHER_DATA: "data"
     }
 
     constructor() {
@@ -25,7 +25,7 @@ export class WeatherApi {
     }
 
     init() {
-        this.API_URL = App.isDev ? "http://localhost:6969/v1/mopsflWeather/" : "https://api.mopsfl.de/v1/mopsflWeather/"
+        this.API_URL = App.isDev ? "http://localhost:6969/v2/weather/" : "https://api.mopsfl.de/v1/mopsflWeather/"
         return this
     }
 
@@ -41,7 +41,7 @@ export class WeatherApi {
 
         await fetch(this.API_URL + this.Endpoints.GET_WEATHER_DATA + requestQuery).then(async res => {
             if (!res.ok) return this.HandleRequestError(res)
-            const response: ParsedWeatherData = await res.json()
+            const response: WeatherData = await res.json()
             Page.DisplayWeatherData(response, args)
 
             App.storage.Set("lastcity", args || { lat: response.meta.lat, lng: response.meta.lon })

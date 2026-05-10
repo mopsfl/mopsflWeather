@@ -67,7 +67,49 @@ export default {
             TOOLTIP_RESET_SETTINGS: "Setzen Sie alle Einstellungen auf ihre Standardwerte zurück.",
 
             CLOSE_BUTTON: "Schließen",
-            POWERED_BY: "Diese App wird unterstützt von:"
+            POWERED_BY: "Diese App wird unterstützt von:",
+
+            WEATHER_DESCRIPTIONS: {
+                0: "Klarer Himmel",
+
+                1: "Überwiegend klar",
+                2: "Teilweise bewölkt",
+                3: "Bedeckt",
+
+                45: "Nebel",
+                48: "Reifnebel",
+
+                51: "Leichter Nieselregen",
+                53: "Mäßiger Nieselregen",
+                55: "Starker Nieselregen",
+
+                56: "Leicht Gefrierender Nieselregen",
+                57: "Stark Gefrierender Nieselregen",
+
+                61: "Leichter Regen",
+                63: "Mäßiger Regen",
+                65: "Starker Regen",
+
+                66: "Leicht Gefrierender Regen",
+                67: "Stark Gefrierender Regen",
+
+                71: "Leichter Schneefall",
+                73: "Mäßiger Schneefall",
+                75: "Starker Schneefall",
+
+                77: "Schneegriesel",
+
+                80: "Leichter Regenschauer",
+                81: "Mäßiger Regenschauer",
+                82: "Heftiger Regenschauer",
+
+                85: "Schneeschauer",
+                86: "Schneeschauer",
+
+                95: "Gewitter",
+                96: "Gewitter mit leichtem Hagel",
+                99: "Gewitter mit starkem Hagel"
+            }
         },
 
         en: {
@@ -124,7 +166,49 @@ export default {
             TOOLTIP_RESET_SETTINGS: "Restore all settings to their default values.",
 
             CLOSE_BUTTON: "Close",
-            POWERED_BY: "This app is powered by:"
+            POWERED_BY: "This app is powered by:",
+
+            WEATHER_DESCRIPTIONS: {
+                0: "Clear sky",
+
+                1: "Mainly clear",
+                2: "Partly cloudy",
+                3: "Overcast",
+
+                45: "Fog",
+                48: "Depositing rime fog",
+
+                51: "Light drizzle",
+                53: "Moderate drizzle",
+                55: "Dense drizzle",
+
+                56: "Light freezing drizzle",
+                57: "Dense freezing drizzle",
+
+                61: "Slight rain",
+                63: "Moderate rain",
+                65: "Heavy rain",
+
+                66: "Light freezing rain",
+                67: "Heavy freezing rain",
+
+                71: "Slight snow fall",
+                73: "Moderate snow fall",
+                75: "Heavy snow fall",
+
+                77: "Snow grains",
+
+                80: "Slight rain showers",
+                81: "Moderate rain showers",
+                82: "Violent rain showers ",
+
+                85: "Slight snow showers",
+                86: "Heavy snow showers",
+
+                95: "Thunderstorm",
+                96: "Thunderstorm with slight hail",
+                99: "Thunderstorm with heavy hail"
+            }
         },
     },
 
@@ -154,7 +238,13 @@ export default {
                 })
             } else {
                 stringId = stringIds[0]
-                this.SetString(element, stringId, this.Languages[lang][stringId], lang)
+
+                if (stringId === "WEATHER_DESCRIPTIONS") {
+                    let weatherCode = element.attr("data-weather-code") ?? 0
+                    this.SetString(element, stringId, this.Languages[lang][stringId][weatherCode], lang)
+                } else {
+                    this.SetString(element, stringId, this.Languages[lang][stringId], lang)
+                }
             }
         })
     },
