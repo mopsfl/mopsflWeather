@@ -25,7 +25,7 @@ export class WeatherApi {
     }
 
     init() {
-        this.API_URL = App.isDev ? "http://localhost:6969/v2/weather/" : "https://api.mopsfl.de/v1/mopsflWeather/"
+        this.API_URL = App.isDev ? "http://localhost:6969/v2/weather/" : "https://api.mopsfl.de/v2/weather/"
         return this
     }
 
